@@ -98,6 +98,23 @@ the priced **Run research** button. See
 [docs/COMMISSION-SURFACE.md](docs/COMMISSION-SURFACE.md) for configuration,
 artifact layout, and current limits.
 
+## MCP lifecycle
+
+Install the checkout as a uv tool, then use the lifecycle command to upgrade and
+restart every Alexandria MCP process owned by your account:
+
+```bash
+uv tool install --reinstall .
+alexandria-ctl cycle
+```
+
+`cycle` pulls the configured checkout with `--ff-only`, reinstalls the uv tool,
+stops the old HTTP and client-owned stdio processes, starts the new HTTP server,
+and prints loopback health. The upgrade happens before shutdown so a failed pull
+or install leaves the current servers running. See
+[docs/MCP-SERVER.md](docs/MCP-SERVER.md) for status, start, stop, systemd, and
+optional shell-alias details.
+
 Each investigation follows a standard lifecycle:
 
 ```text

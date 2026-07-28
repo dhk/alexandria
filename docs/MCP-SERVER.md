@@ -56,6 +56,51 @@ uv run alexandria-mcp              # stdio, for Claude Desktop / Claude Code
 uv run alexandria-mcp --http       # loopback HTTP at /mcp/<token>
 ```
 
+## Upgrade and restart cycle
+
+Install the local checkout as a uv tool once:
+
+```bash
+cd ~/Documents/dev/alexandria
+uv tool install --reinstall .
+```
+
+Then the Wingman-style operator cycle is:
+
+```bash
+alexandria-ctl cycle
+```
+
+For a short command like Wingman's locally configured `wg` alias, add this to your
+shell configuration:
+
+```bash
+alias ax='alexandria-ctl'
+```
+
+Then `ax cycle` performs `git pull --ff-only` → `uv tool install --reinstall .` →
+stop every same-user `alexandria-mcp` process → start the HTTP server → print its
+loopback `/health` result. Pull and reinstall happen before shutdown, so a failed
+upgrade leaves the old servers running. Client-owned stdio processes cannot be
+relaunched independently of their clients; the command names any it stopped and
+tells you to restart Claude Desktop or the affected CLI sessions.
+
+Other lifecycle commands:
+
+```bash
+alexandria-ctl status
+alexandria-ctl start
+alexandria-ctl stop-all
+alexandria-ctl upgrade       # pull + reinstall, without process changes
+```
+
+`ALEXANDRIA_REPO` selects the checkout (default
+`~/Documents/dev/alexandria`). `ALEXANDRIA_LOG` selects the background HTTP log.
+On Ubuntu, if the user-level `alexandria-mcp.service` exists, lifecycle commands
+use systemd to stop and start it rather than launching a competing unmanaged process.
+Standalone `stop-all` asks before terminating client-owned stdio processes; invoking
+`cycle` is itself the explicit instruction to replace them and does not prompt.
+
 By default the server detects the repository root by walking up from the
 current working directory looking for `docs/DESIGN.md` and `AGENTS.md`.
 Set `ALEXANDRIA_REPO` (see `.env.example`) when running from elsewhere —

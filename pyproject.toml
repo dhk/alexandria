@@ -19,6 +19,7 @@ dependencies = [
 [project.scripts]
 alexandria-mcp = "alexandria.mcp_server:main"
 alexandria-web = "alexandria.web:main"
+alexandria-ctl = "alexandria.control:main"
 
 [dependency-groups]
 dev = [
