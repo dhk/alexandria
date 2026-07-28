@@ -7,10 +7,10 @@ shape is lifted directly from `dhk/wingman`'s `mcp_server.py`, which has
 been running in both modes in production; this template exists so the
 next product doesn't reinvent that plumbing from an empty FastMCP app.
 
-See the "segment shared MCP-server scaffolding into a services repo" issue
-on `dhk/alexandria` for the plan to eventually extract this into a real
-shared package instead of a copy-paste template. Until that lands,
-forking this directory is the supported path.
+See [dhk/alexandria#7](https://github.com/dhk/alexandria/issues/7) for the
+plan to eventually extract this into a real shared package instead of a
+copy-paste template. Until that lands, forking this directory is the
+supported path.
 
 ## What's included
 
