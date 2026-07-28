@@ -1,0 +1,11 @@
+/* ============================================================
+   DHK Design System — global entry point
+   Electric Cobalt palette · light theme · May 2026
+   Consumers link this ONE file. It only @imports.
+   ============================================================ */
+@import url("./tokens/fonts.css");
+@import url("./tokens/colors.css");
+@import url("./tokens/typography.css");
+@import url("./tokens/spacing.css");
+@import url("./tokens/layout.css");
+@import url("./tokens/base.css");

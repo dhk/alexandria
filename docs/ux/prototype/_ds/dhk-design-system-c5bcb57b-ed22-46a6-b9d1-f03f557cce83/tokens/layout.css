@@ -1,0 +1,12 @@
+/* ============================================================
+   Layout tokens
+   ============================================================ */
+:root {
+  --max-width:     1200px;   /* .container cap */
+  --prose-width:   680px;    /* long-form body cap */
+  --header-height: 56px;     /* sticky header */
+  --radius:        4px;      /* the single corner radius */
+
+  /* ── Backward-compat aliases ── */
+  --border-radius: var(--radius);
+}

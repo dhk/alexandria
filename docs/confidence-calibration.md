@@ -9,7 +9,7 @@
 
 ## 1. Purpose & scope
 
-This spec answers the open question left in the harness design: exactly how the signed **-1.0 to +1.0** score in `claim_scores.score` is derived from a research model's raw output, so that the value is reproducible, auditable, and traceable to a specific span of text — not a holistic vibe.
+This spec answers the open question left in the harness design: exactly how the signed integer **−3 to +3** score in `claim_scores.score` is derived from a research model's raw output, so that the value is reproducible, auditable, and traceable to a specific span of text — not a holistic vibe. The scale is normative in [`schemas/claim-score.schema.json`](../schemas/claim-score.schema.json).
 
 ## 2. What the score means
 
@@ -17,13 +17,15 @@ For a given `(claim, model)` pair:
 
 | Score | Meaning |
 |---|---|
-| +1.0 | The model explicitly and confidently asserts the claim |
-| +0.33 to +0.66 | The model supports the claim, with hedging, partial scope, or conditional language |
-| 0.0 | The model's output contains no statement bearing on this claim in either direction (silent) |
-| -0.33 to -0.66 | The model disputes the claim, with hedging or partial disagreement |
-| -1.0 | The model explicitly and confidently contradicts the claim |
+| +3 | Strong support: the model states the claim directly and without hedging |
+| +2 | Moderate support: qualified, partial, or conditional |
+| +1 | Weak support: implied, passing, or heavily hedged |
+| 0 | Graded-silent: the model responded but made no statement bearing on the claim |
+| −1 | Weak contradiction: implied, passing, or heavily hedged |
+| −2 | Moderate contradiction: qualified, partial, or conditional |
+| −3 | Strong contradiction: direct and unhedged |
 
-The score is a **derived value**, not something an LLM is asked to output directly as a raw float. Direct float self-rating from LLMs is a known source of miscalibration — models tend to be systematically overconfident and inconsistent across phrasings of the same request. Instead, the pipeline below produces the score deterministically from two categorical judgments plus a required evidence quote.
+The score is a **derived integer**, not something an LLM is asked to output directly. Direct numeric self-rating from LLMs is a known source of miscalibration — models tend to be systematically overconfident and inconsistent across phrasings of the same request. Instead, the pipeline below produces the score deterministically from two categorical judgments plus a required evidence quote.
 
 ## 3. Two-stage pipeline
 
@@ -61,20 +63,22 @@ This keeps grading blind and independent per source (avoiding anchoring on other
 
 | Stance | Strong | Moderate | Weak |
 |---|---|---|---|
-| Supports | +1.00 | +0.66 | +0.33 |
-| Silent | — | — | 0.00 |
-| Disputes | -1.00 | -0.66 | -0.33 |
+| Supports | +3 | +2 | +1 |
+| Silent | — | — | 0 |
+| Disputes | −3 | −2 | −1 |
 
-The grader outputs only the categorical pair; the numeric score is computed by a fixed lookup, not by the model. This makes the mapping auditable and means recalibrating the *numbers* later (e.g., deciding moderate support should be 0.5 instead of 0.66) never requires re-running any model calls — just recomputing the derived column from stored categorical labels.
+The grader outputs only the categorical pair; the integer score is computed by a fixed lookup, not by the model. This makes the mapping auditable. A later mapping change would require a new score-contract version, but the stored categorical labels allow derived scores to be recomputed without re-running model calls.
 
 ## 5. Evidence requirement (the silent/non-silent boundary)
 
 A stance other than `silent` requires a directly quotable span from the model's raw output that a human reviewer can locate verbatim. This is the operational test for silence, removing ambiguity about implicit inference:
 
 - **If a quotable span exists** that bears on the claim → classify stance + strength from it, and store the quote.
-- **If no quotable span exists** → `stance = silent`, `score = 0.0`, `evidence_quote = null`.
+- **If no quotable span exists** → `stance = silent`, `score = 0`, `evidence_quote = null`.
 
 The grader is explicitly instructed not to infer a stance the model never stated, even if it seems logically implied. This matches the repository's provenance-first principle: every non-zero score must be traceable to specific source text, not to the grader's own reasoning about what the model "must have meant."
+
+A failed research call is not graded because no output exists. Its claim/model row carries `score = null`, with no stance, strength, quote, or grader call. This missing observation renders as `✕`; it must never be coerced to `0`, which would fabricate graded silence.
 
 ## 6. Grader model and configuration
 
@@ -105,9 +109,9 @@ Extends §8 of the harness design doc. `claim_scores` gains the categorical/evid
 CREATE TABLE claim_scores (
     claim_id        TEXT NOT NULL REFERENCES claims(claim_id),
     model_id        TEXT NOT NULL,           -- the research model being graded
-    stance          TEXT NOT NULL CHECK (stance IN ('supports','disputes','silent')),
+    stance          TEXT CHECK (stance IN ('supports','disputes','silent')),  -- null when call failed
     strength        TEXT CHECK (strength IN ('strong','moderate','weak')),  -- null when silent
-    score           REAL NOT NULL,           -- derived via the fixed mapping in §4
+    score           INTEGER,                 -- derived via §4; null only when the research call failed
     evidence_quote  TEXT,                    -- null when silent
     grader_call_id  TEXT REFERENCES model_calls(call_id),  -- which grading call produced this row
     PRIMARY KEY (claim_id, model_id)
@@ -121,10 +125,10 @@ CREATE TABLE claim_scores (
 
 Claim: *"Migration cost estimate under $50k."*
 
-Grading Model A's raw output → finds: *"Based on comparable migrations, total cost should land between $35,000 and $45,000."* → `stance=supports`, `strength=strong` (unqualified range, under $50k) → `score = +1.00`.
+Grading Model A's raw output → finds: *"Based on comparable migrations, total cost should land between $35,000 and $45,000."* → `stance=supports`, `strength=strong` (unqualified range, under $50k) → `score = +3`.
 
-Grading Model B's raw output → finds: *"Cost could exceed $50k if the legacy schema requires custom tooling, which seems plausible given the described constraints."* → `stance=disputes`, `strength=moderate` (conditional, hedged) → `score = -0.66`.
+Grading Model B's raw output → finds: *"Cost could exceed $50k if the legacy schema requires custom tooling, which seems plausible given the described constraints."* → `stance=disputes`, `strength=moderate` (conditional, hedged) → `score = −2`.
 
-Grading Model C's raw output → no quotable span bearing on migration cost anywhere in the text → `stance=silent` → `score = 0.00`.
+Grading Model C's raw output → no quotable span bearing on migration cost anywhere in the text → `stance=silent` → `score = 0`.
 
-This single claim's row in the heatmap now reads: dark green under Model A, light red under Model B, neutral gray under Model C — a disagreement pattern, with both underlying quotes stored and reviewable, not just inferred.
+This single claim's row now reads strong support under Model A, moderate contradiction under Model B, and graded silence under Model C — a disagreement pattern, with both underlying quotes stored and reviewable, not just inferred.

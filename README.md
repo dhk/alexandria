@@ -40,15 +40,44 @@ A level describes the strength of the research process. It does not guarantee th
 ```text
 .github/       Issue, pull-request, and validation workflows
 docs/          Architecture and operating rules
+docs/ux/       Published user-interface specifications and prototypes
 policies/      Bronze, Silver, and Gold assurance policies
 schemas/       Machine-readable artifact contracts
-templates/     Starting points for research artifacts
+templates/     Starting points for research artifacts and for new MCP servers
 prompts/       Versioned model instructions
 research/      Individual investigations
 scripts/       Validation and repository utilities
+src/           The Alexandria MCP server (read/status tools over research/)
 tests/         Contract and provenance tests
 generated/     Rebuildable indexes and reports
 ```
+
+## MCP server
+
+Alexandria's tools are also available as an MCP server — read/status
+tools over `research/` for Claude Desktop, Claude Code, or any other MCP
+client. See [docs/MCP-SERVER.md](docs/MCP-SERVER.md) for what it exposes
+and how to run it, and
+[templates/mcp-server/](templates/mcp-server/README.md) for the
+project-agnostic scaffold (auth, config, admin dashboard) it was forked
+from — the starting point for making any future product's own tools a
+first-class MCP surface the same way.
+
+## Commission web surface
+
+The first end-to-end commission slice runs locally:
+
+```bash
+uv sync
+uv run alexandria-web
+```
+
+Open <http://127.0.0.1:8042>. It accepts pasted content, PDF/HTML/text/Markdown
+uploads, and GitHub repository, issue, pull-request, or blob URLs. Review is a
+separate spend gate; no OpenRouter call is dispatched until the operator presses
+the priced **Run research** button. See
+[docs/COMMISSION-SURFACE.md](docs/COMMISSION-SURFACE.md) for configuration,
+artifact layout, and current limits.
 
 Each investigation follows a standard lifecycle:
 
@@ -69,7 +98,10 @@ research/<date>-<slug>/
 
 ## Status
 
-Alexandria is at the repository-contract stage. The first research project will test the proposition behind Alexandria itself: whether existing tools already provide most of this capability, whether this is genuinely useful white space, and which parts should be built rather than composed.
+Alexandria has a read-only MCP surface and a local V0.1 commission path. The web
+surface can review and dispatch a brief to independent OpenRouter models, preserve
+their raw responses, grade a claim landscape, and retain the resulting run record.
+The published UX contract still describes work beyond this first vertical slice.
 
 ## Contributing
 
