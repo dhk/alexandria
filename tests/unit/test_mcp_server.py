@@ -157,12 +157,14 @@ class FakeCommissionGateway:
     async def __aexit__(self, *_args: object) -> None:
         return None
 
-    async def estimate(self, models: list[str], input_tokens: int) -> float:
+    async def estimate(
+        self, models: list[str], input_tokens: int, *, web_search: bool = False
+    ) -> float:
         assert models
         assert input_tokens > 0
         return 0.10
 
-    async def complete(self, model: str, prompt: str) -> CallRecord:
+    async def complete(self, model: str, prompt: str, *, web_search: bool = False) -> CallRecord:
         if model == "grader/model":
             body = json.dumps(
                 {
