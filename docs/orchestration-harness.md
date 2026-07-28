@@ -182,7 +182,7 @@ CREATE TABLE model_calls (
     run_id                      TEXT NOT NULL REFERENCES runs(run_id),
     provider                    TEXT NOT NULL,   -- openai | anthropic | google | perplexity
     model_id                    TEXT NOT NULL,   -- exact OpenRouter model string
-    role                        TEXT NOT NULL CHECK (role IN ('research','synthesis')),
+    role                        TEXT NOT NULL CHECK (role IN ('research','synthesis','grading')),
     input_tokens                INTEGER,
     output_tokens                INTEGER,
     cost                        REAL,
@@ -197,13 +197,18 @@ CREATE TABLE claims (
     claim_id    TEXT PRIMARY KEY,
     run_id      TEXT NOT NULL REFERENCES runs(run_id),
     claim_text  TEXT NOT NULL,
-    status      TEXT CHECK (status IN ('consensus','disagreement','novel','mixed'))
+    group_key   TEXT CHECK (group_key IN ('consensus','disagreement','novel','thin','silent')),
+    responding_model_count INTEGER NOT NULL
 );
 
 CREATE TABLE claim_scores (
-    claim_id  TEXT NOT NULL REFERENCES claims(claim_id),
-    model_id  TEXT NOT NULL,
-    score     REAL NOT NULL,   -- -1.0 (strong disagree) .. 0 (silent) .. +1.0 (strong agree)
+    claim_id        TEXT NOT NULL REFERENCES claims(claim_id),
+    model_id        TEXT NOT NULL,
+    stance          TEXT CHECK (stance IN ('supports','disputes','silent')),
+    strength        TEXT CHECK (strength IN ('strong','moderate','weak')),
+    score           INTEGER,   -- -3..+3; 0 is graded-silent; null only when the call failed
+    evidence_quote  TEXT,      -- required for every non-zero score
+    grader_call_id  TEXT REFERENCES model_calls(call_id),
     PRIMARY KEY (claim_id, model_id)
 );
 ```
@@ -213,15 +218,17 @@ CREATE TABLE claim_scores (
 ## 9. Synthesis Engine
 
 1. Each research model produces its raw output independently.
-2. The synthesis call atomizes the combined outputs into a discrete list of claims, and for each (claim, model) pair assigns a signed score from -1.0 (strong disagreement) to +1.0 (strong agreement), with 0 meaning the model never addressed that claim.
-3. The synthesis output is **hybrid**: the structured claim/score data above is the canonical artifact, and a prose report (following the usual Task → Context → Constraints → Output Format structure) is rendered from it for reading.
-4. **Failure handling:** if a research call errors or times out, it is retried once; if it still fails, the run proceeds with the remaining models' outputs and the gap is flagged explicitly in the report rather than blocking the whole run.
+2. The synthesis call atomizes the combined outputs into a discrete canonical claim list.
+3. One blind grading call per successful research model classifies every claim using the fixed stance/strength rubric in [Confidence Calibration Spec](confidence-calibration.md). The application maps those categories to integer −3…+3 scores; `0` means graded-silent.
+4. The analysis layer assigns each claim's `group` (`consensus | disagreement | novel | thin | silent`). Disagreement wins when a claim also has thin coverage.
+5. The synthesis output is **hybrid**: the structured claim/score data above is the canonical artifact, and a prose report (following the usual Task → Context → Constraints → Output Format structure) is rendered from it for reading.
+6. **Failure handling:** if a research call errors or times out, it is retried once; if it still fails, the run proceeds with the remaining models' outputs. The failed model's score is null—a missing observation rendered `✕`—never `0`, which is reserved for graded silence.
 
 ## 10. Visualization Layer
 
 A companion file, separate from the prose report, built from the same claim/score data — no separate data model needed.
 
-- **Encoding:** the same -1..+1 signed score per (claim, model) doubles as both stance and confidence in one field. Consensus, disagreement, novelty, and silence are not separate categorical labels — they're visual patterns that emerge from the score matrix itself (a row where all models agree strongly reads as solid dark green; a row where only one model has a non-zero score is a novel/minority claim; a row with opposite-signed scores is a disagreement).
+- **Encoding:** the integer −3…+3 score carries stance and strength for each `(claim, model)` pair. The analysis layer writes the claim's group explicitly; the UI does not infer taxonomy from colour or recompute it from the matrix.
 - **Two-tier rendering**, both generated from the identical score matrix so they can never drift apart:
   1. A portable text table using color-coded block/emoji buckets (🟩🟢⬜🟠🟥) — renders identically in Desktop chat, CLI output, and any web response, with no dependencies.
   2. A rendered heatmap image (diverging colormap, green–gray–red) embedded via a normal markdown image link — the "whizzy" layer, for viewers that render images.
@@ -235,7 +242,7 @@ Every run always saves two files (prose report + visualization companion) to dis
 - **NotebookLM integration path** — pending a decision on whether to pursue Enterprise API access, or continue treating it as a manual input
 - **Real payment collection** — Stripe charge or internal wallet debit, deferred until external (non-trusted) users exist; the ledger built in §8 already carries the exact cost needed to bolt this on later
 - **BYOK rollout** — swap the funding source on already-provisioned per-user keys; no schema or dispatcher change required
-- **Confidence calibration** — the exact method for deriving the -1..+1 score from raw model text (e.g., prompted self-rating vs. a fixed rubric applied by the synthesis model) needs its own short spec
+- **Confidence calibration** — resolved. See [Confidence Calibration Spec](confidence-calibration.md) for the stance/strength rubric, per-model blind grading pass, and evidence-quote requirement used to derive the integer −3…+3 score.
 - **Multi-machine deployment** — if the web-service mode ever moves off the operator's machine, the SQLite ledger needs to become a small hosted Postgres reachable by all three surfaces
 
 ## References
