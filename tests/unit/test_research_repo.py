@@ -110,7 +110,7 @@ def test_search_investigations_finds_matches_with_line_numbers(tmp_path: Path) -
     hits = search_investigations(config, "warp drives", limit=10)
     assert len(hits) == 1
     assert hits[0].slug == "alpha"
-    assert hits[0].relative_path == "alpha/README.md"
+    assert hits[0].relative_path == "README.md"
     assert hits[0].line_number == 2
     assert "warp drives" in hits[0].snippet
 

@@ -66,6 +66,9 @@ class Investigation:
 class SearchHit:
     slug: str
     relative_path: str
+    """Relative to the investigation directory, NOT research/ — so callers
+    can format the full path as f"{slug}/{relative_path}" without double
+    counting the slug."""
     line_number: int
     snippet: str
 
@@ -158,12 +161,17 @@ def search_investigations(config: Config, query: str, limit: int = 10) -> list[S
         except (UnicodeDecodeError, OSError):
             continue
         relative = path.relative_to(research_dir)
+        slug, *rest = relative.parts
+        # `rest` is empty only for a file sitting directly under research/,
+        # outside any investigation directory — not the expected shape, but
+        # handled rather than crashing.
+        relative_to_investigation = Path(*rest) if rest else Path(slug)
         for line_number, line in enumerate(text.splitlines(), start=1):
             if needle in line.lower():
                 hits.append(
                     SearchHit(
-                        slug=relative.parts[0],
-                        relative_path=str(relative),
+                        slug=slug,
+                        relative_path=str(relative_to_investigation),
                         line_number=line_number,
                         snippet=line.strip()[:_SNIPPET_MAX_CHARS],
                     )
