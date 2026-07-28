@@ -235,7 +235,7 @@ Every run always saves two files (prose report + visualization companion) to dis
 - **NotebookLM integration path** — pending a decision on whether to pursue Enterprise API access, or continue treating it as a manual input
 - **Real payment collection** — Stripe charge or internal wallet debit, deferred until external (non-trusted) users exist; the ledger built in §8 already carries the exact cost needed to bolt this on later
 - **BYOK rollout** — swap the funding source on already-provisioned per-user keys; no schema or dispatcher change required
-- **Confidence calibration** — the exact method for deriving the -1..+1 score from raw model text (e.g., prompted self-rating vs. a fixed rubric applied by the synthesis model) needs its own short spec
+- **Confidence calibration** — resolved. See [Confidence Calibration Spec](confidence-calibration.md) for the stance/strength rubric, per-model blind grading pass, and evidence-quote requirement used to derive the -1..+1 score.
 - **Multi-machine deployment** — if the web-service mode ever moves off the operator's machine, the SQLite ledger needs to become a small hosted Postgres reachable by all three surfaces
 
 ## References
