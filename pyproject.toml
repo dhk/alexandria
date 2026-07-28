@@ -9,11 +9,16 @@ dependencies = [
   "mcp>=1.2,<2.0",  # 2.x dropped mcp.server.fastmcp; pin until this server migrates
   "platformdirs>=4.0",
   "pydantic>=2.8",
+  "pypdf>=6.0",
+  "python-multipart>=0.0.20",
   "pyyaml>=6.0",
+  "starlette>=0.46,<2.0",
+  "uvicorn>=0.30",
 ]
 
 [project.scripts]
 alexandria-mcp = "alexandria.mcp_server:main"
+alexandria-web = "alexandria.web:main"
 
 [dependency-groups]
 dev = [
