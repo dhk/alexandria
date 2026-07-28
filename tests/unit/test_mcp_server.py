@@ -1,16 +1,25 @@
+import json
+import re
 from pathlib import Path
+from typing import Self
 
 import pytest
 
-from alexandria.infrastructure.config import ENV_DATA_DIR, ENV_REPO_ROOT, Config
+from alexandria import mcp_server
+from alexandria.commission import RunStore
+from alexandria.commission_models import CallRecord, InputArtifact
+from alexandria.infrastructure.config import ENV_DATA_DIR, ENV_REPO_ROOT, Config, load_config
+from alexandria.input_resolution import extract_input
 from alexandria.mcp_server import (
     _extra_allowed_hosts,
     _http_token,
+    begin_research,
     build_transport_security,
     connector_urls,
     list_research,
     main,
     render_urls,
+    run_research,
     search_research,
     show_research,
     status,
@@ -136,3 +145,114 @@ def test_http_mode_exits_cleanly_when_repo_not_found(
         main(["--http"])
     assert exc_info.value.code == 1
     assert "ALEXANDRIA_REPO" in capsys.readouterr().err
+
+
+class FakeCommissionGateway:
+    def __init__(self, api_key: str) -> None:
+        assert api_key == "test-key"
+
+    async def __aenter__(self) -> Self:
+        return self
+
+    async def __aexit__(self, *_args: object) -> None:
+        return None
+
+    async def estimate(self, models: list[str], input_tokens: int) -> float:
+        assert models
+        assert input_tokens > 0
+        return 0.10
+
+    async def complete(self, model: str, prompt: str) -> CallRecord:
+        if model == "grader/model":
+            body = json.dumps(
+                {
+                    "claims": [
+                        {
+                            "text": "The interface should remain narrow.",
+                            "scores": [
+                                {"model_index": 1, "score": 3, "quote": "remain narrow"},
+                                {"model_index": 2, "score": 0, "quote": ""},
+                            ],
+                        }
+                    ],
+                    "report_markdown": "# Report\n\n## What this run does not establish\n\nTruth.",
+                }
+            )
+        else:
+            body = "Evidence says the interface should remain narrow."
+        return CallRecord(
+            model_id=model,
+            status="success",
+            body=body,
+            raw_response=json.dumps({"model": model, "body": body}),
+            generation_id="gen-" + model.replace("/", "-"),
+            cost=0.01,
+            latency_ms=10,
+        )
+
+
+@pytest.mark.anyio
+async def test_begin_research_from_paste_requires_separate_confirmation(
+    repo: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(mcp_server, "openrouter_api_key", lambda: "test-key")
+    monkeypatch.setattr(mcp_server, "OpenRouterGateway", FakeCommissionGateway)
+
+    review = await begin_research(
+        task="Assess the interface.",
+        pasted_content="Keep the interface narrow.",
+        models=["alpha/model", "beta/model"],
+        grading_model="grader/model",
+        ceiling_usd=1.0,
+    )
+
+    assert "no provider model calls have been dispatched" in review
+    assert "pasted-content.md" in review
+    draft_id = re.search(r"Draft: (d-[a-f0-9]+)", review)
+    assert draft_id is not None
+    state = RunStore(load_config().data_dir)
+    assert state.list_runs() == []
+
+    blocked = await run_research(draft_id.group(1))
+    assert "Dispatch blocked" in blocked
+    assert state.list_runs() == []
+
+    result = await run_research(draft_id.group(1), f"RUN {draft_id.group(1)}")
+    assert "Research run finished" in result
+    assert len(state.list_runs()) == 1
+
+
+@pytest.mark.anyio
+async def test_begin_research_resolves_supported_url(
+    repo: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    class FakeResolver:
+        async def __aenter__(self) -> Self:
+            return self
+
+        async def __aexit__(self, *_args: object) -> None:
+            return None
+
+        async def resolve(self, url: str) -> list[InputArtifact]:
+            assert url == "https://github.com/dhk/alexandria/issues/3"
+            return [extract_input("issue-3.md", b"Compare the options.", source_url=url)]
+
+    monkeypatch.setattr(mcp_server, "openrouter_api_key", lambda: "test-key")
+    monkeypatch.setattr(mcp_server, "OpenRouterGateway", FakeCommissionGateway)
+    monkeypatch.setattr(mcp_server, "GitHubResolver", FakeResolver)
+
+    review = await begin_research(
+        task="Compare the options.",
+        url="https://github.com/dhk/alexandria/issues/3",
+        models=["alpha/model", "beta/model"],
+        grading_model="grader/model",
+    )
+
+    assert "issue-3.md" in review
+    assert "no provider model calls have been dispatched" in review
+
+
+@pytest.mark.anyio
+async def test_begin_research_requires_paste_or_url(repo: Path) -> None:
+    result = await begin_research(task="Research this.")
+    assert "Provide pasted content" in result

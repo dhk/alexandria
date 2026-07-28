@@ -1,7 +1,7 @@
 [project]
 name = "alexandria"
 version = "0.1.0"
-description = "Alexandria MCP server: read/status tools over the research/ tree."
+description = "Alexandria MCP server for repository recall and guarded research commissions."
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [

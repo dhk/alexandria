@@ -47,17 +47,17 @@ templates/     Starting points for research artifacts and for new MCP servers
 prompts/       Versioned model instructions
 research/      Individual investigations
 scripts/       Validation and repository utilities
-src/           The Alexandria MCP server (read/status tools over research/)
+src/           MCP repository recall and guarded research commissions
 tests/         Contract and provenance tests
 generated/     Rebuildable indexes and reports
 ```
 
 ## MCP server
 
-Alexandria's tools are also available as an MCP server — read/status
-tools over `research/` for Claude Desktop, Claude Code, or any other MCP
-client. See [docs/MCP-SERVER.md](docs/MCP-SERVER.md) for what it exposes
-and how to run it, and
+Alexandria's tools are also available as an MCP server — read/status tools over
+`research/` plus a guarded `begin_research` / `run_research` commission flow for
+Claude Desktop, Claude Code, or any other MCP client. See
+[docs/MCP-SERVER.md](docs/MCP-SERVER.md) for what it exposes and how to run it, and
 [templates/mcp-server/](templates/mcp-server/README.md) for the
 project-agnostic scaffold (auth, config, admin dashboard) it was forked
 from — the starting point for making any future product's own tools a
@@ -98,10 +98,11 @@ research/<date>-<slug>/
 
 ## Status
 
-Alexandria has a read-only MCP surface and a local V0.1 commission path. The web
-surface can review and dispatch a brief to independent OpenRouter models, preserve
-their raw responses, grade a claim landscape, and retain the resulting run record.
-The published UX contract still describes work beyond this first vertical slice.
+Alexandria has read-only repository recall tools and a guarded MCP commission path.
+The MCP and web surfaces can review and dispatch a brief to independent OpenRouter
+models, preserve their raw responses, grade a claim landscape, and retain the
+resulting run record. The published UX contract still describes work beyond this
+first vertical slice.
 
 ## Contributing
 
