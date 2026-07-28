@@ -7,10 +7,10 @@ version of everything below).
 
 ## What it exposes today
 
-Every MCP tool is **read-only and deterministic**: no model call, no network,
-no write. The separate local commission web surface described in
-[`docs/COMMISSION-SURFACE.md`](COMMISSION-SURFACE.md) owns the first guarded
-OpenRouter write path; it does not change the MCP tool contract.
+The repository recall tools are **read-only and deterministic**. The commission
+tools reuse the local commission service and separate review from spend: beginning
+a commission resolves inputs and creates a draft, while running it requires the
+exact confirmation phrase returned with that draft.
 
 | Tool | What it does |
 |---|---|
@@ -18,6 +18,29 @@ OpenRouter write path; it does not change the MCP tool contract.
 | `list_research(assurance="", stage="")` | List investigations under `research/`, optionally filtered. |
 | `show_research(slug)` | One investigation's `topic.yaml` fields, README, and lifecycle-stage checklist. |
 | `search_research(query, limit=10)` | Case-insensitive substring search across `research/`'s text files, with file/line citations. |
+| `begin_research(task, pasted_content="", url="", ...)` | Resolve pasted text and/or a supported GitHub URL, fetch a live estimate, and save a local review draft. No provider model calls are dispatched. |
+| `run_research(draft_id, confirmation="")` | Dispatch a reviewed draft only when `confirmation` exactly matches `RUN <draft-id>`. This incurs OpenRouter spend. |
+
+### Beginning research from an MCP client
+
+Ask the client to begin research with either pasted material or a GitHub repository,
+issue, pull-request, or blob URL. For example:
+
+```text
+Begin Alexandria research.
+Task: Compare the proposed provider-layer designs and recommend a narrow interface.
+URL: https://github.com/dhk/alexandria/issues/3
+Hard ceiling: $1.00
+```
+
+The client calls `begin_research`, which returns the exact inputs, models, verbatim
+brief, estimate, ceiling, draft ID, and a draft-specific confirmation phrase. No
+research or grading model has run at this point. Review that response, then explicitly
+approve it. Only then may the client call `run_research` with the returned phrase.
+
+The same flow accepts pasted content through `pasted_content`; pasted content and a URL
+may also be supplied together. URL resolution currently accepts HTTPS `github.com`
+repository, issue, pull-request, and supported blob URLs.
 
 `topic.yaml`'s shape is not yet formalized under `schemas/` (also not
 built yet); `src/alexandria/infrastructure/research_repo.py` reads a
@@ -65,7 +88,9 @@ the full design rationale. Summary:
 
 - **`--http` auth is the capability path token** at `/mcp/<token>`,
   generated into the server's own local state dir (`ALEXANDRIA_DATA_DIR`,
-  never inside the repository), rotatable with `--rotate-token`.
+  never inside the repository), rotatable with `--rotate-token`. Anyone holding
+  this URL can read repository research and can confirm a commission against the
+  configured OpenRouter key; treat it as a spend-capable secret.
 - **Host config** follows the "wingman.env" pattern: `~/.config/
   alexandria.env` is the one canonical file a systemd `EnvironmentFile=`
   or a bare shell points at.
@@ -78,14 +103,10 @@ Full deployment instructions (systemd units, tunneling, multi-instance)
 are in `templates/mcp-server/docs/SERVER.md` — the `<service>` placeholder
 there is `alexandria` and the entry point is `alexandria-mcp`.
 
-## Design note: why read-only
+## Design note: recall and commission boundaries
 
-This server's tools answer "what does the repository already know" — the
-recall step before anyone proposes new research work — not "generate a
-report" or "dispatch a model." Once the orchestration harness in
-`docs/orchestration-harness.md` is actually built, its `estimate_cost()` /
-`run_research()` tools belong on this same server, gated the same way
-wingman gates its own first external write (RFC-025 there: preview the
-exact action, require explicit confirmation, keep the destination and
-credential the user's own). That is future work, not part of this surface
-yet.
+The recall tools answer "what does the repository already know." Commission tools
+are intentionally separate: `begin_research` may resolve a URL, look up live pricing,
+and write local scratch state, but it cannot dispatch a model. `run_research` is the
+only MCP spend boundary and requires the draft-specific phrase displayed during
+review. Provider credentials remain local and user-owned in both paths.
