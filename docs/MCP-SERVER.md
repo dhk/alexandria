@@ -7,11 +7,10 @@ version of everything below).
 
 ## What it exposes today
 
-Every tool is **read-only and deterministic**: no model call, no network,
-no write. That matches `docs/DESIGN.md`'s framing — "the Git repository is
-the durable system of record" — and the repository's current stage (no
-`research/` content, no orchestration harness built yet; see
-`docs/orchestration-harness.md` for that separate, not-yet-built concern).
+Every MCP tool is **read-only and deterministic**: no model call, no network,
+no write. The separate local commission web surface described in
+[`docs/COMMISSION-SURFACE.md`](COMMISSION-SURFACE.md) owns the first guarded
+OpenRouter write path; it does not change the MCP tool contract.
 
 | Tool | What it does |
 |---|---|
