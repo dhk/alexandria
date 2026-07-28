@@ -9,6 +9,7 @@ from alexandria.mcp_server import (
     build_transport_security,
     connector_urls,
     list_research,
+    main,
     render_urls,
     search_research,
     show_research,
@@ -118,3 +119,20 @@ def test_transport_security_always_includes_loopback() -> None:
     settings = build_transport_security(["tunnel.example"])
     assert "127.0.0.1:*" in settings.allowed_hosts
     assert settings.enable_dns_rebinding_protection is True
+
+
+def test_http_mode_exits_cleanly_when_repo_not_found(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    """A missing/undetectable repo must be a clean exit(1) with a stderr
+    message, never an uncaught RepoNotFoundError traceback — that's the
+    difference between a client seeing "server error" on every reconnect
+    and seeing why, once (regression test for the bug this was).
+    """
+    monkeypatch.delenv(ENV_REPO_ROOT, raising=False)
+    monkeypatch.setenv(ENV_DATA_DIR, str(tmp_path / "state"))
+    monkeypatch.chdir(tmp_path)
+    with pytest.raises(SystemExit) as exc_info:
+        main(["--http"])
+    assert exc_info.value.code == 1
+    assert "ALEXANDRIA_REPO" in capsys.readouterr().err

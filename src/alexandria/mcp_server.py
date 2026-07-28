@@ -281,7 +281,11 @@ def main(argv: list[str] | None = None) -> None:
             parser.error("--rotate-token only makes sense with --http")
         server.run()
         return
-    config = load_config()
+    try:
+        config = load_config()
+    except RepoNotFoundError as exc:
+        print(f"ERROR: {exc}", file=sys.stderr)
+        sys.exit(1)
     existing = read_server_pid(config)
     if existing is not None:
         print(
