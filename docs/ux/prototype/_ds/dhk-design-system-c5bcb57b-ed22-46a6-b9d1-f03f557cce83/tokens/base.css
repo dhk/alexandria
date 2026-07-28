@@ -1,0 +1,49 @@
+/* ============================================================
+   Base resets + element defaults
+   Mirrors the live DHK site global.css so specimens and UI kits
+   render identically when they link styles.css.
+   ============================================================ */
+
+/* ── Resets ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  line-height: var(--lh-snug);
+  min-height: 100vh;
+}
+img { max-width: 100%; display: block; }
+
+/* ── Links: default to Electric Cobalt, hover darkens ── */
+a { color: var(--accent); text-decoration: none; transition: color 0.15s; }
+a:hover { color: var(--accent-hover); }
+
+/* ── Headings ── */
+h1, h2, h3 {
+  font-family: var(--font-sans);
+  color: var(--text);
+  line-height: var(--lh-tight);
+}
+h1 { font-size: var(--fs-h1); font-weight: var(--fw-bold); letter-spacing: var(--ls-h1); }
+h2 { font-size: var(--fs-h2); font-weight: var(--fw-semi); letter-spacing: var(--ls-h2); }
+h3 { font-size: var(--fs-h3); font-weight: var(--fw-semi); }
+
+/* ── Body copy ── */
+p { color: var(--text-muted); font-weight: var(--fw-body); line-height: var(--lh-body); }
+
+/* ── Layout wrapper ── */
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--sp5);
+}
+
+/* ── Metadata / dates helper ── */
+.meta {
+  font-family: var(--font-mono);
+  font-size: var(--fs-meta);
+  color: var(--text-dim);
+  letter-spacing: var(--ls-meta);
+}

@@ -1,0 +1,30 @@
+/* ============================================================
+   Spacing scale
+   Use flex/grid with `gap` for all UI spacing — never margin
+   between sibling components.
+   ============================================================ */
+:root {
+  --sp1:  4px;
+  --sp2:  8px;
+  --sp3:  12px;
+  --sp4:  16px;
+  --sp5:  24px;
+  --sp6:  32px;
+  --sp7:  48px;
+  --sp8:  64px;
+  --sp9:  80px;
+  --sp10: 96px;
+  --sp11: 128px;
+
+  /* ── Backward-compat aliases ── */
+  --space-1: var(--sp1);
+  --space-2: var(--sp2);
+  --space-3: var(--sp3);
+  --space-4: var(--sp4);
+  --space-5: var(--sp5);
+  --space-6: var(--sp6);
+  --space-7: var(--sp7);
+  --space-8: var(--sp8);
+  --space-9: var(--sp9);
+  --space-10: var(--sp10);
+}

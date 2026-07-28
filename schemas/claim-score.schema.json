@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/dhk/alexandria/schemas/claim-score.schema.json",
+  "title": "Alexandria claim agreement score",
+  "description": "Normative stance-and-strength score for a research model that returned output and was graded. A failed research call has no score and must be represented separately; it must never be coerced to 0.",
+  "type": "integer",
+  "minimum": -3,
+  "maximum": 3,
+  "oneOf": [
+    {
+      "const": -3,
+      "description": "Strong contradiction: stated directly and unhedged."
+    },
+    {
+      "const": -2,
+      "description": "Moderate contradiction."
+    },
+    {
+      "const": -1,
+      "description": "Weak contradiction: implied or in passing."
+    },
+    {
+      "const": 0,
+      "description": "Graded-silent: the model responded, but the blind grading pass found no bearing statement."
+    },
+    {
+      "const": 1,
+      "description": "Weak support: implied or in passing."
+    },
+    {
+      "const": 2,
+      "description": "Moderate support."
+    },
+    {
+      "const": 3,
+      "description": "Strong support: stated directly and unhedged."
+    }
+  ]
+}

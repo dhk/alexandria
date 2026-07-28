@@ -40,6 +40,7 @@ A level describes the strength of the research process. It does not guarantee th
 ```text
 .github/       Issue, pull-request, and validation workflows
 docs/          Architecture and operating rules
+docs/ux/       Published user-interface specifications and prototypes
 policies/      Bronze, Silver, and Gold assurance policies
 schemas/       Machine-readable artifact contracts
 templates/     Starting points for research artifacts
