@@ -103,8 +103,8 @@
   <text class="mono" x="665" y="765">scores.csv · report.md · manifest.json</text>
   <text class="small" x="665" y="790">Failed call = ✕ · graded silence = —</text>
 
-  <path class="flow-muted" d="M 465 315 L 465 610 L 325 610 L 325 650"/>
-  <text class="edge-label-muted" x="347" y="600">read-only recall</text>
+  <path class="flow-muted" d="M 545 315 L 545 350 L 575 350 L 575 575 L 325 575 L 325 650"/>
+  <text class="edge-label-muted" x="385" y="563">read-only recall</text>
   <path class="flow" d="M 988 515 L 988 635"/>
   <path class="flow-dashed" d="M 640 720 L 575 720"/>
   <text class="edge-label-muted" x="440" y="620">promotion to the repository is manual in V0.1</text>

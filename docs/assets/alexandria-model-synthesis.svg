@@ -1,0 +1,146 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">From one brief to a claim landscape</title>
+  <desc id="desc">Concept diagram showing Alexandria dispatching the same brief independently to several models, preserving raw responses, blindly grading material claims, and producing consensus, disagreement, novelty, thin coverage, and silence groupings.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#2b50e8"/>
+    </marker>
+    <marker id="arrow-muted" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#5a5d78"/>
+    </marker>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="3" stdDeviation="6" flood-color="#0d0f1a" flood-opacity="0.10"/>
+    </filter>
+    <style>
+      text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #0d0f1a; }
+      .title { font-size: 46px; font-weight: 700; letter-spacing: -1px; }
+      .subtitle { font-size: 20px; fill: #2a2d42; }
+      .zone { font-size: 14px; font-weight: 700; letter-spacing: 2px; fill: #5a5d78; }
+      .card-title { font-size: 23px; font-weight: 700; }
+      .card-copy { font-size: 17px; fill: #2a2d42; }
+      .small { font-size: 15px; fill: #5a5d78; }
+      .mono { font-family: "SFMono-Regular", Consolas, monospace; font-size: 15px; }
+      .matrix-head { font-size: 14px; font-weight: 700; fill: #5a5d78; }
+      .matrix-label { font-size: 16px; font-weight: 700; }
+      .score { font-family: "SFMono-Regular", Consolas, monospace; font-size: 17px; font-weight: 700; text-anchor: middle; }
+      .node { fill: #ffffff; stroke: #c8cde0; stroke-width: 2; rx: 14; filter: url(#shadow); }
+      .node-blue { fill: #edf1ff; stroke: #2b50e8; stroke-width: 2; rx: 14; filter: url(#shadow); }
+      .node-purple { fill: #f7effd; stroke: #8b2adc; stroke-width: 2; rx: 14; filter: url(#shadow); }
+      .node-teal { fill: #eaf8f8; stroke: #0ea5b0; stroke-width: 2; rx: 14; filter: url(#shadow); }
+      .node-orange { fill: #fff2ed; stroke: #e05c2a; stroke-width: 2; rx: 14; filter: url(#shadow); }
+      .flow { fill: none; stroke: #2b50e8; stroke-width: 3; marker-end: url(#arrow); }
+      .flow-muted { fill: none; stroke: #5a5d78; stroke-width: 2.5; marker-end: url(#arrow-muted); }
+      .grid { stroke: #d8dbeb; stroke-width: 1.5; }
+    </style>
+  </defs>
+
+  <rect width="1600" height="900" fill="#f5f6fa"/>
+  <text class="title" x="60" y="70">From one brief to a claim landscape</text>
+  <text class="subtitle" x="60" y="105">Independent model fan-out, immutable evidence, blind comparison, and honest agreement semantics.</text>
+
+  <!-- Brief and dispatch -->
+  <rect class="node-blue" x="55" y="325" width="245" height="180"/>
+  <text class="zone" x="82" y="358" style="fill:#1a3bd4">ONE COMMISSION</text>
+  <text class="card-title" x="82" y="398">Approved brief</text>
+  <text class="card-copy" x="82" y="431">Same task</text>
+  <text class="card-copy" x="82" y="457">Same inputs</text>
+  <text class="card-copy" x="82" y="483">Same constraints</text>
+
+  <circle cx="365" cy="415" r="48" fill="#2b50e8"/>
+  <text x="365" y="407" text-anchor="middle" style="font-size:15px;font-weight:700;fill:#ffffff">PARALLEL</text>
+  <text x="365" y="430" text-anchor="middle" style="font-size:15px;font-weight:700;fill:#ffffff">DISPATCH</text>
+  <path class="flow" d="M 300 415 L 317 415"/>
+
+  <!-- Independent model lanes -->
+  <rect x="445" y="150" width="315" height="535" rx="22" fill="#eceef5" stroke="#c8cde0" stroke-width="2"/>
+  <text class="zone" x="470" y="184">MODELS RESEARCH INDEPENDENTLY</text>
+
+  <rect class="node" x="475" y="215" width="255" height="115"/>
+  <circle cx="510" cy="252" r="17" fill="#2b50e8"/>
+  <text x="510" y="258" text-anchor="middle" style="font-size:15px;font-weight:700;fill:#ffffff">A</text>
+  <text class="card-title" x="542" y="258">Model A</text>
+  <text class="card-copy" x="500" y="298">Research response A</text>
+
+  <rect class="node" x="475" y="360" width="255" height="115"/>
+  <circle cx="510" cy="397" r="17" fill="#8b2adc"/>
+  <text x="510" y="403" text-anchor="middle" style="font-size:15px;font-weight:700;fill:#ffffff">B</text>
+  <text class="card-title" x="542" y="403">Model B</text>
+  <text class="card-copy" x="500" y="443">Research response B</text>
+
+  <rect class="node" x="475" y="505" width="255" height="115"/>
+  <circle cx="510" cy="542" r="17" fill="#0ea5b0"/>
+  <text x="510" y="548" text-anchor="middle" style="font-size:15px;font-weight:700;fill:#ffffff">N</text>
+  <text class="card-title" x="542" y="548">Model C … N</text>
+  <text class="card-copy" x="500" y="588">More independent views</text>
+
+  <path class="flow" d="M 403 387 L 440 387 L 440 272 L 475 272"/>
+  <path class="flow" d="M 413 415 L 475 415"/>
+  <path class="flow" d="M 403 443 L 440 443 L 440 562 L 475 562"/>
+  <text class="small" x="490" y="660">No research model sees another model’s output.</text>
+
+  <!-- Evidence and grading -->
+  <rect class="node-teal" x="810" y="230" width="265" height="150"/>
+  <text class="zone" x="835" y="263" style="fill:#087983">EVIDENCE</text>
+  <text class="card-title" x="835" y="300">Raw archive</text>
+  <text class="card-copy" x="835" y="332">One immutable JSON file</text>
+  <text class="card-copy" x="835" y="356">for every model call</text>
+
+  <rect class="node-purple" x="810" y="460" width="265" height="175"/>
+  <text class="zone" x="835" y="493" style="fill:#6f1ead">BLIND COMPARISON</text>
+  <text class="card-title" x="835" y="530">Grade claims</text>
+  <text class="card-copy" x="835" y="562">Union material claims</text>
+  <text class="card-copy" x="835" y="588">Score −3 … +3</text>
+  <text class="card-copy" x="835" y="614">Quote exact evidence</text>
+
+  <path class="flow" d="M 730 272 L 810 272"/>
+  <path class="flow" d="M 730 417 L 775 417 L 775 305 L 810 305"/>
+  <path class="flow" d="M 730 562 L 790 562 L 790 338 L 810 338"/>
+  <path class="flow" d="M 942 380 L 942 460"/>
+
+  <!-- Claim landscape -->
+  <rect class="node" x="1130" y="150" width="415" height="535"/>
+  <text class="zone" x="1160" y="184">CLAIM LANDSCAPE</text>
+  <text class="card-title" x="1160" y="220">What the models did with each claim</text>
+
+  <text class="matrix-head" x="1160" y="262">GROUP</text>
+  <text class="matrix-head" x="1330" y="262" text-anchor="middle">A</text>
+  <text class="matrix-head" x="1375" y="262" text-anchor="middle">B</text>
+  <text class="matrix-head" x="1420" y="262" text-anchor="middle">C</text>
+  <text class="matrix-head" x="1465" y="262" text-anchor="middle">D</text>
+  <text class="matrix-head" x="1510" y="262" text-anchor="middle">E</text>
+  <line class="grid" x1="1160" y1="278" x2="1518" y2="278"/>
+
+  <rect x="1150" y="290" width="375" height="55" rx="9" fill="#eaf8f8"/>
+  <text class="matrix-label" x="1170" y="324">Consensus</text>
+  <text class="score" x="1330" y="324">+3</text><text class="score" x="1375" y="324">+2</text><text class="score" x="1420" y="324">+1</text><text class="score" x="1465" y="324">+2</text><text class="score" x="1510" y="324">+1</text>
+
+  <rect x="1150" y="355" width="375" height="55" rx="9" fill="#fff2ed"/>
+  <text class="matrix-label" x="1170" y="389">Disagreement</text>
+  <text class="score" x="1330" y="389">+2</text><text class="score" x="1375" y="389">−2</text><text class="score" x="1420" y="389">—</text><text class="score" x="1465" y="389">+1</text><text class="score" x="1510" y="389">—</text>
+
+  <rect x="1150" y="420" width="375" height="55" rx="9" fill="#f7effd"/>
+  <text class="matrix-label" x="1170" y="454">Novel</text>
+  <text class="score" x="1330" y="454">—</text><text class="score" x="1375" y="454">—</text><text class="score" x="1420" y="454">+3</text><text class="score" x="1465" y="454">—</text><text class="score" x="1510" y="454">—</text>
+
+  <rect x="1150" y="485" width="375" height="55" rx="9" fill="#edf1ff"/>
+  <text class="matrix-label" x="1170" y="519">Thin</text>
+  <text class="score" x="1330" y="519">+1</text><text class="score" x="1375" y="519">—</text><text class="score" x="1420" y="519">+2</text><text class="score" x="1465" y="519">—</text><text class="score" x="1510" y="519">—</text>
+
+  <rect x="1150" y="550" width="375" height="55" rx="9" fill="#eceef5"/>
+  <text class="matrix-label" x="1170" y="584">Silent</text>
+  <text class="score" x="1330" y="584">—</text><text class="score" x="1375" y="584">—</text><text class="score" x="1420" y="584">—</text><text class="score" x="1465" y="584">—</text><text class="score" x="1510" y="584">—</text>
+
+  <text class="small" x="1160" y="635">— responded, no bearing statement</text>
+  <text class="small" x="1160" y="660">✕ failed call, no output exists</text>
+  <path class="flow" d="M 1075 547 L 1130 547"/>
+
+  <!-- Synthesis output -->
+  <rect class="node-blue" x="810" y="730" width="735" height="115"/>
+  <text class="zone" x="840" y="762" style="fill:#1a3bd4">SYNTHESIS OUTPUTS</text>
+  <text class="card-title" x="840" y="800">Traceable report + claims.json + scores.csv</text>
+  <text class="card-copy" x="840" y="827">Every conclusion can lead back to a model response and an exact quoted span.</text>
+  <path class="flow-muted" d="M 942 635 L 942 730"/>
+  <path class="flow-muted" d="M 1338 685 L 1338 730"/>
+
+  <text class="small" x="60" y="880">Agreement is model agreement, not independent verification · disagreement wins when a claim is also thin</text>
+</svg>
