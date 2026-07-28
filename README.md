@@ -42,13 +42,25 @@ A level describes the strength of the research process. It does not guarantee th
 docs/          Architecture and operating rules
 policies/      Bronze, Silver, and Gold assurance policies
 schemas/       Machine-readable artifact contracts
-templates/     Starting points for research artifacts
+templates/     Starting points for research artifacts and for new MCP servers
 prompts/       Versioned model instructions
 research/      Individual investigations
 scripts/       Validation and repository utilities
+src/           The Alexandria MCP server (read/status tools over research/)
 tests/         Contract and provenance tests
 generated/     Rebuildable indexes and reports
 ```
+
+## MCP server
+
+Alexandria's tools are also available as an MCP server — read/status
+tools over `research/` for Claude Desktop, Claude Code, or any other MCP
+client. See [docs/MCP-SERVER.md](docs/MCP-SERVER.md) for what it exposes
+and how to run it, and
+[templates/mcp-server/](templates/mcp-server/README.md) for the
+project-agnostic scaffold (auth, config, admin dashboard) it was forked
+from — the starting point for making any future product's own tools a
+first-class MCP surface the same way.
 
 Each investigation follows a standard lifecycle:
 
