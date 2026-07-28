@@ -24,6 +24,10 @@ The Git repository is the durable system of record. Provider adapters, orchestra
 
 Alexandria should avoid rebuilding commodity capabilities when existing tools can satisfy them. The first research project will test this assumption directly and identify where a thin integration layer is preferable to a new platform.
 
+## User interfaces
+
+The operative commission-surface contract is [RFC-0005 — The commission surface](ux/RFC-0005-commission-surface.md). Its [interactive prototype](ux/prototype/index.html) demonstrates all five specified screens without implementing the application.
+
 ## Research assurance
 
 Bronze, Silver, and Gold describe increasingly rigorous research processes. They are cumulative process requirements, not labels of factual certainty.

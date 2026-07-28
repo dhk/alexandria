@@ -1,0 +1,6 @@
+/* ============================================================
+   Fonts
+   The DHK site uses the native system-ui stack for all headings
+   and body prose, and DM Mono (Google Fonts) for UI chrome only.
+   ============================================================ */
+@import url("https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap");

@@ -1,0 +1,48 @@
+/* ============================================================
+   Color tokens — Electric Cobalt palette (light theme, no dark mode)
+   Rule: never hardcode hex in components — always reference a token.
+   Rule: --text-muted must always be visually lighter than --text.
+   ============================================================ */
+:root {
+  /* ── Backgrounds ── */
+  --bg:  #f5f6fa;   /* page background — near-white blue-grey */
+  --bg2: #eceef5;   /* elevated surfaces, input & code backgrounds */
+  --bg3: #e0e3f0;   /* card hover state, inline code bg */
+
+  /* ── Borders ── */
+  --border:       #c8cde0;   /* default borders, dividers */
+  --border-light: #d8dbeb;   /* subtle borders, grid lines */
+
+  /* ── Text ── */
+  --text:       #0d0f1a;   /* headings, strong — darkest */
+  --text-muted: #2a2d42;   /* body copy, descriptions — lighter than --text */
+  --text-dim:   #5a5d78;   /* metadata, dates, labels, inactive nav */
+
+  /* ── Accent (primary) ── */
+  --accent:       #2b50e8;   /* Electric Cobalt — brand, CTA, active nav, links */
+  --accent-hover: #1a3bd4;   /* hover state for accent elements */
+
+  /* ── Accents (secondary) — content-type semantics ── */
+  --accent-purple: #8b2adc;  /* commentary & tool tags, graph/network work */
+  --accent-orange: #e05c2a;  /* trend/time-series, project tags */
+  --accent-teal:   #0ea5b0;  /* data viz, study tags */
+
+  /* ── Data-visualization palette (six-country multi-series) ── */
+  --viz-us: #2b50e8;   /* United States — cobalt (= --accent) */
+  --viz-se: #e8a030;   /* Sweden        — amber  */
+  --viz-gb: #d94040;   /* United Kingdom— red    */
+  --viz-fr: #0ea58a;   /* France        — teal   */
+  --viz-jp: #9b42d8;   /* Japan         — purple */
+  --viz-in: #c47830;   /* India         — sienna */
+
+  /* ── Tag tint backgrounds (10–12% alpha of the semantic accent) ── */
+  --tint-essay:      rgba(43, 80, 232, 0.10);
+  --tint-commentary: rgba(139, 42, 220, 0.10);
+  --tint-tool:       rgba(139, 42, 220, 0.10);
+  --tint-study:      rgba(14, 165, 176, 0.12);
+  --tint-project:    rgba(224, 92, 42, 0.10);
+
+  /* ── Backward-compat aliases (present but do not use in new code) ── */
+  --accent-blue: var(--accent-teal);
+  --text-head:   var(--text);
+}

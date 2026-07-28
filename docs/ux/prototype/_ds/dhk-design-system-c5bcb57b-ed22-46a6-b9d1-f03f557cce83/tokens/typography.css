@@ -1,0 +1,40 @@
+/* ============================================================
+   Typography tokens
+   No serif. No custom heading font. DM Mono is reserved for UI
+   chrome (tags, dates, nav, code) — never body prose.
+   Body font-weight minimum 400. No UI text below 11px.
+   ============================================================ */
+:root {
+  /* ── Families ── */
+  --font-sans: system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "DM Mono", monospace;
+  --font-cond: var(--font-sans);   /* alias — condensed removed */
+
+  /* ── Font sizes ── */
+  --fs-h1:   clamp(42px, 5vw, 64px); /* @kind font */
+  --fs-h2:   28px;
+  --fs-h3:   20px;
+  --fs-body: 16px;   /* base */
+  --fs-lead: 17px;   /* post excerpts, lead paragraphs */
+  --fs-sm:   14px;   /* dense card copy */
+  --fs-meta: 12px;   /* mono metadata / dates */
+  --fs-tag:  11px;   /* mono tags, nav links (min UI size) */
+
+  /* ── Weights ── */
+  --fw-body:    400; /* @kind font */
+  --fw-medium:  500; /* @kind font */
+  --fw-semi:    600; /* @kind font */
+  --fw-bold:    700; /* @kind font */
+
+  /* ── Line heights ── */
+  --lh-tight: 1.1;    /* @kind font */
+  --lh-snug:  1.6;    /* @kind font */
+  --lh-body:  1.75;   /* @kind font */
+
+  /* ── Letter spacing ── */
+  --ls-h1:   -0.02em;
+  --ls-h2:   -0.01em;
+  --ls-meta:  0.04em;
+  --ls-tag:   0.08em;
+  --ls-nav:   0.1em;
+}

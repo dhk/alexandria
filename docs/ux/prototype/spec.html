@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/dhk-design-system-c5bcb57b-ed22-46a6-b9d1-f03f557cce83/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/dhk-design-system-c5bcb57b-ed22-46a6-b9d1-f03f557cce83/tokens/colors.css">
+<link rel="stylesheet" href="_ds/dhk-design-system-c5bcb57b-ed22-46a6-b9d1-f03f557cce83/tokens/typography.css">
+<link rel="stylesheet" href="_ds/dhk-design-system-c5bcb57b-ed22-46a6-b9d1-f03f557cce83/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/dhk-design-system-c5bcb57b-ed22-46a6-b9d1-f03f557cce83/tokens/layout.css">
+<link rel="stylesheet" href="_ds/dhk-design-system-c5bcb57b-ed22-46a6-b9d1-f03f557cce83/tokens/base.css">
+<link rel="stylesheet" href="_ds/dhk-design-system-c5bcb57b-ed22-46a6-b9d1-f03f557cce83/styles.css">
+<script src="_ds/dhk-design-system-c5bcb57b-ed22-46a6-b9d1-f03f557cce83/_ds_bundle.js"></script>
+<style>
+  body { margin: 0; background: var(--bg); color: var(--text); }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { color: var(--accent-hover); }
+  ul { margin: 0; padding: 0; }
+  code { font-family: var(--font-mono); font-size: 0.88em; background: var(--bg3); padding: 1px 5px; border-radius: 3px; }
+</style>
+</helmet>
+
+<div style="max-width: 1000px; margin: 0 auto; padding: 72px 28px 140px; font-family: var(--font-sans, system-ui); color: var(--text); font-size: 16px; line-height: 1.6;">
+
+  <div style="font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.04em; color: var(--accent); margin-bottom: 20px;">alexandria / docs / ux /</div>
+
+  <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 24px;">
+    <x-import component-from-global-scope="DHKDesignSystem_c5bcb5.Tag" kind="essay" hint-size="76px,24px">{{ rfcId }}</x-import>
+    <x-import component-from-global-scope="DHKDesignSystem_c5bcb5.Tag" kind="tool" hint-size="80px,24px">UX SPEC</x-import>
+    <span style="font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.04em; color: var(--text-dim);">Design {{ versionLabel }} · {{ statusLabel }} · Depends on docs/DESIGN.md, AGENTS.md</span>
+  </div>
+
+  <h1 style="font-size: clamp(40px, 5vw, 58px); font-weight: 700; letter-spacing: -0.02em; line-height: 1.05; margin: 0; max-width: 800px;">The commission surface</h1>
+
+  <p style="font-size: 19px; line-height: 1.6; color: var(--text-muted); max-width: 700px; margin: 24px 0 0; text-wrap: pretty;">A single-operator web UI that commissions one research brief to several models, then presents the result as a claim landscape with evidence one click away. The UI reads the run record. It produces no interpretation of its own.</p>
+
+  <div style="display: flex; gap: 36px; flex-wrap: wrap; margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--border);">
+    <div><div style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim);">Surface</div><div style="font-size: 15px; color: var(--text-muted); margin-top: 6px;">Desktop web · 5 screens</div></div>
+    <div><div style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim);">Deploy</div><div style="font-size: 15px; color: var(--text-muted); margin-top: 6px;">Local · single operator</div></div>
+    <div><div style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim);">Record</div><div style="font-size: 15px; color: var(--text-muted); margin-top: 6px;">Git repo · immutable</div></div>
+    <div><div style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim);">Assurance</div><div style="font-size: 15px; color: var(--text-muted); margin-top: 6px;">Bronze — exploratory</div></div>
+    <div><div style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim);">Prototype</div><div style="font-size: 15px; color: var(--text-muted); margin-top: 6px;"><a href="./index.html">index.html</a></div></div>
+  </div>
+
+  <div style="margin-top: 40px; border-left: 2px solid var(--accent); padding: 8px 0 8px 18px; max-width: 720px;">
+    <p style="margin: 0; font-size: 16.5px; line-height: 1.7; color: var(--text-muted); font-style: italic;">Agreement is model agreement. It is not verification. Every screen in this spec exists to keep that distinction legible — which is why silence, failure, and single-source claims are rendered as first-class states rather than gaps.</p>
+  </div>
+
+  <x-import component-from-global-scope="DHKDesignSystem_c5bcb5.SectionDivider" hint-size="100%,80px">01 — Goals &amp; non-goals</x-import>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 48px;">
+    <div>
+      <h3 style="font-size: 20px; font-weight: 600; margin: 0 0 20px;">Goals</h3>
+      <ul style="list-style: none; display: flex; flex-direction: column; gap: 14px;">
+        <li style="display: flex; gap: 12px; font-size: 15px; line-height: 1.6; color: var(--text-muted);"><span style="color: var(--accent); font-family: var(--font-mono);">→</span> Assemble an input set and a brief, and see exactly what will be dispatched before anything is sent.</li>
+        <li style="display: flex; gap: 12px; font-size: 15px; line-height: 1.6; color: var(--text-muted);"><span style="color: var(--accent); font-family: var(--font-mono);">→</span> Commit to spend as an explicit, priced decision with a hard ceiling.</li>
+        <li style="display: flex; gap: 12px; font-size: 15px; line-height: 1.6; color: var(--text-muted);"><span style="color: var(--accent); font-family: var(--font-mono);">→</span> Read a run's outcome as canonical claims × models, grouped by epistemic status.</li>
+        <li style="display: flex; gap: 12px; font-size: 15px; line-height: 1.6; color: var(--text-muted);"><span style="color: var(--accent); font-family: var(--font-mono);">→</span> Reach the verbatim span behind any score in one action.</li>
+        <li style="display: flex; gap: 12px; font-size: 15px; line-height: 1.6; color: var(--text-muted);"><span style="color: var(--accent); font-family: var(--font-mono);">→</span> Make failure, exclusion, and silence visible inside the result — never in a log the operator must go find.</li>
+      </ul>
+    </div>
+    <div>
+      <h3 style="font-size: 20px; font-weight: 600; margin: 0 0 20px;">Non-goals <span style="font-family: var(--font-mono); font-size: 12px; color: var(--text-dim); font-weight: 400;">(V0.1)</span></h3>
+      <ul style="list-style: none; display: flex; flex-direction: column; gap: 14px;">
+        <li style="display: flex; gap: 12px; font-size: 15px; line-height: 1.6; color: var(--text-dim);"><span style="font-family: var(--font-mono);">×</span> No accounts, sharing, or multi-user review. One operator, one machine.</li>
+        <li style="display: flex; gap: 12px; font-size: 15px; line-height: 1.6; color: var(--text-dim);"><span style="font-family: var(--font-mono);">×</span> No editing of claims or scores in the UI. Corrections are superseding artifacts, per AGENTS.md §5.</li>
+        <li style="display: flex; gap: 12px; font-size: 15px; line-height: 1.6; color: var(--text-dim);"><span style="font-family: var(--font-mono);">×</span> No streaming token view. The harness consumes complete responses.</li>
+        <li style="display: flex; gap: 12px; font-size: 15px; line-height: 1.6; color: var(--text-dim);"><span style="font-family: var(--font-mono);">×</span> No Silver or Gold review workflow. No adjudication UI, no approval gates.</li>
+        <li style="display: flex; gap: 12px; font-size: 15px; line-height: 1.6; color: var(--text-dim);"><span style="font-family: var(--font-mono);">×</span> No OCR, no re-extraction retry, no per-file extraction settings.</li>
+        <li style="display: flex; gap: 12px; font-size: 15px; line-height: 1.6; color: var(--text-dim);"><span style="font-family: var(--font-mono);">×</span> No mobile layout. Minimum viewport 1280px.</li>
+      </ul>
+    </div>
+  </div>
+
+  <x-import component-from-global-scope="DHKDesignSystem_c5bcb5.SectionDivider" hint-size="100%,80px">02 — Surface map</x-import>
+
+  <p style="font-size: 16px; line-height: 1.75; color: var(--text-muted); max-width: 700px; margin: 0 0 28px;">Five screens and one drawer. The header is persistent; the numbered rail appears on every screen except History. Screens 01–04 are a sequence, but the rail permits free navigation once a run exists — <strong style="color: var(--text);">the sequence is a lifecycle, not a wizard</strong>.</p>
+
+  <div style="background: var(--bg2); border: 1px solid var(--border); border-radius: 4px; padding: 20px;">
+    <div style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 16px;">Anatomy · persistent chrome + screen body</div>
+    <div style="border: 1px dashed var(--border); border-radius: 4px; padding: 12px; background: var(--bg);">
+      <div style="font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px;">Zone A — sticky header (all screens)</div>
+      <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap; font-family: var(--font-mono); font-size: 11px; color: var(--text-muted);">
+        <span style="display: flex; align-items: center; gap: 7px;"><span style="width: 7px; height: 7px; border-radius: 50%; background: var(--accent);"></span>Alexandria</span>
+        <span style="color: var(--text-dim);">Research commissions</span>
+        <span style="flex: 1; min-width: 40px;"></span>
+        <span style="color: var(--text-dim);">run id · brief rev</span>
+        <span style="padding: 6px 12px; border: 1px solid var(--border); border-radius: 4px;">HISTORY</span>
+        <span style="padding: 6px 12px; border: 1px solid var(--accent); background: var(--accent); color: #fff; border-radius: 4px;">NEW COMMISSION</span>
+      </div>
+    </div>
+    <div style="border: 1px dashed var(--border); border-radius: 4px; padding: 12px; background: var(--bg); margin-top: 10px;">
+      <div style="font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px;">Zone B — lifecycle rail (hidden on History)</div>
+      <div style="display: flex; gap: 24px; flex-wrap: wrap; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase;">
+        <span style="color: var(--accent); border-bottom: 2px solid var(--accent); padding-bottom: 6px;">01 Commission</span>
+        <span style="color: var(--text-dim); padding-bottom: 6px;">02 Review</span>
+        <span style="color: var(--text-dim); padding-bottom: 6px;">03 Run · active</span>
+        <span style="color: var(--text-dim); padding-bottom: 6px;">04 Result · partial</span>
+      </div>
+    </div>
+    <div style="border: 1px dashed var(--border); border-radius: 4px; padding: 12px; background: var(--bg); margin-top: 10px; min-height: 96px;">
+      <div style="font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px;">Zone C — screen body · max-width 1440, gutter 32</div>
+      <div style="display: flex; gap: 10px;">
+        <div style="flex: 2; height: 72px; border-radius: 3px; background: repeating-linear-gradient(45deg, var(--bg2), var(--bg2) 8px, var(--bg3) 8px, var(--bg3) 16px);"></div>
+        <div style="flex: 1; height: 72px; border-radius: 3px; background: var(--bg2); border: 1px solid var(--border-light);"></div>
+      </div>
+    </div>
+    <div style="border: 1px dashed var(--accent-purple); border-radius: 4px; padding: 12px; background: var(--bg); margin-top: 10px;">
+      <div style="font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent-purple); margin-bottom: 8px;">Zone D — right drawer, 620px · overlays Zone C, never navigates away</div>
+      <div style="font-family: var(--font-mono); font-size: 11px; color: var(--text-dim);">claim detail · raw output · extracted-text preview · run limitations</div>
+    </div>
+  </div>
+
+  <h3 style="font-size: 20px; font-weight: 600; margin: 44px 0 18px;">Screen inventory</h3>
+  <div style="display: grid; grid-template-columns: 132px 1fr 200px; gap: 0 20px; padding: 0 0 10px; font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-dim); border-bottom: 1px solid var(--border);">
+    <span>Screen</span><span>Does</span><span>Leaves via</span>
+  </div>
+  <sc-for list="{{ screens }}" as="s" hint-placeholder-count="5">
+    <div style="display: grid; grid-template-columns: 132px 1fr 200px; gap: 0 20px; align-items: baseline; padding: 15px 0; border-bottom: 1px solid var(--border-light);">
+      <span style="font-family: var(--font-mono); font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent);">{{ s.id }}</span>
+      <span style="font-size: 15px; color: var(--text-muted); padding-right: 24px; text-wrap: pretty;">{{ s.does }}</span>
+      <span style="font-family: var(--font-mono); font-size: 11.5px; color: var(--text-dim);">{{ s.exit }}</span>
+    </div>
+  </sc-for>
+
+  <x-import component-from-global-scope="DHKDesignSystem_c5bcb5.SectionDivider" hint-size="100%,80px">03 — Screen specs</x-import>
+
+  <sc-for list="{{ specs }}" as="sp" hint-placeholder-count="5">
+    <div style="margin-bottom: 56px;">
+      <div style="display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; margin-bottom: 8px;">
+        <span style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent);">{{ sp.num }}</span>
+        <h3 style="font-size: 24px; font-weight: 700; letter-spacing: -0.015em; margin: 0;">{{ sp.title }}</h3>
+        <span style="font-family: var(--font-mono); font-size: 11px; color: var(--text-dim);">{{ sp.layout }}</span>
+      </div>
+      <p style="font-size: 15.5px; line-height: 1.7; color: var(--text-muted); margin: 0 0 22px; max-width: 700px; text-wrap: pretty;">{{ sp.intent }}</p>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
+        <div>
+          <div style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 12px;">Build</div>
+          <ul style="list-style: none; display: flex; flex-direction: column; gap: 11px;">
+            <sc-for list="{{ sp.build }}" as="b" hint-placeholder-count="5">
+              <li style="display: flex; gap: 10px; font-size: 14.5px; line-height: 1.6; color: var(--text-muted);"><span style="color: var(--accent); font-family: var(--font-mono);">→</span><span>{{ b }}</span></li>
+            </sc-for>
+          </ul>
+        </div>
+        <div>
+          <div style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent-orange); margin-bottom: 12px;">Rules that are easy to get wrong</div>
+          <ul style="list-style: none; display: flex; flex-direction: column; gap: 11px;">
+            <sc-for list="{{ sp.rules }}" as="r" hint-placeholder-count="3">
+              <li style="border-left: 2px solid var(--accent-orange); padding: 2px 0 2px 12px; font-size: 14.5px; line-height: 1.6; color: var(--text-muted);">{{ r }}</li>
+            </sc-for>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </sc-for>
+
+  <x-import component-from-global-scope="DHKDesignSystem_c5bcb5.SectionDivider" hint-size="100%,80px">04 — The claim landscape</x-import>
+
+  <p style="font-size: 16px; line-height: 1.75; color: var(--text-muted); max-width: 700px; margin: 0 0 28px;">The core object of the product. One row per canonical claim, one column per dispatched model, grouped by epistemic status. Build this before the report tab — the report is generated <em>from</em> this data and is the lesser surface.</p>
+
+  <div style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 12px;">Grid · sticky column header, group bands, right-aligned classification</div>
+  <div style="border: 1px solid var(--border); border-radius: 4px; background: var(--bg2); padding: 18px;">
+    <div style="display: grid; grid-template-columns: 1fr repeat(5, 62px) 116px; gap: 0 8px; padding-bottom: 9px; border-bottom: 1px solid var(--border); font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-dim);">
+      <span>Canonical claim</span>
+      <span style="text-align: center;">M1</span><span style="text-align: center;">M2</span><span style="text-align: center;">M3</span><span style="text-align: center;">M4</span><span style="text-align: center; color: var(--accent-orange);">M5</span>
+      <span style="text-align: right;">Classification</span>
+    </div>
+    <div style="display: flex; align-items: baseline; gap: 14px; padding: 16px 0 8px;">
+      <span style="font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent);">Consensus</span>
+      <span style="font-size: 13px; color: var(--text-dim);">Every responding model took the same side.</span>
+      <span style="flex: 1; height: 1px; background: var(--border-light);"></span>
+    </div>
+    <sc-for list="{{ demoRows }}" as="row" hint-placeholder-count="3">
+      <div style="display: grid; grid-template-columns: 1fr repeat(5, 62px) 116px; gap: 0 8px; align-items: center; padding: 11px 0; border-bottom: 1px solid var(--border-light);">
+        <span style="font-size: 14px; color: var(--text); padding-right: 20px; line-height: 1.45;">{{ row.text }}</span>
+        <sc-for list="{{ row.cells }}" as="cell" hint-placeholder-count="5">
+          <span style="font-family: var(--font-mono); font-size: 11.5px; text-align: center; padding: 6px 0; border-radius: 4px; background: {{ cell.bg }}; color: {{ cell.fg }}; border: 1px solid {{ cell.border }};">{{ cell.label }}</span>
+        </sc-for>
+        <span style="font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; text-align: right; color: {{ row.tagFg }};">{{ row.tag }}</span>
+      </div>
+    </sc-for>
+    <div style="display: flex; gap: 22px; flex-wrap: wrap; margin-top: 16px; font-family: var(--font-mono); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-dim);">
+      <span>Row click → claim drawer</span><span>Row hover → bg3</span><span>Header sticky at 68px</span>
+    </div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 40px;">
+    <div>
+      <h3 style="font-size: 20px; font-weight: 600; margin: 0 0 16px;">Cell states</h3>
+      <p style="font-size: 14.5px; color: var(--text-muted); margin: 0 0 18px; line-height: 1.65;">A stance sign and a strength magnitude. Tint alpha encodes strength: 0.20 at ±3, 0.13 at ±2, 0.07 at ±1. Cobalt for support, orange for contradiction. Nothing else carries colour.</p>
+      <sc-for list="{{ cellStates }}" as="cs" hint-placeholder-count="6">
+        <div style="display: grid; grid-template-columns: 62px 1fr; gap: 14px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border-light);">
+          <span style="font-family: var(--font-mono); font-size: 11.5px; text-align: center; padding: 6px 0; border-radius: 4px; background: {{ cs.bg }}; color: {{ cs.fg }}; border: 1px solid {{ cs.border }};">{{ cs.label }}</span>
+          <span style="font-size: 14px; color: var(--text-muted); line-height: 1.55;">{{ cs.desc }}</span>
+        </div>
+      </sc-for>
+      <p style="font-size: 14.5px; color: var(--text); margin: 18px 0 0; line-height: 1.65; border-left: 2px solid var(--accent-orange); padding-left: 12px;">The distinction between <code>—</code> and <code>✕</code> is the single most important detail in this spec. A silent model made an observation; a failed model made none. Collapsing them fabricates coverage.</p>
+    </div>
+    <div>
+      <h3 style="font-size: 20px; font-weight: 600; margin: 0 0 16px;">Group taxonomy</h3>
+      <p style="font-size: 14.5px; color: var(--text-muted); margin: 0 0 18px; line-height: 1.65;">Assigned by the analysis layer, not the UI. The UI renders the label it is given and filters on it. Order is fixed — consensus first, unaddressed last. A claim qualifying for two groups takes the disagreement label: split beats coverage.</p>
+      <sc-for list="{{ taxonomy }}" as="tx" hint-placeholder-count="5">
+        <div style="padding: 12px 0; border-bottom: 1px solid var(--border-light);">
+          <div style="display: flex; align-items: baseline; gap: 12px;">
+            <span style="font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: {{ tx.color }};">{{ tx.label }}</span>
+            <span style="font-family: var(--font-mono); font-size: 10.5px; color: var(--text-dim);">{{ tx.key }}</span>
+          </div>
+          <div style="font-size: 14px; color: var(--text-muted); margin-top: 5px; line-height: 1.55;">{{ tx.desc }}</div>
+        </div>
+      </sc-for>
+      <p style="font-size: 14px; color: var(--text-dim); margin: 16px 0 0; line-height: 1.6;">Filter chips above the grid carry live counts and are single-select, with <code>All</code> as the default and reset.</p>
+    </div>
+  </div>
+
+  <x-import component-from-global-scope="DHKDesignSystem_c5bcb5.SectionDivider" hint-size="100%,80px">05 — Honesty states</x-import>
+
+  <p style="font-size: 16px; line-height: 1.75; color: var(--text-muted); max-width: 700px; margin: 0 0 28px;">These are not error handling. They are the product's argument, and each has a defined home in the layout. Build them in the same pass as the happy path.</p>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+    <sc-for list="{{ honesty }}" as="h" hint-placeholder-count="6">
+      <div style="border: 1px solid var(--border); border-radius: 4px; background: var(--bg2); padding: 18px;">
+        <div style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: {{ h.color }}; margin-bottom: 10px;">{{ h.kicker }}</div>
+        <div style="font-size: 15.5px; font-weight: 600; margin-bottom: 8px; letter-spacing: -0.01em;">{{ h.title }}</div>
+        <p style="font-size: 14px; line-height: 1.65; color: var(--text-muted); margin: 0 0 10px;">{{ h.body }}</p>
+        <div style="font-family: var(--font-mono); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-dim);">Home · {{ h.where }}</div>
+      </div>
+    </sc-for>
+  </div>
+
+  <x-import component-from-global-scope="DHKDesignSystem_c5bcb5.SectionDivider" hint-size="100%,80px">06 — Data the UI reads</x-import>
+
+  <p style="font-size: 16px; line-height: 1.75; color: var(--text-muted); max-width: 700px; margin: 0 0 28px;">The UI is a reader. Every value it renders comes from the run record on disk; it derives nothing beyond formatting and the cost estimate. If a field below does not exist, the corresponding UI element must render a stated absence — never a zero, never a blank.</p>
+
+  <sc-for list="{{ contracts }}" as="ct" hint-placeholder-count="4">
+    <div style="margin-bottom: 30px;">
+      <div style="display: flex; align-items: baseline; gap: 14px; margin-bottom: 10px;">
+        <span style="font-family: var(--font-mono); font-size: 13px; color: var(--accent);">{{ ct.file }}</span>
+        <span style="font-size: 14px; color: var(--text-dim);">{{ ct.note }}</span>
+      </div>
+      <div style="border: 1px solid var(--border); border-radius: 4px; background: var(--bg2); overflow: hidden;">
+        <sc-for list="{{ ct.fields }}" as="f" hint-placeholder-count="4">
+          <div style="display: grid; grid-template-columns: 220px 1fr; gap: 18px; padding: 10px 16px; border-bottom: 1px solid var(--border-light);">
+            <span style="font-family: var(--font-mono); font-size: 12px; color: var(--text); word-break: break-all;">{{ f.k }}</span>
+            <span style="font-size: 14px; color: var(--text-muted); line-height: 1.55;">{{ f.v }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </sc-for>
+
+  <x-import component-from-global-scope="DHKDesignSystem_c5bcb5.SectionDivider" hint-size="100%,80px">07 — Acceptance criteria</x-import>
+
+  <p style="font-size: 16px; line-height: 1.75; color: var(--text-muted); max-width: 700px; margin: 0 0 28px;">Testable statements. A build is not done until each is demonstrably true against a run record containing at least one failed call, one excluded input, one single-source claim, and one unaddressed claim.</p>
+
+  <sc-for list="{{ criteria }}" as="ac" hint-placeholder-count="12">
+    <div style="display: grid; grid-template-columns: 62px 1fr; gap: 18px; padding: 13px 0; border-bottom: 1px solid var(--border-light);">
+      <span style="font-family: var(--font-mono); font-size: 11.5px; color: var(--accent); letter-spacing: 0.04em;">{{ ac.id }}</span>
+      <span style="font-size: 15px; color: var(--text-muted); line-height: 1.6; text-wrap: pretty;">{{ ac.t }}</span>
+    </div>
+  </sc-for>
+
+  <x-import component-from-global-scope="DHKDesignSystem_c5bcb5.SectionDivider" hint-size="100%,80px">08 — Visual system</x-import>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px;">
+    <div>
+      <p style="font-size: 15px; line-height: 1.7; color: var(--text-muted); margin: 0 0 20px;">DHK Electric Cobalt, light only. No new colours, no gradients, no shadows, no icon library. Depth is the three-step grey ladder plus hairline borders. One radius: 4px.</p>
+      <sc-for list="{{ tokens }}" as="tk" hint-placeholder-count="8">
+        <div style="display: grid; grid-template-columns: 22px 148px 1fr; gap: 12px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border-light);">
+          <span style="width: 16px; height: 16px; border-radius: 3px; background: {{ tk.swatch }}; border: 1px solid var(--border);"></span>
+          <span style="font-family: var(--font-mono); font-size: 11.5px; color: var(--text);">{{ tk.name }}</span>
+          <span style="font-size: 13.5px; color: var(--text-muted);">{{ tk.use }}</span>
+        </div>
+      </sc-for>
+    </div>
+    <div>
+      <h3 style="font-size: 18px; font-weight: 600; margin: 0 0 14px;">Type &amp; motion</h3>
+      <ul style="list-style: none; display: flex; flex-direction: column; gap: 12px;">
+        <sc-for list="{{ typeRules }}" as="tr" hint-placeholder-count="6">
+          <li style="display: flex; gap: 10px; font-size: 14.5px; line-height: 1.6; color: var(--text-muted);"><span style="color: var(--accent); font-family: var(--font-mono);">→</span><span>{{ tr }}</span></li>
+        </sc-for>
+      </ul>
+      <h3 style="font-size: 18px; font-weight: 600; margin: 32px 0 14px;">Copy register</h3>
+      <p style="font-size: 14.5px; line-height: 1.7; color: var(--text-muted); margin: 0;">Declarative and compressed. State the limit, then trust the reader. <span style="color: var(--text);">"No time remaining is shown, because none is known."</span> Never hedge, never apologise, never use an exclamation mark or an emoji. Uppercase belongs in mono chrome only — never in a heading.</p>
+    </div>
+  </div>
+
+  <x-import component-from-global-scope="DHKDesignSystem_c5bcb5.SectionDivider" hint-size="100%,80px">09 — Build order &amp; open decisions</x-import>
+
+  <div style="display: grid; grid-template-columns: 1.1fr 1fr; gap: 48px;">
+    <div>
+      <h3 style="font-size: 20px; font-weight: 600; margin: 0 0 18px;">Build order</h3>
+      <sc-for list="{{ order }}" as="o" hint-placeholder-count="5">
+        <div style="display: grid; grid-template-columns: 38px 1fr; gap: 14px; padding: 13px 0; border-bottom: 1px solid var(--border-light);">
+          <span style="font-family: var(--font-mono); font-size: 12px; color: var(--accent);">{{ o.n }}</span>
+          <span>
+            <span style="display: block; font-size: 15px; font-weight: 500; color: var(--text);">{{ o.t }}</span>
+            <span style="display: block; font-size: 14px; color: var(--text-muted); margin-top: 4px; line-height: 1.55;">{{ o.d }}</span>
+          </span>
+        </div>
+      </sc-for>
+    </div>
+    <div>
+      <h3 style="font-size: 20px; font-weight: 600; margin: 0 0 14px;">Decided</h3>
+      <p style="font-size: 14.5px; color: var(--text-muted); margin: 0 0 18px; line-height: 1.65;">Resolved 28 July 2026. Each answer is normative and is reflected in the sections above.</p>
+      <sc-for list="{{ decided }}" as="d" hint-placeholder-count="5">
+        <div style="border-left: 2px solid var(--accent); padding: 4px 0 4px 12px; margin-bottom: 16px;">
+          <div style="font-size: 14.5px; font-weight: 500; color: var(--text);">{{ d.t }}</div>
+          <div style="font-size: 14px; color: var(--text-muted); line-height: 1.6; margin-top: 3px;">{{ d.d }}</div>
+        </div>
+      </sc-for>
+      <h3 style="font-size: 20px; font-weight: 600; margin: 34px 0 14px;">Still open</h3>
+      <p style="font-size: 14.5px; color: var(--text-muted); margin: 0 0 18px; line-height: 1.65;">Per AGENTS.md, a PR carrying this spec must state these. Do not resolve them silently in code.</p>
+      <sc-for list="{{ open }}" as="q" hint-placeholder-count="4">
+        <div style="border-left: 2px solid var(--accent-purple); padding: 4px 0 4px 12px; margin-bottom: 16px;">
+          <div style="font-size: 14.5px; font-weight: 500; color: var(--text);">{{ q.t }}</div>
+          <div style="font-size: 14px; color: var(--text-muted); line-height: 1.6; margin-top: 3px;">{{ q.d }}</div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="margin-top: 80px; padding-top: 24px; border-top: 1px solid var(--border); display: flex; gap: 28px; flex-wrap: wrap; font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-dim);">
+    <span>{{ rfcId }} · Design {{ versionLabel }} · {{ statusLabel }}</span>
+    <span>Repo path · docs/ux/</span>
+    <span>Branch · agent/commission-ui-spec</span>
+    <span>Prototype · <a href="./index.html">index.html</a></span>
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;rfcId&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;RFC-0005&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Document&quot;},&quot;version&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;v1.0&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Document&quot;},&quot;status&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;Published&quot;,&quot;options&quot;:[&quot;Draft&quot;,&quot;In review&quot;,&quot;Published&quot;,&quot;Superseded&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Document&quot;}}">
+const CELL = (n) => {
+  if (n === 0) return { label: '—', bg: 'transparent', fg: 'var(--text-dim)', border: 'var(--border-light)' };
+  if (n === null) return { label: '✕', bg: 'transparent', fg: 'var(--accent-orange)', border: 'var(--accent-orange)' };
+  const a = Math.abs(n);
+  const alpha = a === 3 ? 0.20 : a === 2 ? 0.13 : 0.07;
+  const pos = n > 0;
+  return {
+    label: pos ? '+' + n : String(n),
+    bg: pos ? `rgba(43,80,232,${alpha})` : `rgba(224,92,42,${alpha})`,
+    fg: pos ? 'var(--accent)' : 'var(--accent-orange)',
+    border: 'transparent'
+  };
+};
+
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      rfcId: this.props.rfcId ?? 'RFC-0005',
+      statusLabel: this.props.status ?? 'Published',
+      versionLabel: this.props.version ?? 'v1.0',
+
+      screens: [
+        { id: 'History', does: 'Lists every run — completed, partial, and draft — with inputs, model set, cost, and status. The landing surface, because the second run matters more than the first.', exit: 'Row → Result · New → 01' },
+        { id: '01 Commission', does: 'Two columns. Left assembles the input set (paste + files, with extraction state per file). Right holds the four brief fields, sent verbatim.', exit: 'Review commission → 02' },
+        { id: '02 Review', does: 'Model selection, warnings, and a priced summary against a ceiling. The last screen before anything leaves the machine.', exit: 'Run research → 03 · Back → 01' },
+        { id: '03 Run', does: 'Stage list and per-call state. Elapsed time and completed calls only — no progress bar, no estimate of remaining time.', exit: 'Open result → 04 · Cancel' },
+        { id: '04 Result', does: 'Four tabs over one run: claim landscape, generated report, raw outputs, provenance. Failure banner sits above the tabs, not inside one.', exit: 'Drawer · Revise → 01' }
+      ],
+
+      specs: [
+        {
+          num: 'Screen 00', title: 'History', layout: 'Single column · 1440 max',
+          intent: 'Opens with the product\'s thesis stated plainly, then the run table. A run is never deleted; archiving hides it. Draft rows resume into Commission rather than opening a result.',
+          build: [
+            'Hero: h1 at clamp(38–52px)/700, one paragraph of positioning, two buttons — primary "Start a commission →", ghost "Open the last result".',
+            'Section divider "Run history" — mono uppercase label + hairline rule.',
+            'Table columns: run id (mono), brief title, inputs, model set, cost, status pill. Grid, not a table element.',
+            'Status pill tints: Completed cobalt, Partial orange, Draft neutral bg3.',
+            'Row hover lifts to bg3; whole row is the hit target.'
+          ],
+          rules: [
+            'Cost is actual recorded spend when it exists. Until then the estimate, labelled "estimated" in mono.',
+            'Draft rows are local scratch state, not artifacts. No cost, no model set, and they resume into Commission.',
+            'A Partial run is openable and reads as a result, not an error page.',
+            'Footer states that archived runs are hidden, never deleted.'
+          ]
+        },
+        {
+          num: 'Screen 01', title: 'Commission', layout: 'Two equal columns · gap 56',
+          intent: 'The operator must be able to answer "what exactly will the models see?" before leaving this screen. Extraction is where research quietly fails, so extraction state is surfaced per file with the consequence spelled out.',
+          build: [
+            'Paste panel: bordered card, mono header with live char/token count, footer confirming the draft is local and undispatched.',
+            'Dropzone: dashed border, states the hard limits inline (8 files, 20 MB, 400k chars).',
+            'File rows: name, state pill (Extracted / Warning / Excluded), mono metadata line with format, size, char count, encoding, checksum.',
+            'A file carrying a warning gets an orange left-rule line naming the consequence, not the cause.',
+            'Input summary strip: inputs kept, extracted chars, tokens per model, excluded count — excluded count in orange when non-zero.',
+            'Brief: four labelled textareas (Task, Context, Constraints, Output needs), each with a one-line prompt hint.',
+            'Footer: brief revision letter, content sha, autosave state, primary "Review commission →".'
+          ],
+          rules: [
+            'Never rewrite, summarise, or normalise brief text. The screen states it is sent verbatim.',
+            'An excluded file stays visible with a restore affordance. Silent dropping is forbidden.',
+            'Checksums are computed on original bytes and shown per file; derived text is a separate artifact.',
+            'A revision letter is cut at dispatch, from the text as sent. An undispatched draft has no revision — the footer shows autosave state alone.',
+            'Editing the brief after a run starts a new run at the next revision letter. It never mutates the existing one.'
+          ]
+        },
+        {
+          num: 'Screen 02', title: 'Review', layout: 'Content 1.25fr + sticky rail 1fr · 1180 max',
+          intent: 'The spend gate. Dispatch is an explicit decision made once, against a ceiling the operator set. Estimates are conservative and labelled as maxima.',
+          build: [
+            'Model list: checkbox, name, provider slug, context window, per-model estimate. Named default set shown as a mono token.',
+            'Line stating that models research independently and never see each other\'s output.',
+            'Warnings section repeating each input warning plus one that content leaves the machine.',
+            'Sticky rail: estimate at 46px/700, a fill bar against the ceiling, then a keyed summary (inputs, brief rev, models, grading model, retention, artifacts).',
+            'Primary button is the commitment and carries the price in its label.'
+          ],
+          rules: [
+            'Over ceiling: estimate and bar turn orange, button disables and its label states why. Never dispatch and warn afterwards.',
+            'Fewer than two models selected also disables — a single model produces no landscape.',
+            'Estimate colour is the only signal; do not add an alert box.',
+            'Keys are never displayed or entered here. The rail states that keys are not exposed to the interface.',
+            'Pricing is fetched at Review time. If the fetch fails the rail reads "Estimate unavailable", names the provider-side key limit as the active ceiling, and the run stays dispatchable.'
+          ]
+        },
+        {
+          num: 'Screen 03', title: 'Run', layout: 'Two columns · 1180 max',
+          intent: 'Honest progress. Duration is unknowable, so nothing pretends to know it. Completed stages and completed calls are the only signal offered.',
+          build: [
+            'Header: run id, headline that changes on completion, elapsed clock in mono at 40px, count of completed calls.',
+            'Left: six stages with ✓ / ▸ / · marks and Done / Running / Queued labels. Active stage is 600 weight and cobalt.',
+            'Right: one row per dispatched model — name, slug, state pill, detail (cost when done, attempt count when retrying).',
+            'A failing model transitions Queued → Retrying → Failed with the status code visible in the detail column.',
+            'Footer button: Cancel while running, "Open result →" when complete, with an explanatory line beside it.'
+          ],
+          rules: [
+            'No progress bar and no percentage anywhere on this screen.',
+            'State the page is leaveable and the record is retained either way.',
+            'Cancel copy must state that issued calls may still complete, may still cost, and their output is retained.',
+            'A failed call reaches the Result screen as evidence, never as a discarded row.'
+          ]
+        },
+        {
+          num: 'Screen 04', title: 'Result', layout: 'Full 1440 · tabbed',
+          intent: 'One run, four readings of it. The claim landscape is the default because it is the only view that shows disagreement structurally. The report is generated and explicitly subordinate to the evidence.',
+          build: [
+            'Header: run id + brief rev + completion qualifier, h2 restating the question, one line of what was extracted from what.',
+            'Four stat figures: consensus, disagreement, novel counts and cost · elapsed — coloured by group token.',
+            'Failure banner: orange left-rule, one sentence, "See limitations →" opening the drawer.',
+            'Tabs: Claim landscape / Report / Raw outputs / Provenance — mono, 2px cobalt underline when active.',
+            'Report tab: prose column at 74ch beside an Artifact card offering Copy Markdown and Download bundle.',
+            'Raw tab: one row per call with name, slug, token and cost metadata, "Open raw" into the drawer.',
+            'Provenance tab: manifest key/value list beside the limitations list, plus revise-and-rerun.',
+            'Drawer: claim detail with per-model stance, score, verbatim quote in an accent-bordered blockquote, and a locator line; "Open raw output →" swaps the drawer with a back link.'
+          ],
+          rules: [
+            'Report copy must name what the run does not establish. It is a section, not a caveat in small type.',
+            'The drawer never navigates away — the landscape stays behind it and scroll position survives.',
+            'A silent model in the drawer reads "No bearing statement found" with nothing to quote. Do not synthesise a quote.',
+            'The completion qualifier in the header names the failure ("completed with one failed call"). Never just "completed".',
+            'Every quote is a verbatim span with a grading-call locator. No paraphrase reaches the UI.'
+          ]
+        }
+      ],
+
+      demoRows: [
+        { text: 'Only one provider adapter exists; provider neutrality is aspirational.', cells: [CELL(3), CELL(3), CELL(2), CELL(3), CELL(null)], tag: 'Consensus', tagFg: 'var(--accent)' },
+        { text: 'OpenRouter should replace direct calls rather than run alongside them.', cells: [CELL(-3), CELL(3), CELL(1), CELL(-2), CELL(null)], tag: 'Disagreement', tagFg: 'var(--accent-orange)' },
+        { text: 'Aggregator model slugs drift; pin the resolved revision per call.', cells: [CELL(0), CELL(0), CELL(3), CELL(0), CELL(null)], tag: 'Novel', tagFg: 'var(--accent-purple)' },
+        { text: 'The migration needs a documented rollback path.', cells: [CELL(0), CELL(0), CELL(0), CELL(0), CELL(null)], tag: 'Unaddressed', tagFg: 'var(--text-dim)' }
+      ],
+
+      cellStates: [
+        { ...CELL(3), desc: 'Supports, strong. Model stated the claim directly and unhedged.' },
+        { ...CELL(2), desc: 'Supports, moderate.' },
+        { ...CELL(1), desc: 'Supports, weak. Implied or stated in passing.' },
+        { ...CELL(-2), desc: 'Contradicts, moderate. Sign is stance, magnitude is strength.' },
+        { ...CELL(0), desc: 'Silent. The model responded, and the blind grading pass found no statement bearing on this claim. This is an observation.' },
+        { ...CELL(null), desc: 'Call failed. No output exists to grade. This is a missing observation and must never render as silence.' }
+      ],
+
+      taxonomy: [
+        { label: 'Consensus', key: 'consensus', color: 'var(--accent)', desc: 'Every responding model took the same side.' },
+        { label: 'Disagreement', key: 'disagreement', color: 'var(--accent-orange)', desc: 'Models split. This is where operator judgment is required, so it sorts second, not last.' },
+        { label: 'Novel', key: 'novel', color: 'var(--accent-purple)', desc: 'Raised by exactly one model, unreviewed by the others. A lead, not a finding.' },
+        { label: 'Thin coverage', key: 'thin', color: 'var(--accent-teal)', desc: 'Fewer than half the responding models had a bearing statement.' },
+        { label: 'Unaddressed', key: 'silent', color: 'var(--text-dim)', desc: 'No model produced a bearing statement. Absence is not disagreement.' }
+      ],
+
+      honesty: [
+        { kicker: 'Failed call', color: 'var(--accent-orange)', title: 'A dead model keeps its column', body: 'Its cells read ✕ across every claim and its raw entry preserves the attempt log with status codes and timings. Retry creates a new call record; it never overwrites the failure.', where: 'Result banner · every landscape cell · claim drawer · raw tab · limitations' },
+        { kicker: 'Silence', color: 'var(--text-dim)', title: 'Silence is graded, not inferred', body: 'A responding model with no bearing statement gets — from the blind grading pass. The drawer says so in words and offers nothing to quote.', where: 'Landscape cell · claim drawer row' },
+        { kicker: 'Excluded input', color: 'var(--accent-orange)', title: 'Exclusion is visible and reversible', body: 'A file whose extraction produced mostly page chrome is excluded, stays listed, states why, and can be restored. The excluded count appears in the input summary.', where: 'Commission file row · input summary · Review warnings' },
+        { kicker: 'Partial extraction', color: 'var(--accent-orange)', title: 'Name the consequence, not the cause', body: 'Scanned PDF pages carry no text and no OCR is performed. Copy states that those pages reach the models effectively empty.', where: 'Commission file warning · Review warnings · limitations' },
+        { kicker: 'Budget', color: 'var(--accent-orange)', title: 'The ceiling blocks before dispatch', body: 'Over ceiling, the estimate and bar turn orange and the run button disables with a label stating the reason. Refusal precedes spend.', where: 'Review rail' },
+        { kicker: 'Framing', color: 'var(--accent)', title: 'Agreement is not verification', body: 'Stated on History, in the claim drawer, in the report, and in limitations. Four placements is deliberate — this is the claim most easily lost.', where: 'History hero · claim drawer · report · limitations' },
+        { kicker: 'Unpriced run', color: 'var(--accent-orange)', title: 'An advisory ceiling must not look enforced', body: 'When per-model pricing cannot be fetched, the rail reads "Estimate unavailable" and states that the OpenRouter key limit is the active ceiling. The run proceeds with no price in the button label.', where: 'Review rail' },
+        { kicker: 'Retry', color: 'var(--accent)', title: 'Retry spends again, and says so', body: 'Retry re-dispatches only the failed model into a new run that inherits the brief, the inputs, and the successful outputs by reference. The action states that it creates a new run id and incurs cost for the retried model alone.', where: 'Limitations drawer' }
+      ],
+
+      contracts: [
+        {
+          file: 'run.json', note: 'one per run · immutable',
+          fields: [
+            { k: 'run_id', v: 'Stable id, shown in header and history. Format r-YYYY-MMDD-NN.' },
+            { k: 'brief_revision · brief_sha256', v: 'Letter plus checksum. Rendered together everywhere the run is identified.' },
+            { k: 'status', v: 'completed | partial | failed | draft. Drives the history pill and the header qualifier.' },
+            { k: 'cost_actual · elapsed_seconds', v: 'Read from the aggregator response, per call. Absent until the run completes — History then shows the labelled estimate.' },
+            { k: 'inputs[]', v: 'name, format, bytes, extracted_chars, encoding, sha256, state (extracted | warning | excluded), warning text.' }
+          ]
+        },
+        {
+          file: 'claims.json', note: 'canonical claims extracted from the union of outputs',
+          fields: [
+            { k: 'claim_id', v: 'Stable within the run. Drawer deep-link target.' },
+            { k: 'text', v: 'One proposition, declarative. The UI never truncates it with an ellipsis.' },
+            { k: 'group', v: 'consensus | disagreement | novel | thin | silent. Assigned upstream; the UI does not compute it.' },
+            { k: 'responding_model_count', v: 'Denominator for the drawer\'s "n of m responding models" line. Excludes failed calls.' }
+          ]
+        },
+        {
+          file: 'scores.csv', note: 'one row per claim × model · the landscape',
+          fields: [
+            { k: 'claim_id · model_id', v: 'Composite key. A missing row is an error, not a silence — silence is an explicit 0.' },
+            { k: 'score', v: 'Integer −3…+3, or 0 for graded-silent. Null only when the call failed.' },
+            { k: 'quote', v: 'Verbatim span from the model output. Required whenever score ≠ 0.' },
+            { k: 'grading_call_id', v: 'Locator shown under each quote, tying the score to its grading call.' }
+          ]
+        },
+        {
+          file: 'raw/<model>.json · manifest.json', note: 'evidence and provenance',
+          fields: [
+            { k: 'raw[].body', v: 'Response exactly as received. Rendered in mono, pre-wrapped, never reformatted or syntax-highlighted.' },
+            { k: 'raw[].attempts[]', v: 'For failed calls: attempt number, status, error class, offset. This is the ✕ drawer content.' },
+            { k: 'resolved_model_id', v: 'Upstream revision the aggregator actually served. Shown in the manifest — required for reproducibility.' },
+            { k: 'generation_ids[]', v: 'Provider-side call ids, listed in the manifest for audit.' },
+            { k: 'source_run_id', v: 'On a raw entry inherited by reference into a retry run. Its absence means this run dispatched the call itself.' },
+            { k: 'redispatched_models[]', v: 'Manifest field naming which models a retry run actually called. Everything else is inherited evidence.' },
+            { k: 'extraction_method', v: 'Library and version per format. Rendered verbatim in the manifest.' }
+          ]
+        }
+      ],
+
+      criteria: [
+        { id: 'AC-01', t: 'A run record with one failed call renders ✕ in that model\'s column on every claim row, and — never appears in that column.' },
+        { id: 'AC-02', t: 'Opening a claim shows one row per dispatched model, including silent and failed models, with the responding-model denominator excluding failures.' },
+        { id: 'AC-03', t: 'Every non-zero score in the drawer displays a verbatim quote and a grading-call locator. A score without a quote is a validation failure, not a blank row.' },
+        { id: 'AC-04', t: 'From any landscape cell, the operator reaches the raw model output in at most two clicks and returns to the same claim without losing scroll position.' },
+        { id: 'AC-05', t: 'Group filter chips show live counts and sum to the total claim count.' },
+        { id: 'AC-06', t: 'An estimate above the ceiling disables the run button, turns the estimate and bar orange, and states the reason in the button label.' },
+        { id: 'AC-07', t: 'Selecting fewer than two models disables the run button with its own reason.' },
+        { id: 'AC-08', t: 'Excluded inputs remain listed with their reason and a restore action, and the excluded count appears in the input summary.' },
+        { id: 'AC-09', t: 'The Run screen contains no progress bar, no percentage, and no estimated time remaining. Elapsed time and completed-call count are present.' },
+        { id: 'AC-10', t: 'Cancel copy states that issued calls may complete, may cost, and are retained.' },
+        { id: 'AC-11', t: 'The result header names the failure in its completion qualifier; a partial run never reads as "completed".' },
+        { id: 'AC-12', t: 'The report contains a section naming what the run does not establish, at body size, not as fine print.' },
+        { id: 'AC-13', t: 'Provenance shows brief revision and checksum, extraction method and version, grading model, resolved model ids, generation ids, and the artifact list.' },
+        { id: 'AC-14', t: 'Editing the brief creates a new revision and a new run. No screen mutates an existing run record.' },
+        { id: 'AC-15', t: 'No screen shows a raw provider key, and no screen accepts one.' },
+        { id: 'AC-16', t: 'Every colour, radius, and font is a DHK token. No hex literal appears outside the tint alphas defined in §04.' },
+        { id: 'AC-17', t: 'A claim qualifying for both disagreement and thin coverage renders as Disagreement. Split beats coverage.' },
+        { id: 'AC-18', t: 'When per-model pricing cannot be fetched, the Review rail states the estimate is unavailable, names the provider-side key limit as the active ceiling, and the run remains dispatchable.' },
+        { id: 'AC-19', t: 'Retry re-dispatches only failed models, creates a new run id, and every inherited raw entry in the new run carries source_run_id.' },
+        { id: 'AC-20', t: 'A brief revision letter is cut at dispatch from the text as sent. No revision exists for an undispatched draft.' },
+        { id: 'AC-21', t: 'Draft rows appear in History with no cost and no model set, and resume into Commission rather than opening a result.' }
+      ],
+
+      tokens: [
+        { swatch: 'var(--bg)', name: '--bg', use: 'Page' },
+        { swatch: 'var(--bg2)', name: '--bg2', use: 'Cards, panels, sticky rail' },
+        { swatch: 'var(--bg3)', name: '--bg3', use: 'Row hover, neutral pills' },
+        { swatch: 'var(--border)', name: '--border', use: 'Structural hairlines, card edges' },
+        { swatch: 'var(--accent)', name: '--accent', use: 'Support, primary action, active tab, consensus' },
+        { swatch: 'var(--accent-orange)', name: '--accent-orange', use: 'Contradiction, failure, warning, over-ceiling' },
+        { swatch: 'var(--accent-purple)', name: '--accent-purple', use: 'Novel claims, drawer chrome' },
+        { swatch: 'var(--accent-teal)', name: '--accent-teal', use: 'Thin coverage only' }
+      ],
+
+      typeRules: [
+        'system-ui for all prose. DM Mono strictly for chrome — ids, counts, labels, dates, code, status. Never mono for a sentence.',
+        'h1 clamp(38–52px)/700/−0.02em. h2 34px. h3 20px/600. Body 15–16px at 1.6–1.75.',
+        'Mono chrome is 10.5–12px uppercase at 0.08em tracking. Nothing below 10.5px.',
+        'Numbers that carry weight (estimate, elapsed) are large and mono; numbers in tables are 11.5–12px mono.',
+        'Transitions 0.15s on colour, background, border-colour. No bounce, no parallax, no skeleton shimmer.',
+        'Spacing via flex/grid gap only. Never sibling margins.'
+      ],
+
+      order: [
+        { n: '01', t: 'Result screen against a fixture', d: 'Build the landscape, drawer, and raw tab from a hand-written run record containing a failure, a silence, a single-source claim, and an unaddressed claim. This is the product; everything else feeds it.' },
+        { n: '02', t: 'History and navigation', d: 'Run table plus header and rail. Makes the fixture reachable and establishes the lifecycle model.' },
+        { n: '03', t: 'Commission screen', d: 'Input assembly with extraction states and the brief fields. Read-only against fixtures first, then wired to real extraction.' },
+        { n: '04', t: 'Review gate', d: 'Model selection, estimate, ceiling refusal. Nothing dispatches until this screen refuses correctly.' },
+        { n: '05', t: 'Run screen and dispatch', d: 'Stage and per-call state driven by the real harness. Last, because it is the only part that spends money.' }
+      ],
+
+      decided: [
+        { t: 'Score scale', d: 'Integer −3…+3 with 0 meaning graded-silent. The contract lives in schemas/ and both the grading prompt and the UI validate against it.' },
+        { t: 'Group assignment', d: 'The analysis layer writes group into claims.json. Thin coverage is fewer than half the responding models. When a claim qualifies for two groups, disagreement wins.' },
+        { t: 'Retry semantics', d: 'Retry creates a new run inheriting the brief and inputs, re-dispatches only the failed model, and copies successful outputs by reference. The action lives in the limitations drawer.' },
+        { t: 'Cost source', d: 'Actual cost is read from the aggregator response per call; no vendor price tables in the repo. The Review estimate is fetched at review time. History shows a labelled estimate until actual cost exists.' },
+        { t: 'Draft persistence', d: 'Drafts are local scratch state, never committed. They appear as History rows that resume into Commission. A brief revision is cut at dispatch, from the text as sent.' }
+      ],
+
+      open: [
+        { t: 'Claim de-duplication', d: 'Who merges near-identical propositions from different models into one canonical claim, and whether the UI ever needs to show that a claim was merged. Affects the claim count in every stat block.' },
+        { t: 'Grading-model failure', d: 'The spec has an honest state for a failed research call but none for a failed grading pass, which would blank the landscape entirely. Needs a defined surface before the Result screen ships.' },
+        { t: 'Coverage on the classification cell', d: 'Recommended, awaiting confirmation: render the responding fraction beside the label (Disagreement · 2/5), so a thin-coverage split does not overstate its evidence. Follows directly from the split-beats-coverage decision.' },
+        { t: 'Run record shape', d: 'Whether a run is a git commit or a directory on disk. Does not block the UI, but decides whether History reads the filesystem or the git log.' }
+      ]
+    };
+  }
+}
+
+</script>
+</body>
+</html>
