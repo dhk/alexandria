@@ -15,6 +15,14 @@ Alexandria treats a Git repository as the durable system of record for research.
 7. Produce a traceable synthesis.
 8. Review and publish through Git branches and pull requests.
 
+## Architecture
+
+![How Alexandria works: operator surfaces feed an explicit review gate, independent model research, grading, immutable local run artifacts, and a separate Git research system of record.](docs/assets/alexandria-architecture.svg)
+
+The review gate is the boundary before model spend. In V0.1, completed commission
+runs remain immutable local records; promotion into the Git research repository is
+deliberate rather than automatic.
+
 ## Research assurance levels
 
 Alexandria supports three cumulative levels:
