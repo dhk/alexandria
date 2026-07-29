@@ -125,6 +125,57 @@ def _http_check(url: str, expected_service: str, timeout_seconds: float) -> Chec
     return CheckResult("health", "HTTP health", "pass", detail)
 
 
+def tailscale_route_state(
+    config: Mapping[str, Any], timeout_seconds: float = 5.0
+) -> tuple[str, str]:
+    """Return route state and a token-free diagnostic for a Tailscale path mount."""
+    mode = str(config.get("mode", ""))
+    path = "/" + str(config.get("path", "")).strip("/")
+    target = str(config.get("target", ""))
+    port = config.get("port", 443)
+    if mode not in {"serve", "funnel"} or path == "/" or not target or not isinstance(port, int):
+        return "unavailable", "invalid Tailscale route configuration"
+    if shutil.which("tailscale") is None:
+        return "unavailable", "tailscale command is not installed"
+    try:
+        result = subprocess.run(
+            ["tailscale", mode, "status", "--json"],
+            check=False,
+            capture_output=True,
+            text=True,
+            timeout=timeout_seconds,
+        )
+        payload = json.loads(result.stdout)
+    except (OSError, subprocess.SubprocessError, json.JSONDecodeError) as exc:
+        return "unavailable", f"could not inspect Tailscale: {exc}"
+    if result.returncode != 0 or not isinstance(payload, dict):
+        return "unavailable", "tailscale route status was unavailable"
+
+    web = payload.get("Web")
+    if not isinstance(web, dict):
+        return "missing", f"no HTTPS route maps {path} to {target}"
+    conflict: str | None = None
+    for authority, raw_site in web.items():
+        if not str(authority).endswith(f":{port}") or not isinstance(raw_site, dict):
+            continue
+        handlers = raw_site.get("Handlers")
+        if not isinstance(handlers, dict) or path not in handlers:
+            continue
+        handler = handlers[path]
+        actual = handler.get("Proxy") if isinstance(handler, dict) else None
+        if actual != target:
+            conflict = f"{authority}{path} already maps to {actual!r}, not {target!r}"
+            continue
+        if mode == "funnel":
+            allowed = payload.get("AllowFunnel")
+            if not isinstance(allowed, dict) or allowed.get(authority) is not True:
+                return "missing", f"{authority}{path} is served but Funnel is not enabled"
+        return "pass", f"https://{authority}{path} → {target}"
+    if conflict:
+        return "conflict", conflict
+    return "missing", f"no HTTPS route maps {path} to {target}"
+
+
 def run_component_checks(
     manifest: Mapping[str, Any],
     bundle_root: Path,
@@ -211,6 +262,31 @@ def run_component_checks(
                 str(token_file) if token_ready else "capability token has not been created",
             )
         )
+
+    tailscale = manifest.get("tailscale")
+    if isinstance(tailscale, dict):
+        required_tunnel = bool(tailscale.get("required", False))
+        if include_services:
+            route_state, detail = tailscale_route_state(tailscale, timeout_seconds)
+            checks.append(
+                CheckResult(
+                    "tailscale",
+                    "Tailscale front door",
+                    "pass" if route_state == "pass" else "fail",
+                    detail,
+                    required=required_tunnel,
+                )
+            )
+        else:
+            checks.append(
+                CheckResult(
+                    "tailscale",
+                    "Tailscale front door",
+                    "skip",
+                    "service installation skipped",
+                    required=required_tunnel,
+                )
+            )
 
     docs_ready = (bundle_root / "docs-index.html").is_file() and (bundle_root / "source").is_dir()
     checks.append(

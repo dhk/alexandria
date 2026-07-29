@@ -129,9 +129,12 @@ interactive installer creates a versioned release, installs the uv tool, asks fo
 missing secrets, configures the systemd user service, verifies health, and retains
 the prior release for rollback. It inventories existing paths first, prompts before
 managed replacements, preserves existing secrets, and backs up differing service
-units. Every unpacked bundle also includes `./launch-docs.py`, which opens a
-generated human-facing documentation index. Its installation front panel runs
-no-spend “hello world” checks and turns each responding component green. The same
+units. On Lobster it also offers to add only the `/alexandria` Tailscale Funnel
+path and prints the resolved HTTPS connector URL; an existing conflicting route
+requires a separate confirmation. Every unpacked bundle also includes
+`./launch-docs.py`, which opens a generated human-facing documentation index. Its
+installation front panel runs no-spend “hello world” checks and turns each
+responding component green. The same
 checks can be rerun from a terminal with `./install.py --check`. After success, the
 installer preserves that front panel under the managed install root and offers to
 remove the archive, checksum, and unpacked transfer directory; `--keep-bundle`

@@ -89,6 +89,7 @@ Other lifecycle commands:
 
 ```bash
 alexandria-ctl status
+alexandria-ctl --tunnel-path /alexandria url
 alexandria-ctl start
 alexandria-ctl stop-all
 alexandria-ctl upgrade       # pull + reinstall, without process changes
@@ -139,6 +140,11 @@ the full design rationale. Summary:
 - **Host config** follows the "wingman.env" pattern: `~/.config/
   alexandria.env` is the one canonical file a systemd `EnvironmentFile=`
   or a bare shell points at.
+- **Tailscale URL resolution** follows Wingman: the server auto-detects its
+  `*.ts.net` DNS name, admits that Host without disabling DNS-rebinding protection,
+  and separates the local bind port from the external HTTPS path/port. On Lobster,
+  Tailscale Funnel mounts Alexandria at `/alexandria` and strips that prefix before
+  forwarding to `127.0.0.1:8797`.
 - **The admin installations page** (`/admin/<token>/installations`) shows
   every instance listed in `<data-dir>/installations.toml` — name,
   version, running/stopped, and a link in. Read-only and launcher-only, by

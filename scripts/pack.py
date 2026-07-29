@@ -48,6 +48,15 @@ class CapabilitySpec:
 
 
 @dataclass(frozen=True)
+class TailscaleSpec:
+    mode: str
+    path: str
+    target: str
+    port: int
+    required: bool
+
+
+@dataclass(frozen=True)
 class PackSpec:
     format_version: int
     name: str
@@ -59,6 +68,7 @@ class PackSpec:
     exclude: list[str]
     services: list[ServiceSpec]
     capability: CapabilitySpec | None
+    tailscale: TailscaleSpec | None
 
 
 @dataclass(frozen=True)
@@ -122,6 +132,31 @@ def load_spec(path: Path) -> PackSpec:
             urls=_string_list(raw_capability, "urls"),
         )
 
+    raw_tailscale = raw.get("tailscale")
+    tailscale = None
+    if raw_tailscale is not None:
+        if not isinstance(raw_tailscale, dict):
+            raise PackError("[tailscale] must be a table")
+        mode = _required_string(raw_tailscale, "mode")
+        if mode not in {"serve", "funnel"}:
+            raise PackError("deploy/pack.toml [tailscale].mode must be 'serve' or 'funnel'")
+        path_value = _required_string(raw_tailscale, "path")
+        if not path_value.startswith("/") or path_value == "/":
+            raise PackError("deploy/pack.toml [tailscale].path must be a non-root /path")
+        port = raw_tailscale.get("port", 443)
+        if not isinstance(port, int) or isinstance(port, bool) or not 1 <= port <= 65535:
+            raise PackError("deploy/pack.toml [tailscale].port must be an integer from 1 to 65535")
+        required = raw_tailscale.get("required", False)
+        if not isinstance(required, bool):
+            raise PackError("deploy/pack.toml [tailscale].required must be a boolean")
+        tailscale = TailscaleSpec(
+            mode=mode,
+            path=path_value.rstrip("/"),
+            target=_required_string(raw_tailscale, "target"),
+            port=port,
+            required=required,
+        )
+
     return PackSpec(
         format_version=1,
         name=_required_string(pack, "name"),
@@ -133,6 +168,7 @@ def load_spec(path: Path) -> PackSpec:
         exclude=_string_list(pack, "exclude"),
         services=services,
         capability=capability,
+        tailscale=tailscale,
     )
 
 
@@ -224,6 +260,7 @@ def _manifest(root: Path, spec: PackSpec, bundle_id: str) -> dict[str, Any]:
         },
         "services": [asdict(service) for service in spec.services],
         "capability": asdict(spec.capability) if spec.capability else None,
+        "tailscale": asdict(spec.tailscale) if spec.tailscale else None,
     }
 
 

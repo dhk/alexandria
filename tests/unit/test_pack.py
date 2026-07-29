@@ -12,9 +12,17 @@ from typing import Self
 import pytest
 
 import deploy.install as installer
-from deploy.checks import _http_check, required_checks_pass, run_component_checks
+from deploy.checks import (
+    _http_check,
+    required_checks_pass,
+    run_component_checks,
+    tailscale_route_state,
+)
 from deploy.install import (
     InstallError,
+    _configure_tailscale,
+    _print_capability,
+    _tailscale_command,
     _write_units,
     bundle_cleanup_targets,
     cleanup_bundle_artifacts,
@@ -99,6 +107,7 @@ def _spec() -> PackSpec:
             )
         ],
         capability=None,
+        tailscale=None,
     )
 
 
@@ -109,9 +118,19 @@ def test_alexandria_pack_config_is_valid() -> None:
     assert spec.default_install_root == "~/src/alexandria"
     assert spec.required_secrets == ["OPENROUTER_API_KEY"]
     assert spec.services[0].unit == "alexandria-mcp.service"
-    assert spec.services[0].args == ["--http", "--port", "8797"]
+    assert spec.services[0].args == [
+        "--http",
+        "--port",
+        "8797",
+        "--tunnel-path",
+        "/alexandria",
+    ]
     assert spec.services[0].health_url == "http://127.0.0.1:8797/health"
     assert spec.services[0].health_service == "alexandria"
+    assert spec.tailscale is not None
+    assert spec.tailscale.mode == "funnel"
+    assert spec.tailscale.path == "/alexandria"
+    assert spec.tailscale.target == "http://127.0.0.1:8797"
 
 
 def test_health_checks_reject_another_service_on_the_expected_port(
@@ -135,6 +154,162 @@ def test_health_checks_accept_alexandria(monkeypatch: pytest.MonkeyPatch) -> Non
 
     assert installer._healthy("http://127.0.0.1:8797/health", "alexandria", 1.0) is True
     assert _http_check("http://127.0.0.1:8797/health", "alexandria", 1.0).state == "pass"
+
+
+def test_tailscale_route_check_matches_path_target_and_funnel(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    payload = {
+        "Web": {
+            "lobster.tail.ts.net:443": {
+                "Handlers": {"/alexandria": {"Proxy": "http://127.0.0.1:8797"}}
+            }
+        },
+        "AllowFunnel": {"lobster.tail.ts.net:443": True},
+    }
+    completed = subprocess.CompletedProcess(["tailscale"], 0, stdout=json.dumps(payload), stderr="")
+    monkeypatch.setattr(shutil, "which", lambda name: "/usr/bin/tailscale")
+    monkeypatch.setattr(subprocess, "run", lambda *_args, **_kwargs: completed)
+
+    state, detail = tailscale_route_state(
+        {
+            "mode": "funnel",
+            "path": "/alexandria",
+            "target": "http://127.0.0.1:8797",
+            "port": 443,
+        }
+    )
+
+    assert state == "pass"
+    assert "lobster.tail.ts.net:443/alexandria" in detail
+
+
+def test_tailscale_route_check_reports_conflicting_path(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    payload = {
+        "Web": {
+            "lobster.tail.ts.net:443": {
+                "Handlers": {"/alexandria": {"Proxy": "http://127.0.0.1:9999"}}
+            }
+        }
+    }
+    completed = subprocess.CompletedProcess(["tailscale"], 0, stdout=json.dumps(payload), stderr="")
+    monkeypatch.setattr(shutil, "which", lambda name: "/usr/bin/tailscale")
+    monkeypatch.setattr(subprocess, "run", lambda *_args, **_kwargs: completed)
+
+    state, detail = tailscale_route_state(
+        {
+            "mode": "funnel",
+            "path": "/alexandria",
+            "target": "http://127.0.0.1:8797",
+            "port": 443,
+        }
+    )
+
+    assert state == "conflict"
+    assert "9999" in detail
+
+
+def test_tailscale_command_adds_only_the_declared_path() -> None:
+    assert _tailscale_command(
+        {
+            "mode": "funnel",
+            "path": "/alexandria",
+            "target": "http://127.0.0.1:8797",
+            "port": 443,
+        }
+    ) == [
+        "sudo",
+        "tailscale",
+        "funnel",
+        "--yes",
+        "--bg",
+        "--set-path",
+        "/alexandria",
+        "http://127.0.0.1:8797",
+    ]
+
+
+def test_tailscale_setup_refuses_noninteractive_route_replacement(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    manifest = {
+        "tailscale": {
+            "mode": "funnel",
+            "path": "/alexandria",
+            "target": "http://127.0.0.1:8797",
+            "port": 443,
+            "required": True,
+        }
+    }
+    monkeypatch.setattr(
+        installer,
+        "tailscale_route_state",
+        lambda _config: ("conflict", "/alexandria maps to a different service"),
+    )
+    commands: list[list[str]] = []
+
+    with pytest.raises(InstallError, match="refusing to replace"):
+        _configure_tailscale(
+            manifest,
+            interactive=False,
+            input_fn=lambda _prompt: "",
+            runner=lambda command: commands.append(list(command)),
+        )
+
+    assert commands == []
+
+
+def test_tailscale_setup_adds_and_verifies_only_a_missing_route(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    manifest = {
+        "tailscale": {
+            "mode": "funnel",
+            "path": "/alexandria",
+            "target": "http://127.0.0.1:8797",
+            "port": 443,
+            "required": True,
+        }
+    }
+    states = iter(
+        [
+            ("missing", "not configured"),
+            ("pass", "https://lobster.tail.ts.net:443/alexandria is ready"),
+        ]
+    )
+    monkeypatch.setattr(installer, "tailscale_route_state", lambda _config: next(states))
+    commands: list[list[str]] = []
+
+    _configure_tailscale(
+        manifest,
+        interactive=False,
+        input_fn=lambda _prompt: "",
+        runner=lambda command: commands.append(list(command)),
+    )
+
+    assert commands == [_tailscale_command(manifest["tailscale"])]
+
+
+def test_capability_urls_resolve_tailscale_dns_without_exposing_token_in_checks(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    home = tmp_path / "home"
+    token_file = home / ".local/share/sample/token"
+    token_file.parent.mkdir(parents=True)
+    token_file.write_text("SECRET-TOKEN\n", encoding="utf-8")
+    monkeypatch.setenv("HOME", str(home))
+    manifest = {
+        "capability": {
+            "token_file": "~/.local/share/sample/token",
+            "urls": ["https://{tailscale_dns}/sample/mcp/{token}"],
+        }
+    }
+
+    _print_capability(manifest, tailscale_dns=lambda: "lobster.tail.ts.net")
+
+    assert "https://lobster.tail.ts.net/sample/mcp/SECRET-TOKEN" in capsys.readouterr().out
 
 
 def test_source_set_includes_worktree_files_but_not_ignored_or_secret_files(
