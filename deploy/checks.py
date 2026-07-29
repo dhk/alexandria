@@ -7,6 +7,7 @@ import os
 import shutil
 import subprocess
 import sys
+import time
 import urllib.error
 import urllib.request
 from collections.abc import Mapping, Sequence
@@ -82,26 +83,27 @@ def _service_check(unit: str, timeout_seconds: float) -> CheckResult:
             "skip",
             "systemd user services are unavailable on this host",
         )
-    try:
-        completed = subprocess.run(
-            ["systemctl", "--user", "is-active", unit],
-            check=False,
-            capture_output=True,
-            text=True,
-            timeout=timeout_seconds,
-        )
-    except (OSError, subprocess.TimeoutExpired) as exc:
-        return CheckResult("service", "User service", "fail", str(exc))
-    state = completed.stdout.strip() or completed.stderr.strip() or "unknown"
-    return CheckResult(
-        "service",
-        "User service",
-        "pass" if completed.returncode == 0 and state == "active" else "fail",
-        f"{unit}: {state}",
-    )
+    deadline = time.monotonic() + timeout_seconds
+    while True:
+        try:
+            completed = subprocess.run(
+                ["systemctl", "--user", "is-active", unit],
+                check=False,
+                capture_output=True,
+                text=True,
+                timeout=timeout_seconds,
+            )
+        except (OSError, subprocess.TimeoutExpired) as exc:
+            return CheckResult("service", "User service", "fail", str(exc))
+        state = completed.stdout.strip() or completed.stderr.strip() or "unknown"
+        if completed.returncode == 0 and state == "active":
+            return CheckResult("service", "User service", "pass", f"{unit}: {state}")
+        if state not in {"activating", "reloading"} or time.monotonic() >= deadline:
+            return CheckResult("service", "User service", "fail", f"{unit}: {state}")
+        time.sleep(0.2)
 
 
-def _http_check(url: str, timeout_seconds: float) -> CheckResult:
+def _http_check(url: str, expected_service: str, timeout_seconds: float) -> CheckResult:
     try:
         with urllib.request.urlopen(url, timeout=timeout_seconds) as response:
             body = response.read(64 * 1024)
@@ -110,6 +112,14 @@ def _http_check(url: str, timeout_seconds: float) -> CheckResult:
             payload = json.loads(body)
     except (OSError, ValueError, urllib.error.URLError) as exc:
         return CheckResult("health", "HTTP health", "fail", f"{url}: {exc}")
+    if not isinstance(payload, dict) or payload.get("service") != expected_service:
+        actual = payload.get("service") if isinstance(payload, dict) else None
+        return CheckResult(
+            "health",
+            "HTTP health",
+            "fail",
+            f"{url}: expected {expected_service!r}, received {actual!r}",
+        )
     version = payload.get("version") if isinstance(payload, dict) else None
     detail = f"{url} · version {version}" if version else url
     return CheckResult("health", "HTTP health", "pass", detail)
@@ -174,7 +184,13 @@ def run_component_checks(
             if not isinstance(service, dict):
                 continue
             checks.append(_service_check(str(service.get("unit", "")), timeout_seconds))
-            checks.append(_http_check(str(service.get("health_url", "")), timeout_seconds))
+            checks.append(
+                _http_check(
+                    str(service.get("health_url", "")),
+                    str(service.get("health_service", "")),
+                    timeout_seconds,
+                )
+            )
     else:
         checks.extend(
             [

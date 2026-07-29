@@ -346,14 +346,19 @@ def ensure_uv(*, interactive: bool, input_fn: Callable[[str], str], runner: Runn
     return _install_uv(runner)
 
 
-def _healthy(url: str, timeout_seconds: float = 15.0) -> bool:
+def _healthy(url: str, expected_service: str, timeout_seconds: float = 15.0) -> bool:
     deadline = time.monotonic() + timeout_seconds
     while time.monotonic() < deadline:
         try:
             with urllib.request.urlopen(url, timeout=2) as response:
-                if 200 <= response.status < 300:
+                payload = json.loads(response.read(64 * 1024))
+                if (
+                    200 <= response.status < 300
+                    and isinstance(payload, dict)
+                    and payload.get("service") == expected_service
+                ):
                     return True
-        except (OSError, urllib.error.URLError):
+        except (OSError, ValueError, urllib.error.URLError):
             time.sleep(0.25)
     return False
 
@@ -650,7 +655,10 @@ def main(argv: list[str] | None = None) -> int:
                 failed = [
                     str(service["health_url"])
                     for service in services
-                    if not _healthy(str(service["health_url"]))
+                    if not _healthy(
+                        str(service["health_url"]),
+                        str(service["health_service"]),
+                    )
                 ]
                 if failed:
                     raise InstallError("health checks failed: " + ", ".join(failed))
