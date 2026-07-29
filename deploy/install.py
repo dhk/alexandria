@@ -25,7 +25,12 @@ from collections.abc import Callable, Mapping, Sequence
 from pathlib import Path
 from typing import Any
 
-from deploy.checks import print_component_panel, required_checks_pass, run_component_checks
+from deploy.checks import (
+    print_component_panel,
+    required_checks_pass,
+    run_component_checks,
+    tailscale_route_state,
+)
 
 
 class InstallError(RuntimeError):
@@ -438,7 +443,87 @@ def _offer_linger(*, interactive: bool, input_fn: Callable[[str], str], runner: 
         print(f"Linger is not enabled. Run later: {shlex.join(command)}")
 
 
-def _print_capability(manifest: Mapping[str, Any]) -> None:
+def _tailscale_dns_name(runner: Callable[..., Any] = subprocess.run) -> str | None:
+    try:
+        result = runner(
+            ["tailscale", "status", "--json"],
+            check=False,
+            capture_output=True,
+            text=True,
+            timeout=5,
+        )
+        name = json.loads(result.stdout)["Self"]["DNSName"]
+    except (OSError, subprocess.SubprocessError, json.JSONDecodeError, KeyError, TypeError):
+        return None
+    return str(name).rstrip(".") or None
+
+
+def _tailscale_command(config: Mapping[str, Any]) -> list[str]:
+    mode = str(config["mode"])
+    port = int(config.get("port", 443))
+    command = ["sudo", "tailscale", mode]
+    if port != 443:
+        command.append(f"--https={port}")
+    command.extend(["--yes", "--bg", "--set-path", str(config["path"]), str(config["target"])])
+    return command
+
+
+def _configure_tailscale(
+    manifest: Mapping[str, Any],
+    *,
+    interactive: bool,
+    input_fn: Callable[[str], str],
+    runner: Runner,
+) -> None:
+    raw = manifest.get("tailscale")
+    if not isinstance(raw, dict):
+        return
+    required = bool(raw.get("required", False))
+    state, detail = tailscale_route_state(raw)
+    if state == "pass":
+        print(f"Tailscale route already configured: {detail}")
+        return
+    if state == "unavailable":
+        if required:
+            raise InstallError(detail)
+        print(f"WARNING: {detail}", file=sys.stderr)
+        return
+
+    command = _tailscale_command(raw)
+    if state == "conflict":
+        if not interactive:
+            raise InstallError(
+                f"refusing to replace an existing Tailscale route non-interactively: {detail}"
+            )
+        if not _confirm(
+            f"{detail}. Replace only this path mapping?",
+            default=False,
+            input_fn=input_fn,
+        ):
+            if required:
+                raise InstallError("required Tailscale route was not configured")
+            return
+    elif interactive and not _confirm(
+        f"Add {raw['mode']} route {raw['path']} → {raw['target']}?",
+        default=True,
+        input_fn=input_fn,
+    ):
+        if required:
+            raise InstallError("required Tailscale route was not configured")
+        return
+
+    runner(command)
+    state, detail = tailscale_route_state(raw)
+    if state != "pass":
+        raise InstallError(f"Tailscale route did not become ready: {detail}")
+    print(f"Tailscale route ready: {detail}")
+
+
+def _print_capability(
+    manifest: Mapping[str, Any],
+    *,
+    tailscale_dns: Callable[[], str | None] = _tailscale_dns_name,
+) -> None:
     raw = manifest.get("capability")
     if not isinstance(raw, dict):
         return
@@ -449,9 +534,17 @@ def _print_capability(manifest: Mapping[str, Any]) -> None:
     token = token_file.read_text(encoding="utf-8").strip()
     if not token:
         return
+    dns_name = tailscale_dns()
     print("\nCapability URLs (treat these like passwords):")
     for template in raw.get("urls", []):
-        print(f"  {str(template).replace('{token}', token)}")
+        rendered = str(template).replace("{token}", token)
+        if "{tailscale_dns}" in rendered:
+            if not dns_name:
+                continue
+            rendered = rendered.replace("{tailscale_dns}", dns_name)
+        print(f"  {rendered}")
+    if any("{tailscale_dns}" in str(template) for template in raw.get("urls", [])) and not dns_name:
+        print("  (Tailscale DNS name unavailable; tunnel URL omitted.)")
 
 
 def _rollback(
@@ -565,6 +658,9 @@ def main(argv: list[str] | None = None) -> int:
                 "Systemd units requiring backup/replacement: "
                 + (", ".join(str(path) for path in differing_units) or "none")
             )
+            tailscale = manifest.get("tailscale")
+            if isinstance(tailscale, dict):
+                print("Tailscale route: " + shlex.join(_tailscale_command(tailscale)))
             if args.keep_bundle:
                 print("Post-install cleanup: disabled by --keep-bundle")
             else:
@@ -662,6 +758,12 @@ def main(argv: list[str] | None = None) -> int:
                 ]
                 if failed:
                     raise InstallError("health checks failed: " + ", ".join(failed))
+                _configure_tailscale(
+                    manifest,
+                    interactive=interactive,
+                    input_fn=input,
+                    runner=_default_runner,
+                )
             except (OSError, InstallError, subprocess.CalledProcessError):
                 _rollback(
                     previous,

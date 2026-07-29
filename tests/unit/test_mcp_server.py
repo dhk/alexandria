@@ -13,6 +13,9 @@ from alexandria.input_resolution import extract_input
 from alexandria.mcp_server import (
     _extra_allowed_hosts,
     _http_token,
+    _tailscale_dns_name,
+    _tunnel_path,
+    _tunnel_port,
     begin_research,
     build_transport_security,
     connector_urls,
@@ -111,13 +114,58 @@ def test_http_token_generated_and_stable(tmp_path: Path) -> None:
 
 
 def test_extra_allowed_hosts_merges_cli_and_env() -> None:
-    hosts = _extra_allowed_hosts(["a.example"], env={"ALEXANDRIA_ALLOWED_HOSTS": "b.example"})
-    assert hosts == ["a.example", "b.example"]
+    hosts = _extra_allowed_hosts(
+        ["a.example"],
+        env={"ALEXANDRIA_ALLOWED_HOSTS": "b.example"},
+        tailscale=lambda: "lobster.tail.ts.net",
+    )
+    assert hosts == ["a.example", "b.example", "lobster.tail.ts.net"]
+
+
+def test_no_config_and_no_tailscale_means_no_extra_hosts() -> None:
+    assert _extra_allowed_hosts(None, env={}, tailscale=lambda: None) == []
+
+
+def test_tailscale_dns_detection_is_best_effort() -> None:
+    class Result:
+        stdout = '{"Self":{"DNSName":"lobster.tail.ts.net."}}'
+
+    assert _tailscale_dns_name(lambda *_args, **_kwargs: Result()) == "lobster.tail.ts.net"
+
+    def missing(*_args: object, **_kwargs: object) -> object:
+        raise FileNotFoundError("tailscale")
+
+    assert _tailscale_dns_name(missing) is None
+    assert _tailscale_dns_name(lambda *_args, **_kwargs: type("R", (), {"stdout": "bad"})()) is None
+
+
+def test_tunnel_path_and_port_resolve_cli_then_environment() -> None:
+    environment = {
+        "ALEXANDRIA_TUNNEL_PATH": "from-env",
+        "ALEXANDRIA_TUNNEL_PORT": "8443",
+    }
+    assert _tunnel_path(None, environment) == "/from-env"
+    assert _tunnel_path("/from-cli/", environment) == "/from-cli"
+    assert _tunnel_port(None, environment) == 8443
+    assert _tunnel_port(10000, environment) == 10000
+    assert _tunnel_port(None, {"ALEXANDRIA_TUNNEL_PORT": "invalid"}) is None
 
 
 def test_connector_urls_include_token() -> None:
     pairs = connector_urls("tok123", [], port=9000)
     assert dict(pairs)["MCP over HTTP"] == "http://127.0.0.1:9000/mcp/tok123"
+
+    tunneled = dict(
+        connector_urls(
+            "tok123",
+            ["lobster.tail.ts.net"],
+            tunnel_path="/alexandria",
+            tunnel_port=8443,
+        )
+    )
+    assert tunneled["Tunnel MCP connector"] == (
+        "https://lobster.tail.ts.net:8443/alexandria/mcp/tok123"
+    )
 
 
 def test_render_urls_formats_lines() -> None:

@@ -44,8 +44,8 @@ The documentation index includes a collapsible **Installation front panel**.
 Opening it runs local, no-spend component checks and turns each successful
 component green. It checks the managed release link, installed command, research
 configuration, systemd user service, HTTP health response, MCP capability token,
-and documentation payload. It never calls OpenRouter and never returns secret or
-token values.
+Tailscale path route, and documentation payload. It never calls OpenRouter and
+never returns secret or token values.
 
 Use `./install.py --dry-run` to see resolved paths without changing anything.
 Use `./install.py --check` to rerun the same component checks later without
@@ -89,10 +89,14 @@ The interactive Alexandria installer:
 6. writes and enables `~/.config/systemd/user/alexandria-mcp.service`;
 7. checks that `http://127.0.0.1:8797/health` identifies itself as Alexandria,
    rolling back when the new service fails health or another process owns the port;
-8. invokes the installed command with `--help` and runs the complete component
+8. offers to add the non-destructive Tailscale Funnel path `/alexandria`, forwarding
+   to `http://127.0.0.1:8797`; an existing different mapping is shown and requires a
+   separate, default-no replacement confirmation;
+9. invokes the installed command with `--help` and runs the complete component
    panel, rolling back when a required component fails;
-9. offers to enable systemd linger, then prints the token-bearing MCP URL;
-10. preserves the documentation/front panel under the managed install root and,
+10. offers to enable systemd linger, then prints both the private loopback URL and
+    the resolved `https://<tailscale-dns>/alexandria/mcp/<token>` URL;
+11. preserves the documentation/front panel under the managed install root and,
     unless declined, removes only the three transfer artifacts.
 
 If uv is absent, the interactive installer asks before downloading the official
@@ -135,7 +139,10 @@ Copy `scripts/pack.py`, `deploy/install.py`, `deploy/docs.py`, and
   canonical secrets file, required secret names, and exclusions;
 - `[[services]]`: systemd unit, installed entry point, arguments, and loopback
   health URL (repeat for multiple services);
-- `[capability]`: token file and URL templates to print after a healthy start.
+- `[capability]`: token file and URL templates to print after a healthy start;
+  `{tailscale_dns}` is resolved on the destination host;
+- `[tailscale]`: optional `serve` or `funnel` path mount, local target, HTTPS port,
+  and whether that route is a required component.
 
 The installer consumes the JSON manifest generated from that TOML, so the target
 host needs only a stock `python3`; it does not need TOML support or project
@@ -148,3 +155,19 @@ standalone report web server is intentionally not installed as a remotely expose
 service while it is unauthenticated. Once the report routes are mounted under the
 same capability token as MCP, they can travel through this same service and pack
 without adding a second public port.
+
+## Lobster front door
+
+Alexandria stays bound to `127.0.0.1:8797`. Lobster's existing HTTPS Funnel on
+port 443 continues to serve Wingman at `/`; the installer adds only the
+`/alexandria` handler and does not reset or replace the other handlers. Tailscale
+strips that mount path before forwarding, so Alexandria continues to serve MCP at
+its local `/mcp/<token>` route while remote clients use:
+
+```text
+https://lobster.tail08dfce.ts.net/alexandria/mcp/<token>
+```
+
+The server auto-detects the machine's Tailscale DNS name for its Host allow-list.
+Run `alexandria-ctl --tunnel-path /alexandria url` on Lobster to print the current
+ready-to-paste connector URL without restarting the service.
