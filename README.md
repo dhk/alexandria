@@ -132,7 +132,10 @@ managed replacements, preserves existing secrets, and backs up differing service
 units. Every unpacked bundle also includes `./launch-docs.py`, which opens a
 generated human-facing documentation index. Its installation front panel runs
 no-spend “hello world” checks and turns each responding component green. The same
-checks can be rerun from a terminal with `./install.py --check`. See
+checks can be rerun from a terminal with `./install.py --check`. After success, the
+installer preserves that front panel under the managed install root and offers to
+remove the archive, checksum, and unpacked transfer directory; `--keep-bundle`
+retains them. See
 [docs/PACKAGING.md](docs/PACKAGING.md).
 
 Each investigation follows a standard lifecycle:

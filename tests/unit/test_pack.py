@@ -13,8 +13,11 @@ from deploy.checks import required_checks_pass, run_component_checks
 from deploy.install import (
     InstallError,
     _write_units,
+    bundle_cleanup_targets,
+    cleanup_bundle_artifacts,
     ensure_secrets,
     install_root_needs_adoption,
+    install_support,
     mark_install_root,
     render_service_unit,
 )
@@ -178,6 +181,70 @@ def test_existing_install_root_must_be_adopted_and_is_never_cleared(tmp_path: Pa
 
     assert install_root_needs_adoption(root, "sample-tool") is False
     assert existing.read_text(encoding="utf-8") == "keep me\n"
+
+
+def test_installed_support_preserves_docs_without_a_second_source_copy(tmp_path: Path) -> None:
+    bundle = tmp_path / "sample-tool-release-1"
+    bundle.mkdir()
+    (bundle / "launch-docs.py").write_text("# launcher\n", encoding="utf-8")
+    (bundle / "docs-index.html").write_text("docs\n", encoding="utf-8")
+    (bundle / "pack-manifest.json").write_text("{}\n", encoding="utf-8")
+    (bundle / "deploy").mkdir()
+    (bundle / "deploy" / "__init__.py").write_text("", encoding="utf-8")
+    (bundle / "deploy" / "checks.py").write_text("# checks\n", encoding="utf-8")
+    install_root = tmp_path / "installed"
+    release = install_root / "releases" / "release-1"
+    release.mkdir(parents=True)
+
+    support = install_support(bundle, install_root, release, "release-1")
+
+    assert (support / "launch-docs.py").read_text(encoding="utf-8") == "# launcher\n"
+    assert (support / "docs-index.html").is_file()
+    assert (support / "deploy" / "checks.py").is_file()
+    assert (support / "source").is_symlink()
+    assert (support / "source").resolve() == release.resolve()
+
+
+def test_cleanup_removes_only_exact_transfer_artifacts(tmp_path: Path) -> None:
+    bundle = tmp_path / "sample-tool-release-1"
+    bundle.mkdir()
+    (bundle / "pack-manifest.json").write_text("{}\n", encoding="utf-8")
+    archive = tmp_path / "sample-tool-release-1.tar.gz"
+    checksum = tmp_path / "sample-tool-release-1.tar.gz.sha256"
+    archive.write_bytes(b"archive")
+    checksum.write_text("checksum\n", encoding="utf-8")
+    unrelated = tmp_path / "keep.txt"
+    unrelated.write_text("keep\n", encoding="utf-8")
+    installed_release = tmp_path / "installed" / "releases" / "release-1"
+    installed_release.mkdir(parents=True)
+    manifest = {
+        "bundle_id": "release-1",
+        "tool": {"name": "sample-tool"},
+    }
+
+    assert bundle_cleanup_targets(bundle, manifest) == [archive, checksum, bundle]
+    removed = cleanup_bundle_artifacts(bundle, manifest)
+
+    assert removed == [archive, checksum, bundle]
+    assert not archive.exists()
+    assert not checksum.exists()
+    assert not bundle.exists()
+    assert unrelated.read_text(encoding="utf-8") == "keep\n"
+    assert installed_release.is_dir()
+
+
+def test_cleanup_refuses_a_renamed_bundle_directory(tmp_path: Path) -> None:
+    bundle = tmp_path / "renamed"
+    bundle.mkdir()
+    manifest = {
+        "bundle_id": "release-1",
+        "tool": {"name": "sample-tool"},
+    }
+
+    with pytest.raises(InstallError, match="cleanup refused"):
+        cleanup_bundle_artifacts(bundle, manifest)
+
+    assert bundle.is_dir()
 
 
 def test_install_root_owned_by_another_tool_is_refused(tmp_path: Path) -> None:
