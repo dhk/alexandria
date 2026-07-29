@@ -176,6 +176,48 @@ def tailscale_route_state(
     return "missing", f"no HTTPS route maps {path} to {target}"
 
 
+def service_registry_state(config: Mapping[str, Any]) -> tuple[bool, str]:
+    helper = Path(str(config.get("helper_path", "")))
+    data_path = Path(str(config.get("data_path", "")))
+    entries = config.get("entries")
+    if not helper.is_file():
+        return False, f"registry helper is missing: {helper}"
+    if not data_path.is_file():
+        return False, f"registry data is missing: {data_path}"
+    if not isinstance(entries, list):
+        return False, "registry manifest entries are invalid"
+    try:
+        payload = json.loads(data_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        return False, f"cannot read registry data: {exc}"
+    if not isinstance(payload, dict) or payload.get("format_version") != 1:
+        return False, "registry data has an unsupported format"
+    services = payload.get("services")
+    if not isinstance(services, dict):
+        return False, "registry data has no services table"
+    for expected in entries:
+        if not isinstance(expected, dict):
+            return False, "registry manifest entry is invalid"
+        service_id = str(expected.get("service_id", ""))
+        actual = services.get(service_id)
+        if not isinstance(actual, dict):
+            return False, f"{service_id} is not reserved"
+        endpoint = actual.get("endpoint")
+        expected_endpoint = {
+            "protocol": expected.get("protocol"),
+            "address": expected.get("address"),
+            "port": expected.get("port"),
+        }
+        if not isinstance(endpoint, dict) or any(
+            endpoint.get(key) != value for key, value in expected_endpoint.items()
+        ):
+            return False, f"{service_id} endpoint differs from the pack declaration"
+        expected_route = expected.get("route")
+        if expected_route is not None and actual.get("route") != expected_route:
+            return False, f"{service_id} external route differs from the pack declaration"
+    return True, f"{data_path} · {len(entries)} declared services reserved"
+
+
 def run_component_checks(
     manifest: Mapping[str, Any],
     bundle_root: Path,
@@ -285,6 +327,31 @@ def run_component_checks(
                     "skip",
                     "service installation skipped",
                     required=required_tunnel,
+                )
+            )
+
+    registry = manifest.get("registry")
+    if isinstance(registry, dict):
+        required_registry = bool(registry.get("required", False))
+        if include_services:
+            ready, detail = service_registry_state(registry)
+            checks.append(
+                CheckResult(
+                    "registry",
+                    "Host service registry",
+                    "pass" if ready else "fail",
+                    detail,
+                    required=required_registry,
+                )
+            )
+        else:
+            checks.append(
+                CheckResult(
+                    "registry",
+                    "Host service registry",
+                    "skip",
+                    "service installation skipped",
+                    required=required_registry,
                 )
             )
 

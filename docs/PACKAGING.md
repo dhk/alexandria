@@ -44,8 +44,8 @@ The documentation index includes a collapsible **Installation front panel**.
 Opening it runs local, no-spend component checks and turns each successful
 component green. It checks the managed release link, installed command, research
 configuration, systemd user service, HTTP health response, MCP capability token,
-Tailscale path route, and documentation payload. It never calls OpenRouter and
-never returns secret or token values.
+Tailscale path route, host service registry, and documentation payload. It never
+calls OpenRouter and never returns secret or token values.
 
 Use `./install.py --dry-run` to see resolved paths without changing anything.
 Use `./install.py --check` to rerun the same component checks later without
@@ -75,6 +75,11 @@ replacement of already managed pack state, but still refuses to adopt an unknown
 non-empty directory; that decision must be made interactively or avoided with a
 different `--install-root`.
 
+The shared registry helper receives the same treatment: an earlier managed helper
+is backed up before replacement, while an unknown executable is refused
+non-interactively. Registry entries are never removed by install, rollback, or
+transfer cleanup.
+
 ## What the installer creates
 
 The interactive Alexandria installer:
@@ -86,17 +91,20 @@ The interactive Alexandria installer:
 4. asks, with hidden input, for any missing `OPENROUTER_API_KEY` and writes
    `~/.config/alexandria/secrets.env` with mode `0600`;
 5. atomically points `current` at the new release;
-6. writes and enables `~/.config/systemd/user/alexandria-mcp.service`;
-7. checks that `http://127.0.0.1:8797/health` identifies itself as Alexandria,
+6. installs the root-owned host registry helper and atomically imports or verifies
+   Wingman (`8787`), Trent (`8788`), and Alexandria (`8797`) plus their Tailscale
+   paths, failing a collision before unit or route mutation;
+7. writes and enables `~/.config/systemd/user/alexandria-mcp.service`;
+8. checks that `http://127.0.0.1:8797/health` identifies itself as Alexandria,
    rolling back when the new service fails health or another process owns the port;
-8. offers to add the non-destructive Tailscale Funnel path `/alexandria`, forwarding
+9. offers to add the non-destructive Tailscale Funnel path `/alexandria`, forwarding
    to `http://127.0.0.1:8797`; an existing different mapping is shown and requires a
    separate, default-no replacement confirmation;
-9. invokes the installed command with `--help` and runs the complete component
+10. invokes the installed command with `--help` and runs the complete component
    panel, rolling back when a required component fails;
-10. offers to enable systemd linger, then prints both the private loopback URL and
+11. offers to enable systemd linger, then prints both the private loopback URL and
     the resolved `https://<tailscale-dns>/alexandria/mcp/<token>` URL;
-11. preserves the documentation/front panel under the managed install root and,
+12. preserves the documentation/front panel under the managed install root and,
     unless declined, removes only the three transfer artifacts.
 
 If uv is absent, the interactive installer asks before downloading the official
@@ -143,6 +151,9 @@ Copy `scripts/pack.py`, `deploy/install.py`, `deploy/docs.py`, and
   `{tailscale_dns}` is resolved on the destination host;
 - `[tailscale]`: optional `serve` or `funnel` path mount, local target, HTTPS port,
   and whether that route is a required component.
+- `[registry]` and `[[registry.entries]]`: the root-owned helper and data paths,
+  non-overlapping static/dynamic bands, plus endpoint, health, unit, provenance,
+  and independently reserved external-route declarations.
 
 The installer consumes the JSON manifest generated from that TOML, so the target
 host needs only a stock `python3`; it does not need TOML support or project
@@ -171,3 +182,27 @@ https://lobster.tail08dfce.ts.net/alexandria/mcp/<token>
 The server auto-detects the machine's Tailscale DNS name for its Host allow-list.
 Run `alexandria-ctl --tunnel-path /alexandria url` on Lobster to print the current
 ready-to-paste connector URL without restarting the service.
+
+## Host service registry
+
+The registry lives outside every release at
+`/var/lib/common-services/registry.json`; the helper is
+`/usr/local/bin/service-registry`. Normal users may inspect it:
+
+```bash
+service-registry list
+service-registry check
+```
+
+Run full host reconciliation with root privileges so systemd managers belonging
+to other Unix users can be inspected:
+
+```bash
+sudo service-registry reconcile
+```
+
+Reconciliation reports missing or unknown managed-range listeners, stale units,
+failed health identity checks, and Tailscale route drift. It never repairs or
+deletes state. Recovery, ownership, allocation bands, and the normative record
+contract are defined in
+[RFC-0006](RFC-0006-host-service-registry.md).

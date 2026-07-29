@@ -59,6 +59,13 @@ claim also has thin coverage. A
 
 The operative commission-surface contract is [RFC-0005 — The commission surface](ux/RFC-0005-commission-surface.md). Its [interactive prototype](ux/prototype/index.html) demonstrates all five specified screens without implementing the application.
 
+## Host operations
+
+[RFC-0006 — Host service endpoint registry](RFC-0006-host-service-registry.md)
+defines the shared-host authority for local ports and external Tailscale routes.
+Alexandria's pack tooling incubates the implementation while preserving the
+repository as the research system of record.
+
 ## Research assurance
 
 Bronze, Silver, and Gold describe increasingly rigorous research processes. They are cumulative process requirements, not labels of factual certainty.

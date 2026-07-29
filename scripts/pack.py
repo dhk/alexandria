@@ -57,6 +57,41 @@ class TailscaleSpec:
 
 
 @dataclass(frozen=True)
+class RegistryRouteSpec:
+    mode: str
+    host: str
+    https_port: int
+    path: str
+    target: str
+
+
+@dataclass(frozen=True)
+class RegistryEntrySpec:
+    service_id: str
+    display_name: str
+    owner: str
+    protocol: str
+    address: str
+    port: int
+    unit: str | None
+    health_url: str | None
+    health_service: str | None
+    source: str | None
+    adopt_listener: bool
+    route: RegistryRouteSpec | None
+
+
+@dataclass(frozen=True)
+class RegistrySpec:
+    helper_path: str
+    data_path: str
+    static_range: list[int]
+    dynamic_range: list[int]
+    required: bool
+    entries: list[RegistryEntrySpec]
+
+
+@dataclass(frozen=True)
 class PackSpec:
     format_version: int
     name: str
@@ -69,6 +104,7 @@ class PackSpec:
     services: list[ServiceSpec]
     capability: CapabilitySpec | None
     tailscale: TailscaleSpec | None
+    registry: RegistrySpec | None
 
 
 @dataclass(frozen=True)
@@ -92,6 +128,27 @@ def _string_list(mapping: dict[str, Any], key: str) -> list[str]:
     if not isinstance(value, list) or not all(isinstance(item, str) for item in value):
         raise PackError(f"deploy/pack.toml {key!r} must be an array of strings")
     return [item for item in value if item]
+
+
+def _optional_string(mapping: dict[str, Any], key: str) -> str | None:
+    value = mapping.get(key)
+    if value is None:
+        return None
+    if not isinstance(value, str) or not value.strip():
+        raise PackError(f"deploy/pack.toml {key!r} must be a non-empty string when present")
+    return value.strip()
+
+
+def _port_range(mapping: dict[str, Any], key: str) -> list[int]:
+    value = mapping.get(key)
+    if (
+        not isinstance(value, list)
+        or len(value) != 2
+        or not all(isinstance(item, int) and not isinstance(item, bool) for item in value)
+        or not 1024 <= value[0] <= value[1] <= 49151
+    ):
+        raise PackError(f"deploy/pack.toml {key!r} must be [START, END] within 1024-49151")
+    return list(value)
 
 
 def load_spec(path: Path) -> PackSpec:
@@ -157,6 +214,105 @@ def load_spec(path: Path) -> PackSpec:
             required=required,
         )
 
+    raw_registry = raw.get("registry")
+    registry = None
+    if raw_registry is not None:
+        if not isinstance(raw_registry, dict):
+            raise PackError("[registry] must be a table")
+        required = raw_registry.get("required", False)
+        if not isinstance(required, bool):
+            raise PackError("deploy/pack.toml [registry].required must be a boolean")
+        raw_entries = raw_registry.get("entries")
+        if not isinstance(raw_entries, list) or not raw_entries:
+            raise PackError("deploy/pack.toml requires at least one [[registry.entries]] table")
+        entries: list[RegistryEntrySpec] = []
+        for raw_entry in raw_entries:
+            if not isinstance(raw_entry, dict):
+                raise PackError("every [[registry.entries]] entry must be a table")
+            protocol = str(raw_entry.get("protocol", "tcp"))
+            if protocol != "tcp":
+                raise PackError("registry format v1 supports protocol = 'tcp' only")
+            port = raw_entry.get("port")
+            if not isinstance(port, int) or isinstance(port, bool) or not 1024 <= port <= 49151:
+                raise PackError("every [[registry.entries]] port must be within 1024-49151")
+            health_url = _optional_string(raw_entry, "health_url")
+            health_service = _optional_string(raw_entry, "health_service")
+            if bool(health_url) != bool(health_service):
+                raise PackError("registry health_url and health_service must be supplied together")
+            route_keys = {
+                "route_mode",
+                "route_host",
+                "route_https_port",
+                "route_path",
+                "route_target",
+            }
+            present_route_keys = route_keys.intersection(raw_entry)
+            route = None
+            if present_route_keys:
+                if present_route_keys != route_keys:
+                    missing = ", ".join(sorted(route_keys - present_route_keys))
+                    raise PackError(f"registry route is incomplete; missing {missing}")
+                route_mode = _required_string(raw_entry, "route_mode")
+                if route_mode not in {"serve", "funnel"}:
+                    raise PackError("registry route_mode must be 'serve' or 'funnel'")
+                route_port = raw_entry["route_https_port"]
+                if (
+                    not isinstance(route_port, int)
+                    or isinstance(route_port, bool)
+                    or not 1 <= route_port <= 65535
+                ):
+                    raise PackError("registry route_https_port must be within 1-65535")
+                route_path = _required_string(raw_entry, "route_path")
+                if not route_path.startswith("/"):
+                    raise PackError("registry route_path must start with '/'")
+                route = RegistryRouteSpec(
+                    mode=route_mode,
+                    host=_required_string(raw_entry, "route_host"),
+                    https_port=route_port,
+                    path=route_path.rstrip("/") or "/",
+                    target=_required_string(raw_entry, "route_target"),
+                )
+            adopt_listener = raw_entry.get("adopt_listener", False)
+            if not isinstance(adopt_listener, bool):
+                raise PackError("registry adopt_listener must be a boolean")
+            entries.append(
+                RegistryEntrySpec(
+                    service_id=_required_string(raw_entry, "service_id"),
+                    display_name=_required_string(raw_entry, "display_name"),
+                    owner=_required_string(raw_entry, "owner"),
+                    protocol=protocol,
+                    address=_required_string(raw_entry, "address"),
+                    port=port,
+                    unit=_optional_string(raw_entry, "unit"),
+                    health_url=health_url,
+                    health_service=health_service,
+                    source=_optional_string(raw_entry, "source"),
+                    adopt_listener=adopt_listener,
+                    route=route,
+                )
+            )
+        static_range = _port_range(raw_registry, "static_range")
+        dynamic_range = _port_range(raw_registry, "dynamic_range")
+        if max(static_range[0], dynamic_range[0]) <= min(static_range[1], dynamic_range[1]):
+            raise PackError("registry static_range and dynamic_range must not overlap")
+        outside_static = [
+            entry.service_id
+            for entry in entries
+            if not static_range[0] <= entry.port <= static_range[1]
+        ]
+        if outside_static:
+            raise PackError(
+                "registry static entries outside static_range: " + ", ".join(outside_static)
+            )
+        registry = RegistrySpec(
+            helper_path=_required_string(raw_registry, "helper_path"),
+            data_path=_required_string(raw_registry, "data_path"),
+            static_range=static_range,
+            dynamic_range=dynamic_range,
+            required=required,
+            entries=entries,
+        )
+
     return PackSpec(
         format_version=1,
         name=_required_string(pack, "name"),
@@ -169,6 +325,7 @@ def load_spec(path: Path) -> PackSpec:
         services=services,
         capability=capability,
         tailscale=tailscale,
+        registry=registry,
     )
 
 
@@ -261,6 +418,7 @@ def _manifest(root: Path, spec: PackSpec, bundle_id: str) -> dict[str, Any]:
         "services": [asdict(service) for service in spec.services],
         "capability": asdict(spec.capability) if spec.capability else None,
         "tailscale": asdict(spec.tailscale) if spec.tailscale else None,
+        "registry": asdict(spec.registry) if spec.registry else None,
     }
 
 
@@ -373,12 +531,17 @@ def build_bundle(
     installer = root / "deploy" / "install.py"
     docs_launcher = root / "deploy" / "docs.py"
     component_checks = root / "deploy" / "checks.py"
+    service_registry = root / "deploy" / "service_registry.py"
     if Path("deploy/install.py") not in files or not installer.is_file():
         raise PackError("deploy/install.py must be present and included in the source set")
     if Path("deploy/docs.py") not in files or not docs_launcher.is_file():
         raise PackError("deploy/docs.py must be present and included in the source set")
     if Path("deploy/checks.py") not in files or not component_checks.is_file():
         raise PackError("deploy/checks.py must be present and included in the source set")
+    if spec.registry is not None and (
+        Path("deploy/service_registry.py") not in files or not service_registry.is_file()
+    ):
+        raise PackError("deploy/service_registry.py must be present when [registry] is configured")
     large = _large_files(root, files, max_file_bytes)
     if large and not allow_large_files:
         joined = ", ".join(path.as_posix() for path in large)
@@ -407,6 +570,8 @@ def build_bundle(
         bundled_deploy.mkdir()
         (bundled_deploy / "__init__.py").write_text("", encoding="utf-8")
         shutil.copy2(component_checks, bundled_deploy / "checks.py")
+        if spec.registry is not None:
+            shutil.copy2(service_registry, bundled_deploy / "service_registry.py")
         manifest = _manifest(root, spec, bundle_id)
         (staging / "pack-manifest.json").write_text(
             json.dumps(manifest, indent=2, sort_keys=True) + "\n",

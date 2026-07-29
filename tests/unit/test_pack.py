@@ -16,12 +16,15 @@ from deploy.checks import (
     _http_check,
     required_checks_pass,
     run_component_checks,
+    service_registry_state,
     tailscale_route_state,
 )
 from deploy.install import (
     InstallError,
     _configure_tailscale,
+    _install_registry_helper,
     _print_capability,
+    _registry_commands,
     _tailscale_command,
     _write_units,
     bundle_cleanup_targets,
@@ -108,6 +111,7 @@ def _spec() -> PackSpec:
         ],
         capability=None,
         tailscale=None,
+        registry=None,
     )
 
 
@@ -131,6 +135,18 @@ def test_alexandria_pack_config_is_valid() -> None:
     assert spec.tailscale.mode == "funnel"
     assert spec.tailscale.path == "/alexandria"
     assert spec.tailscale.target == "http://127.0.0.1:8797"
+    assert spec.registry is not None
+    assert spec.registry.helper_path == "/usr/local/bin/service-registry"
+    assert spec.registry.static_range == [8700, 8799]
+    assert spec.registry.dynamic_range == [8800, 8999]
+    assert [entry.service_id for entry in spec.registry.entries] == [
+        "wingman",
+        "wingman-trent",
+        "alexandria",
+    ]
+    assert spec.registry.entries[1].owner == "trent"
+    assert spec.registry.entries[2].route is not None
+    assert spec.registry.entries[2].route.path == "/alexandria"
 
 
 def test_health_checks_reject_another_service_on_the_expected_port(
@@ -290,6 +306,122 @@ def test_tailscale_setup_adds_and_verifies_only_a_missing_route(
     )
 
     assert commands == [_tailscale_command(manifest["tailscale"])]
+
+
+def test_registry_commands_reserve_endpoint_before_external_route() -> None:
+    config = {
+        "helper_path": "/usr/local/bin/service-registry",
+        "data_path": "/var/lib/common-services/registry.json",
+        "static_range": [8700, 8799],
+        "dynamic_range": [8800, 8999],
+        "entries": [
+            {
+                "service_id": "alexandria",
+                "display_name": "Alexandria",
+                "owner": "dhk",
+                "protocol": "tcp",
+                "address": "127.0.0.1",
+                "port": 8797,
+                "unit": "alexandria-mcp.service",
+                "health_url": "http://127.0.0.1:8797/health",
+                "health_service": "alexandria",
+                "source": "dhk/alexandria",
+                "adopt_listener": True,
+                "route": {
+                    "mode": "funnel",
+                    "host": "tailscale-self",
+                    "https_port": 443,
+                    "path": "/alexandria",
+                    "target": "http://127.0.0.1:8797",
+                },
+            }
+        ],
+    }
+
+    commands = _registry_commands(config)
+
+    assert commands[0][-1] == "--adopt-listener"
+    assert "reserve" in commands[0]
+    assert "reserve-route" in commands[1]
+    assert commands[1][-1] == "http://127.0.0.1:8797"
+
+
+def test_registry_helper_refuses_unknown_noninteractive_replacement(tmp_path: Path) -> None:
+    bundle = tmp_path / "bundle"
+    (bundle / "deploy").mkdir(parents=True)
+    (bundle / "deploy/service_registry.py").write_text(
+        "#!/usr/bin/env python3\n# common-services-registry-format: 1\n",
+        encoding="utf-8",
+    )
+    target = tmp_path / "bin/service-registry"
+    target.parent.mkdir()
+    target.write_text("unknown helper\n", encoding="utf-8")
+    commands: list[list[str]] = []
+
+    with pytest.raises(InstallError, match="unknown shared registry helper"):
+        _install_registry_helper(
+            bundle,
+            {"helper_path": str(target)},
+            interactive=False,
+            input_fn=lambda _prompt: "",
+            runner=lambda command: commands.append(list(command)),
+        )
+
+    assert commands == []
+
+
+def test_registry_component_check_matches_declared_reservations(tmp_path: Path) -> None:
+    helper = tmp_path / "service-registry"
+    helper.write_text("helper\n", encoding="utf-8")
+    data = tmp_path / "registry.json"
+    data.write_text(
+        json.dumps(
+            {
+                "format_version": 1,
+                "services": {
+                    "alexandria": {
+                        "endpoint": {
+                            "protocol": "tcp",
+                            "address": "127.0.0.1",
+                            "port": 8797,
+                        },
+                        "route": {
+                            "mode": "funnel",
+                            "host": "tailscale-self",
+                            "https_port": 443,
+                            "path": "/alexandria",
+                            "target": "http://127.0.0.1:8797",
+                        },
+                    }
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+    config = {
+        "helper_path": str(helper),
+        "data_path": str(data),
+        "entries": [
+            {
+                "service_id": "alexandria",
+                "protocol": "tcp",
+                "address": "127.0.0.1",
+                "port": 8797,
+                "route": {
+                    "mode": "funnel",
+                    "host": "tailscale-self",
+                    "https_port": 443,
+                    "path": "/alexandria",
+                    "target": "http://127.0.0.1:8797",
+                },
+            }
+        ],
+    }
+
+    ready, detail = service_registry_state(config)
+
+    assert ready is True
+    assert "1 declared services" in detail
 
 
 def test_capability_urls_resolve_tailscale_dns_without_exposing_token_in_checks(
