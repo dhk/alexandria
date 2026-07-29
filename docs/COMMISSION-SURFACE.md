@@ -54,6 +54,18 @@ field. No vendor price table is committed. Review fetches the live Models API; i
 that fetch fails, the page states that the estimate is unavailable and leaves the
 provider-side key limit as the active ceiling.
 
+The Result screen reads those immutable run artifacts through five views: Claim
+landscape, Heatmap document, Report, Raw outputs, and Provenance. The Heatmap
+document color-codes canonical claim blocks by their assigned group and exposes
+each model's score and evidence cell. It deliberately does not color arbitrary
+report prose because the current artifacts do not record exact claim-to-prose
+spans. Report renders `report.md` as safe Markdown beside an artifact card; the
+operator can copy the source Markdown or download the complete run directory as a
+ZIP bundle. That ZIP adds self-contained `report.html` and `heatmap.html` readers,
+an executable `open-report.py`, and human instructions alongside the unchanged run
+artifacts, so a recipient can read either output without an Alexandria server. The
+readers remain explicitly subordinate to the graded claims and raw evidence.
+
 ## Inputs
 
 - Paste is retained verbatim as Markdown.
