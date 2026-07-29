@@ -1,15 +1,18 @@
 from __future__ import annotations
 
+import json
 import os
 import shutil
 import subprocess
 import sys
 import tarfile
 from pathlib import Path
+from typing import Self
 
 import pytest
 
-from deploy.checks import required_checks_pass, run_component_checks
+import deploy.install as installer
+from deploy.checks import _http_check, required_checks_pass, run_component_checks
 from deploy.install import (
     InstallError,
     _write_units,
@@ -31,6 +34,22 @@ from scripts.pack import (
 )
 
 ROOT = Path(__file__).resolve().parents[2]
+
+
+class _HealthResponse:
+    status = 200
+
+    def __init__(self, service: str) -> None:
+        self.service = service
+
+    def read(self, _limit: int = -1) -> bytes:
+        return json.dumps({"service": self.service, "version": "test"}).encode()
+
+    def __enter__(self) -> Self:
+        return self
+
+    def __exit__(self, *_args: object) -> None:
+        return None
 
 
 def _git(repo: Path, *args: str) -> None:
@@ -76,6 +95,7 @@ def _spec() -> PackSpec:
                 entrypoint="sample-tool",
                 args=["serve"],
                 health_url="http://127.0.0.1:9000/health",
+                health_service="sample-tool",
             )
         ],
         capability=None,
@@ -89,6 +109,32 @@ def test_alexandria_pack_config_is_valid() -> None:
     assert spec.default_install_root == "~/src/alexandria"
     assert spec.required_secrets == ["OPENROUTER_API_KEY"]
     assert spec.services[0].unit == "alexandria-mcp.service"
+    assert spec.services[0].args == ["--http", "--port", "8797"]
+    assert spec.services[0].health_url == "http://127.0.0.1:8797/health"
+    assert spec.services[0].health_service == "alexandria"
+
+
+def test_health_checks_reject_another_service_on_the_expected_port(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    response = _HealthResponse("wingman")
+    monkeypatch.setattr("deploy.install.urllib.request.urlopen", lambda *_args, **_kwargs: response)
+    monotonic = iter([0.0, 0.0, 2.0])
+    monkeypatch.setattr("deploy.install.time.monotonic", lambda: next(monotonic))
+    monkeypatch.setattr("deploy.install.time.sleep", lambda _seconds: None)
+
+    assert installer._healthy("http://127.0.0.1:8797/health", "alexandria", 1.0) is False
+    panel = _http_check("http://127.0.0.1:8797/health", "alexandria", 1.0)
+    assert panel.state == "fail"
+    assert "expected 'alexandria', received 'wingman'" in panel.detail
+
+
+def test_health_checks_accept_alexandria(monkeypatch: pytest.MonkeyPatch) -> None:
+    response = _HealthResponse("alexandria")
+    monkeypatch.setattr("deploy.install.urllib.request.urlopen", lambda *_args, **_kwargs: response)
+
+    assert installer._healthy("http://127.0.0.1:8797/health", "alexandria", 1.0) is True
+    assert _http_check("http://127.0.0.1:8797/health", "alexandria", 1.0).state == "pass"
 
 
 def test_source_set_includes_worktree_files_but_not_ignored_or_secret_files(
@@ -460,6 +506,7 @@ def test_component_panel_proves_release_command_config_and_docs(
                 "unit": "sample-tool.service",
                 "entrypoint": "sample-tool",
                 "health_url": "http://127.0.0.1:9000/health",
+                "health_service": "sample-tool",
             }
         ],
         "capability": {"token_file": "~/.local/share/sample-tool/token"},

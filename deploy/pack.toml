@@ -20,9 +20,10 @@ exclude = [
 unit = "alexandria-mcp.service"
 description = "Alexandria MCP server (streamable HTTP)"
 entrypoint = "alexandria-mcp"
-args = ["--http"]
-health_url = "http://127.0.0.1:8787/health"
+args = ["--http", "--port", "8797"]
+health_url = "http://127.0.0.1:8797/health"
+health_service = "alexandria"
 
 [capability]
 token_file = "~/.local/share/alexandria/mcp-http-token"
-urls = ["http://127.0.0.1:8787/mcp/{token}"]
+urls = ["http://127.0.0.1:8797/mcp/{token}"]

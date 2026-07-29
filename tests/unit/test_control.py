@@ -70,7 +70,7 @@ def test_upgrade_failure_happens_before_process_stop(
     )
 
     with pytest.raises(RuntimeError, match="pull failed"):
-        control.cycle(tmp_path, "127.0.0.1", 8787, stream=io.StringIO())
+        control.cycle(tmp_path, "127.0.0.1", 8797, stream=io.StringIO())
 
     assert events == ["upgrade"]
 
@@ -98,7 +98,7 @@ def test_cycle_orders_upgrade_stop_start_and_health(
         use_systemd: bool,
         stream: object,
     ) -> bool:
-        assert (repo, host, port, use_systemd) == (tmp_path, "127.0.0.1", 8787, True)
+        assert (repo, host, port, use_systemd) == (tmp_path, "127.0.0.1", 8797, True)
         events.append("start-and-health")
         return True
 
@@ -107,7 +107,7 @@ def test_cycle_orders_upgrade_stop_start_and_health(
     monkeypatch.setattr(control, "stop_all", fake_stop_all)
     monkeypatch.setattr(control, "start_server", fake_start)
 
-    assert control.cycle(tmp_path, "127.0.0.1", 8787, stream=io.StringIO()) is True
+    assert control.cycle(tmp_path, "127.0.0.1", 8797, stream=io.StringIO()) is True
     assert events == ["upgrade", "stop", "start-and-health"]
 
 

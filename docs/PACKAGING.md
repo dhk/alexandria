@@ -87,8 +87,8 @@ The interactive Alexandria installer:
    `~/.config/alexandria/secrets.env` with mode `0600`;
 5. atomically points `current` at the new release;
 6. writes and enables `~/.config/systemd/user/alexandria-mcp.service`;
-7. checks `http://127.0.0.1:8787/health`, rolling back to the prior release when
-   the new service fails health;
+7. checks that `http://127.0.0.1:8797/health` identifies itself as Alexandria,
+   rolling back when the new service fails health or another process owns the port;
 8. invokes the installed command with `--help` and runs the complete component
    panel, rolling back when a required component fails;
 9. offers to enable systemd linger, then prints the token-bearing MCP URL;

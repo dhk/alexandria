@@ -38,6 +38,7 @@ class ServiceSpec:
     entrypoint: str
     args: list[str]
     health_url: str
+    health_service: str
 
 
 @dataclass(frozen=True)
@@ -107,6 +108,7 @@ def load_spec(path: Path) -> PackSpec:
                 entrypoint=_required_string(raw_service, "entrypoint"),
                 args=_string_list(raw_service, "args"),
                 health_url=_required_string(raw_service, "health_url"),
+                health_service=_required_string(raw_service, "health_service"),
             )
         )
 

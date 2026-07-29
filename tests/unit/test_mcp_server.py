@@ -1,7 +1,7 @@
 import json
 import re
 from pathlib import Path
-from typing import Self
+from typing import Any, Self, cast
 
 import pytest
 
@@ -121,7 +121,17 @@ def test_connector_urls_include_token() -> None:
 
 
 def test_render_urls_formats_lines() -> None:
-    assert render_urls("tok123", []) == ["MCP over HTTP: http://127.0.0.1:8787/mcp/tok123"]
+    assert render_urls("tok123", []) == ["MCP over HTTP: http://127.0.0.1:8797/mcp/tok123"]
+
+
+@pytest.mark.anyio
+async def test_health_response_identifies_alexandria() -> None:
+    response = await mcp_server._health(cast(Any, None))
+    payload = json.loads(bytes(response.body))
+
+    assert payload["service"] == "alexandria"
+    assert payload["version"]
+    assert payload["started_at"]
 
 
 def test_transport_security_always_includes_loopback() -> None:
