@@ -420,9 +420,7 @@ def main(argv: list[str] | None = None) -> int:
     print("\nTransfer and install:")
     print(f"  scp {result.archive} {result.checksum} lobster:")
     print(f"  ssh lobster 'sha256sum -c {result.checksum.name}'")
-    print(
-        f"  ssh lobster 'tar -xzf {result.archive.name} && cd {result.bundle_root} && ./install.py'"
-    )
+    print(f"  ssh lobster 'tar -xzf {result.archive.name} && ./{result.bundle_root}/install.py'")
     print(f"  # Human docs after unpacking: ./{result.bundle_root}/launch-docs.py")
     return 0
 
