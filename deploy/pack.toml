@@ -1,0 +1,28 @@
+[pack]
+format_version = 1
+name = "alexandria"
+display_name = "Alexandria"
+default_install_root = "~/src/alexandria"
+repo_environment = "ALEXANDRIA_REPO"
+secrets_file = "~/.config/alexandria/secrets.env"
+required_secrets = ["OPENROUTER_API_KEY"]
+exclude = [
+  ".git/**",
+  ".scratch/**",
+  ".venv/**",
+  "dist/**",
+  "data/**",
+  "**/__pycache__/**",
+  "*.egg-info/**",
+]
+
+[[services]]
+unit = "alexandria-mcp.service"
+description = "Alexandria MCP server (streamable HTTP)"
+entrypoint = "alexandria-mcp"
+args = ["--http"]
+health_url = "http://127.0.0.1:8787/health"
+
+[capability]
+token_file = "~/.local/share/alexandria/mcp-http-token"
+urls = ["http://127.0.0.1:8787/mcp/{token}"]

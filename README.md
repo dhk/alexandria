@@ -66,6 +66,7 @@ templates/     Starting points for research artifacts and for new MCP servers
 prompts/       Versioned model instructions
 research/      Individual investigations
 scripts/       Validation and repository utilities
+deploy/        Reusable pack metadata and Ubuntu bundle installer
 src/           MCP repository recall and guarded research commissions
 tests/         Contract and provenance tests
 generated/     Rebuildable indexes and reports
@@ -114,6 +115,25 @@ and prints loopback health. The upgrade happens before shutdown so a failed pull
 or install leaves the current servers running. See
 [docs/MCP-SERVER.md](docs/MCP-SERVER.md) for status, start, stop, systemd, and
 optional shell-alias details.
+
+## Deployment packs
+
+Build one secret-free archive for upload to an Ubuntu host:
+
+```bash
+uv run --frozen python scripts/pack.py
+```
+
+The command prints exact `scp`, checksum, unpack, and install commands. The
+interactive installer creates a versioned release, installs the uv tool, asks for
+missing secrets, configures the systemd user service, verifies health, and retains
+the prior release for rollback. It inventories existing paths first, prompts before
+managed replacements, preserves existing secrets, and backs up differing service
+units. Every unpacked bundle also includes `./launch-docs.py`, which opens a
+generated human-facing documentation index. Its installation front panel runs
+no-spend “hello world” checks and turns each responding component green. The same
+checks can be rerun from a terminal with `./install.py --check`. See
+[docs/PACKAGING.md](docs/PACKAGING.md).
 
 Each investigation follows a standard lifecycle:
 
