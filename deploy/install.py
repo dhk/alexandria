@@ -122,6 +122,14 @@ def _systemd_quote(value: str) -> str:
     return '"' + value.replace("\\", "\\\\").replace('"', '\\"') + '"'
 
 
+def _systemd_path(value: str) -> str:
+    if not value.startswith("/"):
+        raise InstallError(f"systemd path is not absolute: {value}")
+    if any(character.isspace() or character in {'"', "'", "\\"} for character in value):
+        raise InstallError(f"systemd path contains unsupported quoting characters: {value}")
+    return value
+
+
 def render_service_unit(
     service: Mapping[str, Any],
     *,
@@ -134,6 +142,8 @@ def render_service_unit(
     arguments = [str(value) for value in service.get("args", [])]
     executable = home / ".local" / "bin" / entrypoint
     command = " ".join(_systemd_quote(value) for value in [str(executable), *arguments])
+    environment_file = _systemd_path(str(secrets_file))
+    working_directory = _systemd_path(str(current))
     return (
         "[Unit]\n"
         f"Description={service['description']}\n"
@@ -142,8 +152,8 @@ def render_service_unit(
         "[Service]\n"
         "Type=simple\n"
         f"Environment={_systemd_quote(f'{repo_environment}={current}')}\n"
-        f"EnvironmentFile={_systemd_quote('-' + str(secrets_file))}\n"
-        f"WorkingDirectory={_systemd_quote(str(current))}\n"
+        f"EnvironmentFile=-{environment_file}\n"
+        f"WorkingDirectory={working_directory}\n"
         f"ExecStart={command}\n"
         "Restart=on-failure\n"
         "RestartSec=2\n\n"

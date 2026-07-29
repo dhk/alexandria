@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import shutil
 import subprocess
 import sys
 import tarfile
@@ -202,9 +203,47 @@ def test_render_service_unit_pins_repo_and_secret_file(tmp_path: Path) -> None:
     )
 
     assert "SAMPLE_REPO=" in unit
-    assert 'EnvironmentFile="-' in unit
+    assert f"EnvironmentFile=-{tmp_path}/.config/sample/secrets.env" in unit
+    assert f"WorkingDirectory={tmp_path}/.local/opt/sample/current" in unit
     assert 'ExecStart="' in unit
     assert 'sample-tool" "serve' in unit
+
+
+def test_rendered_service_unit_passes_systemd_parser_when_available(tmp_path: Path) -> None:
+    systemd_analyze = shutil.which("systemd-analyze")
+    if systemd_analyze is None:
+        pytest.skip("systemd-analyze is not installed")
+    executable = tmp_path / ".local" / "bin" / "sample-tool"
+    executable.parent.mkdir(parents=True)
+    executable.write_text("#!/bin/sh\nexit 0\n", encoding="utf-8")
+    executable.chmod(0o755)
+    current = tmp_path / "src" / "sample" / "current"
+    current.mkdir(parents=True)
+    secrets = tmp_path / ".config" / "sample" / "secrets.env"
+    secrets.parent.mkdir(parents=True)
+    secrets.write_text("SAMPLE_API_KEY=test\n", encoding="utf-8")
+    unit = render_service_unit(
+        {
+            "description": "Sample Tool",
+            "entrypoint": "sample-tool",
+            "args": ["serve"],
+        },
+        home=tmp_path,
+        current=current,
+        repo_environment="SAMPLE_REPO",
+        secrets_file=secrets,
+    )
+    unit_path = tmp_path / "sample-tool.service"
+    unit_path.write_text(unit, encoding="utf-8")
+
+    completed = subprocess.run(
+        [systemd_analyze, "--user", "verify", str(unit_path)],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+
+    assert completed.returncode == 0, completed.stderr
 
 
 def test_differing_systemd_unit_is_backed_up_before_replacement(tmp_path: Path) -> None:
