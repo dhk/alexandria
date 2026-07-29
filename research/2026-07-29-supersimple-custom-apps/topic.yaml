@@ -1,0 +1,33 @@
+# Alexandria investigation metadata.
+# Schema not yet formalized under schemas/ (see
+# src/alexandria/infrastructure/research_repo.py) — this follows the
+# lenient best-effort shape that module reads: title, status,
+# assurance_level. Additional fields below are documentation, not
+# machine-read yet.
+
+title: "Supersimple Custom Apps vs. the agent/BI dashboard landscape"
+status: "single-source-draft"
+assurance_level: "bronze"
+
+slug: 2026-07-29-supersimple-custom-apps
+opened: 2026-07-29
+requested_by: operator (davehk@gmail.com)
+
+topic_kind: competitive-positioning
+subject_product: "Supersimple — Custom Apps (unreleased feature)"
+
+comparison_set:
+  - Hex
+  - Lightdash
+  - Tableau
+  - Metabase
+  - Sigma
+  - Looker (Extension Framework) # adjacent, added for coverage — see brief
+  - Retool # adjacent, added for coverage — see brief
+
+notes: >
+  Single-source (Claude, this session) exploratory pass. Not yet
+  dispatched through Alexandria's multi-model commission pipeline
+  (begin_research/run_research), which requires an explicit spend
+  confirmation from the operator. See README.md for what a Silver
+  upgrade of this investigation would add.

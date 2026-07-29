@@ -1,0 +1,25 @@
+# Run metadata (AGENTS.md rule 6: provider, model, prompt, brief revision,
+# execution time, tool access, checksums — recorded for every run).
+
+provider: "Anthropic, via Claude Code direct session (not OpenRouter dispatch)"
+model: claude-sonnet-5
+run_kind: single-source-interactive
+brief_path: 01-brief/brief.md
+brief_revision: 1
+brief_sha256: 2f34e557a8f55d4ebe8dfe0432220cfed6dece0dc866a5d1cd7cd8512f27a0fa
+execution_started: 2026-07-29T01:00:00Z
+execution_completed: 2026-07-29T01:09:18Z
+tool_access:
+  - WebSearch (live, US-only results)
+  - repository read tools (no repo content was relevant beyond this investigation's own scaffold)
+prompt: >
+  The brief at 01-brief/brief.md, questions Q1-Q7, answered independently
+  with live web search rather than training-data recall alone. Q8 is
+  deliberately not answered here — see 05-analysis/analysis.md.
+caveats: >
+  Single source, not graded or cross-checked against another model.
+  Web search is US-only per tool constraints and returns a snapshot of
+  public documentation/marketing pages, not hands-on product testing.
+  Supersimple's own Custom Apps feature is unreleased and unindexed;
+  its section of the findings is necessarily sourced from the operator's
+  transcript alone (see 00-topic/), not independently verified.
