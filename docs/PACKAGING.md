@@ -49,6 +49,14 @@ Use `./install.py --check` to rerun the same component checks later without
 changing the installation. Its exit status is non-zero when a required component
 fails. `--check --skip-service` verifies the tool-only installation and reports
 service components as skipped.
+
+After a successful interactive installation, the installer offers to delete the
+transferred `.tar.gz`, its `.sha256` sidecar, and the unpacked transfer directory.
+`--yes` performs that cleanup automatically; `--keep-bundle` retains them. Cleanup
+never runs after a failed installation and never removes installed releases,
+rollback copies, service-unit backups, secrets, application data, or run artifacts.
+Before cleanup, the documentation launcher, index, component checks, and a symlink
+to the installed release are preserved under `~/src/alexandria/support/<bundle-id>`.
 `--yes` accepts defaults and refuses to prompt; required secrets must already be
 in the environment or canonical secrets file. `--skip-service` installs only the
 uv tool and release payload.
@@ -80,7 +88,9 @@ The interactive Alexandria installer:
    the new service fails health;
 8. invokes the installed command with `--help` and runs the complete component
    panel, rolling back when a required component fails;
-9. offers to enable systemd linger, then prints the token-bearing MCP URL.
+9. offers to enable systemd linger, then prints the token-bearing MCP URL;
+10. preserves the documentation/front panel under the managed install root and,
+    unless declined, removes only the three transfer artifacts.
 
 If uv is absent, the interactive installer asks before downloading the official
 installer from `astral.sh`. It never puts a secret in a command line or bundle.

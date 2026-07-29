@@ -34,6 +34,7 @@ class InstallError(RuntimeError):
 
 Runner = Callable[[Sequence[str]], None]
 _PACK_ROOT_MARKER = ".tool-pack-root.json"
+_SUPPORT_MARKER = ".tool-pack-support.json"
 
 
 def load_manifest(path: Path) -> dict[str, Any]:
@@ -215,6 +216,81 @@ def install_release(source: Path, releases: Path, bundle_id: str, manifest: dict
         shutil.rmtree(staging, ignore_errors=True)
         raise
     return release
+
+
+def install_support(
+    bundle_root: Path,
+    install_root: Path,
+    release: Path,
+    bundle_id: str,
+) -> Path:
+    """Preserve the docs launcher without retaining the transferred source copy."""
+    support_root = install_root / "support"
+    support = support_root / bundle_id
+    if support.exists():
+        marker = support / _SUPPORT_MARKER
+        try:
+            payload = json.loads(marker.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError) as exc:
+            raise InstallError(
+                f"existing support directory is not pack-managed: {support}"
+            ) from exc
+        if not isinstance(payload, dict) or payload.get("bundle_id") != bundle_id:
+            raise InstallError(f"existing support directory identity does not match: {support}")
+        return support
+
+    support_root.mkdir(parents=True, exist_ok=True)
+    staging = support_root / f".{bundle_id}.staging-{uuid.uuid4().hex[:8]}"
+    try:
+        staging.mkdir()
+        for filename in ("launch-docs.py", "docs-index.html", "pack-manifest.json"):
+            source = bundle_root / filename
+            if not source.is_file():
+                raise InstallError(f"bundle support file is missing: {source}")
+            shutil.copy2(source, staging / filename)
+        checks_package = bundle_root / "deploy"
+        if not checks_package.is_dir():
+            raise InstallError(f"bundle checks package is missing: {checks_package}")
+        shutil.copytree(checks_package, staging / "deploy")
+        (staging / "source").symlink_to(release, target_is_directory=True)
+        (staging / _SUPPORT_MARKER).write_text(
+            json.dumps({"format_version": 1, "bundle_id": bundle_id}, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+        staging.rename(support)
+    except BaseException:
+        shutil.rmtree(staging, ignore_errors=True)
+        raise
+    return support
+
+
+def bundle_cleanup_targets(bundle_root: Path, manifest: Mapping[str, Any]) -> list[Path]:
+    tool = manifest.get("tool")
+    if not isinstance(tool, dict):
+        raise InstallError("pack manifest tool section must be an object")
+    expected_name = f"{tool.get('name', '')}-{manifest.get('bundle_id', '')}"
+    if not expected_name.strip("-") or bundle_root.name != expected_name:
+        raise InstallError(
+            f"cleanup refused because bundle directory is not named {expected_name!r}: {bundle_root}"
+        )
+    archive = bundle_root.with_name(f"{bundle_root.name}.tar.gz")
+    return [archive, archive.with_suffix(archive.suffix + ".sha256"), bundle_root]
+
+
+def cleanup_bundle_artifacts(bundle_root: Path, manifest: Mapping[str, Any]) -> list[Path]:
+    """Remove only the exact downloaded archive, checksum, and unpacked bundle."""
+    targets = bundle_cleanup_targets(bundle_root, manifest)
+    removed: list[Path] = []
+    for path in targets[:-1]:
+        if not path.exists():
+            continue
+        if not path.is_file() and not path.is_symlink():
+            raise InstallError(f"cleanup target is not a file: {path}")
+        path.unlink()
+        removed.append(path)
+    shutil.rmtree(bundle_root)
+    removed.append(bundle_root)
+    return removed
 
 
 def current_release(current: Path) -> Path | None:
@@ -401,6 +477,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--skip-service", action="store_true")
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument(
+        "--keep-bundle",
+        action="store_true",
+        help="retain the transferred archive, checksum, and unpacked bundle after success",
+    )
+    parser.add_argument(
         "--check",
         action="store_true",
         help="run the installed component checks without changing anything",
@@ -479,6 +560,13 @@ def main(argv: list[str] | None = None) -> int:
                 "Systemd units requiring backup/replacement: "
                 + (", ".join(str(path) for path in differing_units) or "none")
             )
+            if args.keep_bundle:
+                print("Post-install cleanup: disabled by --keep-bundle")
+            else:
+                print(
+                    "Post-install cleanup: "
+                    + ", ".join(str(path) for path in bundle_cleanup_targets(bundle_root, manifest))
+                )
             return 0
 
         if sys.platform != "linux" and not args.skip_service:
@@ -521,6 +609,12 @@ def main(argv: list[str] | None = None) -> int:
 
         mark_install_root(install_root, tool_name)
         release = install_release(source, releases, str(manifest["bundle_id"]), manifest)
+        support = install_support(
+            bundle_root,
+            install_root,
+            release,
+            str(manifest["bundle_id"]),
+        )
         if manifest.get("source", {}).get("dirty"):
             print("WARNING: this bundle contains uncommitted source changes.")
         uv = ensure_uv(interactive=interactive, input_fn=input, runner=_default_runner)
@@ -592,8 +686,25 @@ def main(argv: list[str] | None = None) -> int:
         print(f"\nInstalled {tool['display_name']} {tool['version']}")
         print(f"Current release: {current} -> {release}")
         print("Older releases remain under " + str(releases))
-        print(f"Bundle documentation: {bundle_root / 'launch-docs.py'}")
+        print(f"Installed documentation: {support / 'launch-docs.py'}")
         _print_capability(manifest)
+        cleanup = not args.keep_bundle and (
+            args.yes
+            or _confirm(
+                "Remove the transferred archive, checksum, and unpacked bundle now?",
+                default=True,
+                input_fn=input,
+            )
+        )
+        if cleanup:
+            try:
+                removed = cleanup_bundle_artifacts(bundle_root, manifest)
+                print("Removed transfer artifacts: " + ", ".join(str(path) for path in removed))
+                print(f"Documentation remains installed at {support / 'launch-docs.py'}")
+            except (OSError, InstallError) as exc:
+                print(
+                    f"WARNING: installation succeeded but cleanup did not: {exc}", file=sys.stderr
+                )
         return 0
     except (KeyError, OSError, InstallError, subprocess.CalledProcessError) as exc:
         print(f"install: {exc}", file=sys.stderr)
