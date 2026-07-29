@@ -95,8 +95,10 @@ alexandria-ctl stop-all
 alexandria-ctl upgrade       # pull + reinstall, without process changes
 ```
 
-`ALEXANDRIA_REPO` selects the checkout (default
-`~/Documents/dev/alexandria`). `ALEXANDRIA_LOG` selects the background HTTP log.
+`ALEXANDRIA_REPO` selects the checkout. Alexandria resolves it from the process
+environment first, then `~/.config/alexandria/alexandria.env`, then by walking up
+from the current directory; the lifecycle CLI retains `~/Documents/dev/alexandria`
+as its final development-machine fallback. `ALEXANDRIA_LOG` selects the background HTTP log.
 On Ubuntu, if the user-level `alexandria-mcp.service` exists, lifecycle commands
 use systemd to stop and start it rather than launching a competing unmanaged process.
 Standalone `stop-all` asks before terminating client-owned stdio processes; invoking
@@ -105,7 +107,9 @@ Standalone `stop-all` asks before terminating client-owned stdio processes; invo
 By default the server detects the repository root by walking up from the
 current working directory looking for `docs/DESIGN.md` and `AGENTS.md`.
 Set `ALEXANDRIA_REPO` (see `.env.example`) when running from elsewhere —
-a systemd service, a different cwd, or a second checkout.
+a systemd service, a different cwd, or a second checkout. The canonical host file
+is parsed as `NAME=value` data rather than executed as a shell script. It recognizes
+only `ALEXANDRIA_REPO`, `ALEXANDRIA_DATA_DIR`, and `ALEXANDRIA_SECRETS_FILE`.
 
 **Claude Code CLI:**
 
@@ -137,9 +141,10 @@ the full design rationale. Summary:
   never inside the repository), rotatable with `--rotate-token`. Anyone holding
   this URL can read repository research and can confirm a commission against the
   configured OpenRouter key; treat it as a spend-capable secret.
-- **Host config** follows the "wingman.env" pattern: `~/.config/
-  alexandria.env` is the one canonical file a systemd `EnvironmentFile=`
-  or a bare shell points at.
+- **Host config** follows the "wingman.env" pattern:
+  `~/.config/alexandria/alexandria.env` is the one canonical non-secret file read
+  by Alexandria and by systemd. Process environment values override it. Provider
+  keys remain separately protected in `~/.config/alexandria/secrets.env`.
 - **Tailscale URL resolution** follows Wingman: the server auto-detects its
   `*.ts.net` DNS name, admits that Host without disabling DNS-rebinding protection,
   and separates the local bind port from the external HTTPS path/port. On Lobster,

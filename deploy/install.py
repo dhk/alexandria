@@ -125,6 +125,53 @@ def ensure_secrets(
     return unresolved
 
 
+def _environment_line(name: str, value: str) -> str:
+    if not name or not name.isascii() or not name.replace("_", "A").isalnum() or name[0].isdigit():
+        raise InstallError(f"invalid environment variable name: {name!r}")
+    if "\n" in value or "\r" in value:
+        raise InstallError(f"{name} contains a newline and cannot be written safely")
+    return f"{name}={shlex.quote(value)}"
+
+
+def render_environment_file(existing: str, managed: Mapping[str, str]) -> str:
+    """Update managed entries while preserving comments and unrelated settings."""
+    remaining = dict(managed)
+    rendered: list[str] = []
+    for raw_line in existing.splitlines():
+        stripped = raw_line.strip()
+        if stripped and not stripped.startswith("#") and "=" in stripped:
+            name = stripped.split("=", 1)[0].strip()
+            if name in managed:
+                if name in remaining:
+                    rendered.append(_environment_line(name, remaining.pop(name)))
+                continue
+        rendered.append(raw_line)
+    if remaining and rendered and rendered[-1]:
+        rendered.append("")
+    rendered.extend(_environment_line(name, remaining[name]) for name in sorted(remaining))
+    return "\n".join(rendered).rstrip("\n") + "\n"
+
+
+def ensure_environment_file(path: Path, managed: Mapping[str, str]) -> Path | None:
+    """Write canonical host config atomically, backing up any changed file."""
+    existing = path.read_text(encoding="utf-8") if path.is_file() else ""
+    desired = render_environment_file(existing, managed)
+    if path.is_file() and existing == desired:
+        return None
+    path.parent.mkdir(parents=True, exist_ok=True)
+    backup = None
+    if path.is_file():
+        timestamp = time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())
+        backup = path.with_name(f"{path.name}.bak-{timestamp}-{uuid.uuid4().hex[:6]}")
+        shutil.copy2(path, backup)
+        print(f"  preserved previous host config: {backup}")
+    temporary = path.with_name(f".{path.name}.tmp-{uuid.uuid4().hex}")
+    temporary.write_text(desired, encoding="utf-8")
+    temporary.chmod(0o600)
+    temporary.replace(path)
+    return backup
+
+
 def _systemd_quote(value: str) -> str:
     return '"' + value.replace("\\", "\\\\").replace('"', '\\"') + '"'
 
@@ -142,14 +189,15 @@ def render_service_unit(
     *,
     home: Path,
     current: Path,
-    repo_environment: str,
+    environment_file: Path,
     secrets_file: Path,
 ) -> str:
     entrypoint = str(service["entrypoint"])
     arguments = [str(value) for value in service.get("args", [])]
     executable = home / ".local" / "bin" / entrypoint
     command = " ".join(_systemd_quote(value) for value in [str(executable), *arguments])
-    environment_file = _systemd_path(str(secrets_file))
+    host_environment_file = _systemd_path(str(environment_file))
+    secret_environment_file = _systemd_path(str(secrets_file))
     working_directory = _systemd_path(str(current))
     return (
         "[Unit]\n"
@@ -158,8 +206,8 @@ def render_service_unit(
         "Wants=network-online.target\n\n"
         "[Service]\n"
         "Type=simple\n"
-        f"Environment={_systemd_quote(f'{repo_environment}={current}')}\n"
-        f"EnvironmentFile=-{environment_file}\n"
+        f"EnvironmentFile=-{host_environment_file}\n"
+        f"EnvironmentFile=-{secret_environment_file}\n"
         f"WorkingDirectory={working_directory}\n"
         f"ExecStart={command}\n"
         "Restart=on-failure\n"
@@ -374,7 +422,7 @@ def _write_units(
     *,
     home: Path,
     current: Path,
-    repo_environment: str,
+    environment_file: Path,
     secrets_file: Path,
 ) -> list[str]:
     unit_dir = home / ".config" / "systemd" / "user"
@@ -387,7 +435,7 @@ def _write_units(
             service,
             home=home,
             current=current,
-            repo_environment=repo_environment,
+            environment_file=environment_file,
             secrets_file=secrets_file,
         )
         existing = path.read_text(encoding="utf-8") if path.is_file() else None
@@ -765,7 +813,19 @@ def main(argv: list[str] | None = None) -> int:
         releases = install_root / "releases"
         current = install_root / "current"
         source = bundle_root / "source"
+        environment_file = _expanded(str(install["environment_file"]))
         secrets_file = _expanded(str(install["secrets_file"]))
+        raw_environment = install.get("environment", {})
+        if not isinstance(raw_environment, dict) or not all(
+            isinstance(name, str) and isinstance(value, str)
+            for name, value in raw_environment.items()
+        ):
+            raise InstallError("pack manifest install.environment must map names to strings")
+        managed_environment = {
+            name: str(_expanded(value)) if value.startswith(("~", "/")) else value
+            for name, value in raw_environment.items()
+        }
+        managed_environment[str(install["repo_environment"])] = str(current)
         services = manifest["services"]
         if not isinstance(services, list) or not all(isinstance(item, dict) for item in services):
             raise InstallError("pack manifest services must be an array of objects")
@@ -788,6 +848,16 @@ def main(argv: list[str] | None = None) -> int:
         )
         existing_commands = [path for path in command_paths if path.exists() or path.is_symlink()]
         unit_dir = Path.home() / ".config" / "systemd" / "user"
+        if environment_file.exists() and not environment_file.is_file():
+            raise InstallError(f"host environment path is not a regular file: {environment_file}")
+        existing_environment = (
+            environment_file.read_text(encoding="utf-8") if environment_file.is_file() else ""
+        )
+        environment_needs_update = (
+            not environment_file.is_file()
+            or render_environment_file(existing_environment, managed_environment)
+            != existing_environment
+        )
         differing_units: list[Path] = []
         for service in services:
             unit_path = unit_dir / str(service["unit"])
@@ -797,7 +867,7 @@ def main(argv: list[str] | None = None) -> int:
                 service,
                 home=Path.home(),
                 current=current,
-                repo_environment=str(install["repo_environment"]),
+                environment_file=environment_file,
                 secrets_file=secrets_file,
             )
             if unit_path.is_file() and unit_path.read_text(encoding="utf-8") != desired:
@@ -811,6 +881,10 @@ def main(argv: list[str] | None = None) -> int:
                 f"Install root: {install_root} ({'needs adoption' if adoption_needed else 'available'})"
             )
             print(f"Current link: {current} -> {previous or 'not installed'}")
+            print(
+                f"Host config: {environment_file} "
+                f"({'requires update' if environment_needs_update else 'current'})"
+            )
             print(f"Secrets: {secrets_file}")
             print("Services: " + ", ".join(str(item["unit"]) for item in services))
             print(
@@ -875,6 +949,12 @@ def main(argv: list[str] | None = None) -> int:
                 interactive=interactive,
                 input_fn=input,
             )
+        if environment_file.is_file() and environment_needs_update:
+            _confirm_replacement(
+                f"Back up and update the managed settings in {environment_file}?",
+                interactive=interactive,
+                input_fn=input,
+            )
 
         mark_install_root(install_root, tool_name)
         release = install_release(source, releases, str(manifest["bundle_id"]), manifest)
@@ -900,6 +980,7 @@ def main(argv: list[str] | None = None) -> int:
         if unresolved:
             print("Secrets still required before research can run: " + ", ".join(unresolved))
 
+        ensure_environment_file(environment_file, managed_environment)
         switch_current(current, release)
         units: list[str] = []
         if not args.skip_service:
@@ -919,7 +1000,7 @@ def main(argv: list[str] | None = None) -> int:
                     services,
                     home=Path.home(),
                     current=current,
-                    repo_environment=str(install["repo_environment"]),
+                    environment_file=environment_file,
                     secrets_file=secrets_file,
                 )
                 _restart_units(units, _default_runner)

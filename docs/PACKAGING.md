@@ -42,10 +42,10 @@ and an SSH port forward such as `ssh -L 8000:127.0.0.1:8000 lobster`.
 
 The documentation index includes a collapsible **Installation front panel**.
 Opening it runs local, no-spend component checks and turns each successful
-component green. It checks the managed release link, installed command, research
-configuration, systemd user service, HTTP health response, MCP capability token,
-Tailscale path route, host service registry, and documentation payload. It never
-calls OpenRouter and never returns secret or token values.
+component green. It checks the managed release link, installed command, canonical
+host configuration, research credentials, systemd user service, HTTP health
+response, MCP capability token, Tailscale path route, host service registry, and
+documentation payload. It never calls OpenRouter and never returns secret or token values.
 
 Use `./install.py --dry-run` to see resolved paths without changing anything.
 Use `./install.py --check` to rerun the same component checks later without
@@ -88,23 +88,25 @@ The interactive Alexandria installer:
    source-tree convention);
 2. installs the payload as `releases/<bundle-id>` without deleting older releases;
 3. installs or reinstalls the project with `uv tool install --reinstall`;
-4. asks, with hidden input, for any missing `OPENROUTER_API_KEY` and writes
+4. creates or updates `~/.config/alexandria/alexandria.env`, preserving unrelated
+   settings and backing up a changed file before replacing its managed path entries;
+5. asks, with hidden input, for any missing `OPENROUTER_API_KEY` and writes
    `~/.config/alexandria/secrets.env` with mode `0600`;
-5. atomically points `current` at the new release;
-6. installs the root-owned host registry helper and atomically imports or verifies
+6. atomically points `current` at the new release;
+7. installs the root-owned host registry helper and atomically imports or verifies
    Wingman (`8787`), Trent (`8788`), and Alexandria (`8797`) plus their Tailscale
    paths, failing a collision before unit or route mutation;
-7. writes and enables `~/.config/systemd/user/alexandria-mcp.service`;
-8. checks that `http://127.0.0.1:8797/health` identifies itself as Alexandria,
+8. writes and enables `~/.config/systemd/user/alexandria-mcp.service`;
+9. checks that `http://127.0.0.1:8797/health` identifies itself as Alexandria,
    rolling back when the new service fails health or another process owns the port;
-9. offers to add the non-destructive Tailscale Funnel path `/alexandria`, forwarding
+10. offers to add the non-destructive Tailscale Funnel path `/alexandria`, forwarding
    to `http://127.0.0.1:8797`; an existing different mapping is shown and requires a
    separate, default-no replacement confirmation;
-10. invokes the installed command with `--help` and runs the complete component
+11. invokes the installed command with `--help` and runs the complete component
    panel, rolling back when a required component fails;
-11. offers to enable systemd linger, then prints both the private loopback URL and
+12. offers to enable systemd linger, then prints both the private loopback URL and
     the resolved `https://<tailscale-dns>/alexandria/mcp/<token>` URL;
-12. preserves the documentation/front panel under the managed install root and,
+13. preserves the documentation/front panel under the managed install root and,
     unless declined, removes only the three transfer artifacts.
 
 If uv is absent, the interactive installer asks before downloading the official
@@ -112,8 +114,8 @@ installer from `astral.sh`. It never puts a secret in a command line or bundle.
 
 The application data directory remains separate at
 `~/.local/share/alexandria`: run records, drafts, and the capability token do not
-move when a release changes. The `current` symlink is the value supplied as
-`ALEXANDRIA_REPO` to the service.
+move when a release changes. The `current` symlink is written as `ALEXANDRIA_REPO`
+in the canonical host file, which the CLI and systemd service both read.
 
 ## Source and secret boundary
 

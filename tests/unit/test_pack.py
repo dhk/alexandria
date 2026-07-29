@@ -29,6 +29,7 @@ from deploy.install import (
     _write_units,
     bundle_cleanup_targets,
     cleanup_bundle_artifacts,
+    ensure_environment_file,
     ensure_secrets,
     install_root_needs_adoption,
     install_support,
@@ -96,6 +97,8 @@ def _spec() -> PackSpec:
         display_name="Sample Tool",
         default_install_root="~/.local/opt/sample-tool",
         repo_environment="SAMPLE_REPO",
+        environment_file="~/.config/sample-tool/sample-tool.env",
+        environment={"SAMPLE_DATA_DIR": "~/.local/share/sample-tool"},
         secrets_file="~/.config/sample-tool/secrets.env",
         required_secrets=["SAMPLE_API_KEY"],
         exclude=[],
@@ -120,6 +123,8 @@ def test_alexandria_pack_config_is_valid() -> None:
 
     assert spec.name == "alexandria"
     assert spec.default_install_root == "~/src/alexandria"
+    assert spec.environment_file == "~/.config/alexandria/alexandria.env"
+    assert spec.environment["ALEXANDRIA_SECRETS_FILE"] == ("~/.config/alexandria/secrets.env")
     assert spec.required_secrets == ["OPENROUTER_API_KEY"]
     assert spec.services[0].unit == "alexandria-mcp.service"
     assert spec.services[0].args == [
@@ -608,7 +613,7 @@ def test_install_root_owned_by_another_tool_is_refused(tmp_path: Path) -> None:
         install_root_needs_adoption(root, "sample-tool")
 
 
-def test_render_service_unit_pins_repo_and_secret_file(tmp_path: Path) -> None:
+def test_render_service_unit_reads_host_config_and_secret_file(tmp_path: Path) -> None:
     service = {
         "description": "Sample Tool",
         "entrypoint": "sample-tool",
@@ -618,12 +623,13 @@ def test_render_service_unit_pins_repo_and_secret_file(tmp_path: Path) -> None:
         service,
         home=tmp_path,
         current=tmp_path / ".local/opt/sample/current",
-        repo_environment="SAMPLE_REPO",
+        environment_file=tmp_path / ".config/sample/sample.env",
         secrets_file=tmp_path / ".config/sample/secrets.env",
     )
 
-    assert "SAMPLE_REPO=" in unit
+    assert f"EnvironmentFile=-{tmp_path}/.config/sample/sample.env" in unit
     assert f"EnvironmentFile=-{tmp_path}/.config/sample/secrets.env" in unit
+    assert 'Environment="SAMPLE_REPO=' not in unit
     assert f"WorkingDirectory={tmp_path}/.local/opt/sample/current" in unit
     assert 'ExecStart="' in unit
     assert 'sample-tool" "serve' in unit
@@ -650,7 +656,7 @@ def test_rendered_service_unit_passes_systemd_parser_when_available(tmp_path: Pa
         },
         home=tmp_path,
         current=current,
-        repo_environment="SAMPLE_REPO",
+        environment_file=tmp_path / ".config/sample/sample.env",
         secrets_file=secrets,
     )
     unit_path = tmp_path / "sample-tool.service"
@@ -682,7 +688,7 @@ def test_differing_systemd_unit_is_backed_up_before_replacement(tmp_path: Path) 
         [service],
         home=tmp_path,
         current=tmp_path / "src/sample/current",
-        repo_environment="SAMPLE_REPO",
+        environment_file=tmp_path / ".config/sample/sample.env",
         secrets_file=tmp_path / ".config/sample/secrets.env",
     )
 
@@ -691,6 +697,31 @@ def test_differing_systemd_unit_is_backed_up_before_replacement(tmp_path: Path) 
     assert len(backups) == 1
     assert backups[0].read_text(encoding="utf-8") == "old unit\n"
     assert unit.read_text(encoding="utf-8") != "old unit\n"
+
+
+def test_host_environment_update_preserves_unmanaged_lines_and_backs_up(tmp_path: Path) -> None:
+    path = tmp_path / ".config" / "sample" / "sample.env"
+    path.parent.mkdir(parents=True)
+    original = "# operator setting\nUNMANAGED=yes\nSAMPLE_REPO=/old\n"
+    path.write_text(original, encoding="utf-8")
+
+    backup = ensure_environment_file(
+        path,
+        {
+            "SAMPLE_REPO": "/srv/sample/current",
+            "SAMPLE_DATA_DIR": "/srv/sample/data",
+        },
+    )
+
+    assert backup is not None
+    assert backup.read_text(encoding="utf-8") == original
+    assert path.read_text(encoding="utf-8") == (
+        "# operator setting\n"
+        "UNMANAGED=yes\n"
+        "SAMPLE_REPO=/srv/sample/current\n"
+        "\n"
+        "SAMPLE_DATA_DIR=/srv/sample/data\n"
+    )
 
 
 def test_checksum_uses_sha256sum_format(tmp_path: Path) -> None:
@@ -797,6 +828,12 @@ def test_component_panel_proves_release_command_config_and_docs(
     secrets = home / ".config" / "sample-tool" / "secrets.env"
     secrets.parent.mkdir(parents=True)
     secrets.write_text("SAMPLE_API_KEY=configured\n", encoding="utf-8")
+    environment_file = home / ".config" / "sample-tool" / "sample-tool.env"
+    environment_file.write_text(
+        f"SAMPLE_REPO={install_root / 'current'}\n"
+        f"SAMPLE_DATA_DIR={home / '.local/share/sample-tool'}\n",
+        encoding="utf-8",
+    )
     bundle = tmp_path / "bundle"
     (bundle / "source").mkdir(parents=True)
     (bundle / "docs-index.html").write_text("docs\n", encoding="utf-8")
@@ -805,6 +842,9 @@ def test_component_panel_proves_release_command_config_and_docs(
         "tool": {"name": "sample-tool"},
         "install": {
             "default_root": "~/src/sample-tool",
+            "repo_environment": "SAMPLE_REPO",
+            "environment_file": "~/.config/sample-tool/sample-tool.env",
+            "environment": {"SAMPLE_DATA_DIR": "~/.local/share/sample-tool"},
             "secrets_file": "~/.config/sample-tool/secrets.env",
             "required_secrets": ["SAMPLE_API_KEY"],
         },
@@ -824,6 +864,7 @@ def test_component_panel_proves_release_command_config_and_docs(
     by_key = {check.key: check for check in checks}
     assert by_key["release"].state == "pass"
     assert by_key["command"].state == "pass"
+    assert by_key["host_configuration"].state == "pass"
     assert by_key["configuration"].state == "pass"
     assert by_key["service"].state == "skip"
     assert by_key["health"].state == "skip"
