@@ -40,6 +40,7 @@ class InstallError(RuntimeError):
 Runner = Callable[[Sequence[str]], None]
 _PACK_ROOT_MARKER = ".tool-pack-root.json"
 _SUPPORT_MARKER = ".tool-pack-support.json"
+_REGISTRY_MARKER = "common-services-registry-format: 1"
 
 
 def load_manifest(path: Path) -> dict[str, Any]:
@@ -458,6 +459,168 @@ def _tailscale_dns_name(runner: Callable[..., Any] = subprocess.run) -> str | No
     return str(name).rstrip(".") or None
 
 
+def _registry_base_command(config: Mapping[str, Any]) -> list[str]:
+    static_range = config.get("static_range", [])
+    dynamic_range = config.get("dynamic_range", [])
+    if (
+        not isinstance(static_range, list)
+        or len(static_range) != 2
+        or not isinstance(dynamic_range, list)
+        or len(dynamic_range) != 2
+    ):
+        raise InstallError("registry port ranges are invalid")
+    return [
+        "sudo",
+        str(config["helper_path"]),
+        "--registry",
+        str(config["data_path"]),
+        "--static-range",
+        f"{static_range[0]}-{static_range[1]}",
+        "--dynamic-range",
+        f"{dynamic_range[0]}-{dynamic_range[1]}",
+    ]
+
+
+def _registry_commands(config: Mapping[str, Any]) -> list[list[str]]:
+    entries = config.get("entries")
+    if not isinstance(entries, list):
+        raise InstallError("registry entries are invalid")
+    base = _registry_base_command(config)
+    commands: list[list[str]] = []
+    for entry in entries:
+        if not isinstance(entry, dict):
+            raise InstallError("registry entry is invalid")
+        command = [
+            *base,
+            "reserve",
+            str(entry["service_id"]),
+            "--name",
+            str(entry["display_name"]),
+            "--owner",
+            str(entry["owner"]),
+            "--protocol",
+            str(entry["protocol"]),
+            "--address",
+            str(entry["address"]),
+            "--port",
+            str(entry["port"]),
+        ]
+        for option, key in (
+            ("--unit", "unit"),
+            ("--health-url", "health_url"),
+            ("--health-service", "health_service"),
+            ("--source", "source"),
+        ):
+            if entry.get(key):
+                command.extend([option, str(entry[key])])
+        if entry.get("adopt_listener") is True:
+            command.append("--adopt-listener")
+        commands.append(command)
+        route = entry.get("route")
+        if isinstance(route, dict):
+            commands.append(
+                [
+                    *base,
+                    "reserve-route",
+                    str(entry["service_id"]),
+                    "--host",
+                    str(route["host"]),
+                    "--https-port",
+                    str(route["https_port"]),
+                    "--path",
+                    str(route["path"]),
+                    "--mode",
+                    str(route["mode"]),
+                    "--target",
+                    str(route["target"]),
+                ]
+            )
+    return commands
+
+
+def _install_registry_helper(
+    bundle_root: Path,
+    config: Mapping[str, Any],
+    *,
+    interactive: bool,
+    input_fn: Callable[[str], str],
+    runner: Runner,
+) -> None:
+    source = bundle_root / "deploy" / "service_registry.py"
+    target = Path(str(config["helper_path"]))
+    if not source.is_file():
+        raise InstallError(f"registry helper payload is missing: {source}")
+    if not target.is_absolute():
+        raise InstallError(f"registry helper path must be absolute: {target}")
+    if target.exists() and not target.is_file():
+        raise InstallError(f"refusing non-file registry helper target: {target}")
+    desired = source.read_bytes()
+    existing = target.read_bytes() if target.is_file() else None
+    if existing == desired:
+        return
+    managed = existing is None or _REGISTRY_MARKER.encode() in existing[:512]
+    if existing is not None:
+        if not interactive and not managed:
+            raise InstallError(
+                f"refusing to replace unknown shared registry helper non-interactively: {target}"
+            )
+        if interactive and not _confirm(
+            f"Back up and replace shared registry helper {target}?",
+            default=managed,
+            input_fn=input_fn,
+        ):
+            raise InstallError("required registry helper was not installed")
+    elif interactive and not _confirm(
+        f"Install shared host service registry helper at {target}?",
+        default=True,
+        input_fn=input_fn,
+    ):
+        raise InstallError("required registry helper was not installed")
+
+    runner(["sudo", "install", "-d", "-m", "0755", str(target.parent)])
+    if existing is not None:
+        timestamp = time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())
+        backup = target.with_name(f"{target.name}.bak-{timestamp}-{uuid.uuid4().hex[:6]}")
+        runner(["sudo", "cp", "--preserve=mode,ownership,timestamps", str(target), str(backup)])
+        print(f"  preserved previous registry helper: {backup}")
+    runner(
+        [
+            "sudo",
+            "install",
+            "-o",
+            "root",
+            "-g",
+            "root",
+            "-m",
+            "0755",
+            str(source),
+            str(target),
+        ]
+    )
+
+
+def _configure_registry(
+    bundle_root: Path,
+    manifest: Mapping[str, Any],
+    *,
+    interactive: bool,
+    input_fn: Callable[[str], str],
+    runner: Runner,
+) -> None:
+    raw = manifest.get("registry")
+    if not isinstance(raw, dict):
+        return
+    _install_registry_helper(
+        bundle_root,
+        raw,
+        interactive=interactive,
+        input_fn=input_fn,
+        runner=runner,
+    )
+    for command in _registry_commands(raw):
+        runner(command)
+
+
 def _tailscale_command(config: Mapping[str, Any]) -> list[str]:
     mode = str(config["mode"])
     port = int(config.get("port", 443))
@@ -661,6 +824,11 @@ def main(argv: list[str] | None = None) -> int:
             tailscale = manifest.get("tailscale")
             if isinstance(tailscale, dict):
                 print("Tailscale route: " + shlex.join(_tailscale_command(tailscale)))
+            registry = manifest.get("registry")
+            if isinstance(registry, dict):
+                print(f"Service registry: {registry.get('data_path')}")
+                for command in _registry_commands(registry):
+                    print("  " + shlex.join(command))
             if args.keep_bundle:
                 print("Post-install cleanup: disabled by --keep-bundle")
             else:
@@ -739,14 +907,21 @@ def main(argv: list[str] | None = None) -> int:
                 raise InstallError(
                     "systemctl is unavailable; use --skip-service for a tool-only install"
                 )
-            units = _write_units(
-                services,
-                home=Path.home(),
-                current=current,
-                repo_environment=str(install["repo_environment"]),
-                secrets_file=secrets_file,
-            )
             try:
+                _configure_registry(
+                    bundle_root,
+                    manifest,
+                    interactive=interactive,
+                    input_fn=input,
+                    runner=_default_runner,
+                )
+                units = _write_units(
+                    services,
+                    home=Path.home(),
+                    current=current,
+                    repo_environment=str(install["repo_environment"]),
+                    secrets_file=secrets_file,
+                )
                 _restart_units(units, _default_runner)
                 failed = [
                     str(service["health_url"])

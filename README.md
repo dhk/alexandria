@@ -141,6 +141,13 @@ remove the archive, checksum, and unpacked transfer directory; `--keep-bundle`
 retains them. See
 [docs/PACKAGING.md](docs/PACKAGING.md).
 
+Before changing a service or Tailscale route, the Lobster installer also consults
+the host-wide endpoint registry. It atomically imports or verifies Wingman,
+Trent, and Alexandria's existing assignments, refuses collisions with the named
+owner, and reports listener, health, systemd, and route drift without deleting
+reservations. See
+[RFC-0006](docs/RFC-0006-host-service-registry.md).
+
 Each investigation follows a standard lifecycle:
 
 ```text
