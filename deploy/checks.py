@@ -257,6 +257,30 @@ def run_component_checks(
     if entrypoints:
         checks.append(_command_check(entrypoints[0], timeout_seconds))
 
+    environment_file = _expanded(str(install.get("environment_file", "")))
+    repo_environment = str(install.get("repo_environment", ""))
+    raw_environment = install.get("environment", {})
+    environment_names = (
+        [str(name) for name in raw_environment] if isinstance(raw_environment, dict) else []
+    )
+    expected_environment = [name for name in [repo_environment, *environment_names] if name]
+    configured_environment = _read_env_names(environment_file)
+    missing_environment = [
+        name for name in expected_environment if name not in configured_environment
+    ]
+    checks.append(
+        CheckResult(
+            "host_configuration",
+            "Host configuration",
+            "pass" if expected_environment and not missing_environment else "fail",
+            (
+                str(environment_file)
+                if expected_environment and not missing_environment
+                else "missing " + ", ".join(missing_environment or ["manifest settings"])
+            ),
+        )
+    )
+
     secrets_file = _expanded(str(install.get("secrets_file", "")))
     required = install.get("required_secrets", [])
     required_names = [str(name) for name in required] if isinstance(required, list) else []
@@ -265,7 +289,7 @@ def run_component_checks(
     checks.append(
         CheckResult(
             "configuration",
-            "Research configuration",
+            "Research credentials",
             "pass" if not missing else "fail",
             str(secrets_file) if not missing else "missing " + ", ".join(missing),
             required=False,

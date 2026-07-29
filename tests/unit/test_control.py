@@ -7,10 +7,63 @@ import pytest
 
 from alexandria import control
 from alexandria.control import ProcessInfo
+from alexandria.infrastructure import config as config_module
 
 
 def test_default_repo_prefers_environment(tmp_path: Path) -> None:
-    assert control._default_repo({"ALEXANDRIA_REPO": str(tmp_path)}) == tmp_path.resolve()
+    assert (
+        control._default_repo(
+            {"ALEXANDRIA_REPO": str(tmp_path)}, host_env_file=tmp_path / "missing.env"
+        )
+        == tmp_path.resolve()
+    )
+
+
+def test_default_repo_reads_canonical_host_file_from_unrelated_cwd(tmp_path: Path) -> None:
+    repo = tmp_path / "release"
+    host_file = tmp_path / "alexandria.env"
+    host_file.write_text(f"ALEXANDRIA_REPO={repo}\n", encoding="utf-8")
+
+    assert control._default_repo({}, host_env_file=host_file, cwd=tmp_path / "home") == repo
+
+
+def test_url_command_reads_canonical_host_file_from_home(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from alexandria import mcp_server
+
+    repo = tmp_path / "release"
+    data_dir = tmp_path / "data"
+    host_file = tmp_path / "alexandria.env"
+    host_file.write_text(
+        f"ALEXANDRIA_REPO={repo}\nALEXANDRIA_DATA_DIR={data_dir}\n", encoding="utf-8"
+    )
+    monkeypatch.setattr(config_module, "DEFAULT_HOST_ENV_FILE", host_file)
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr(mcp_server, "_http_token", lambda config: "test-token")
+    monkeypatch.setattr(mcp_server, "_extra_allowed_hosts", lambda _value: [])
+    monkeypatch.setattr(mcp_server, "_tunnel_path", lambda value: value)
+    monkeypatch.setattr(mcp_server, "_tunnel_port", lambda value: value)
+    monkeypatch.setattr(mcp_server, "render_urls", lambda *_args, **_kwargs: ["local-url"])
+
+    output = io.StringIO()
+    control._print_urls("127.0.0.1", 8797, None, None, stream=output)
+
+    assert "local-url" in output.getvalue()
+
+
+def test_url_command_reports_invalid_host_file_without_traceback(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    host_file = tmp_path / "alexandria.env"
+    host_file.write_text("ALEXANDRIA_REPO\n", encoding="utf-8")
+    monkeypatch.setattr(config_module, "DEFAULT_HOST_ENV_FILE", host_file)
+    monkeypatch.chdir(tmp_path)
+
+    assert control.main(["url"]) == 1
+    error = capsys.readouterr().err
+    assert "expected NAME=value" in error
+    assert "Traceback" not in error
 
 
 def test_parse_processes_and_filter_same_user(monkeypatch: pytest.MonkeyPatch) -> None:

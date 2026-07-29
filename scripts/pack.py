@@ -98,6 +98,8 @@ class PackSpec:
     display_name: str
     default_install_root: str
     repo_environment: str
+    environment_file: str
+    environment: dict[str, str]
     secrets_file: str
     required_secrets: list[str]
     exclude: list[str]
@@ -128,6 +130,16 @@ def _string_list(mapping: dict[str, Any], key: str) -> list[str]:
     if not isinstance(value, list) or not all(isinstance(item, str) for item in value):
         raise PackError(f"deploy/pack.toml {key!r} must be an array of strings")
     return [item for item in value if item]
+
+
+def _string_mapping(mapping: dict[str, Any], key: str) -> dict[str, str]:
+    value = mapping.get(key, {})
+    if not isinstance(value, dict) or not all(
+        isinstance(name, str) and name and isinstance(item, str) and item
+        for name, item in value.items()
+    ):
+        raise PackError(f"deploy/pack.toml {key!r} must be a string-to-string table")
+    return dict(value)
 
 
 def _optional_string(mapping: dict[str, Any], key: str) -> str | None:
@@ -319,6 +331,8 @@ def load_spec(path: Path) -> PackSpec:
         display_name=_required_string(pack, "display_name"),
         default_install_root=_required_string(pack, "default_install_root"),
         repo_environment=_required_string(pack, "repo_environment"),
+        environment_file=_required_string(pack, "environment_file"),
+        environment=_string_mapping(pack, "environment"),
         secrets_file=_required_string(pack, "secrets_file"),
         required_secrets=_string_list(pack, "required_secrets"),
         exclude=_string_list(pack, "exclude"),
@@ -412,6 +426,8 @@ def _manifest(root: Path, spec: PackSpec, bundle_id: str) -> dict[str, Any]:
         "install": {
             "default_root": spec.default_install_root,
             "repo_environment": spec.repo_environment,
+            "environment_file": spec.environment_file,
+            "environment": spec.environment,
             "secrets_file": spec.secrets_file,
             "required_secrets": spec.required_secrets,
         },

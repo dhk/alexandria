@@ -4,6 +4,8 @@ name = "alexandria"
 display_name = "Alexandria"
 default_install_root = "~/src/alexandria"
 repo_environment = "ALEXANDRIA_REPO"
+environment_file = "~/.config/alexandria/alexandria.env"
+environment = { ALEXANDRIA_DATA_DIR = "~/.local/share/alexandria", ALEXANDRIA_SECRETS_FILE = "~/.config/alexandria/secrets.env" }
 secrets_file = "~/.config/alexandria/secrets.env"
 required_secrets = ["OPENROUTER_API_KEY"]
 exclude = [
