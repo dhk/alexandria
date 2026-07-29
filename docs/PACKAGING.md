@@ -22,9 +22,12 @@ scp dist/alexandria-<bundle>.tar.gz dist/alexandria-<bundle>.tar.gz.sha256 lobst
 ssh lobster
 sha256sum -c alexandria-<bundle>.tar.gz.sha256
 tar -xzf alexandria-<bundle>.tar.gz
-cd alexandria-<bundle>
-./install.py
+./alexandria-<bundle>/install.py
 ```
+
+Run the installer from the transfer directory rather than changing into the
+unpacked bundle. A successful default installation removes that bundle, while
+the calling shell remains in a valid working directory.
 
 The unpacked bundle also has a people-facing documentation launcher:
 
