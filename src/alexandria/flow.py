@@ -159,7 +159,12 @@ def _lane(label: str, value: object, *, accent: str | None = None) -> Lane:
         return Lane(label=label, summary=_NOT_RECORDED)
     if isinstance(value, list):
         text = ", ".join(str(v) for v in value) if value else ""
-        return Lane(label=label, summary=_truncate(text) if text else _NOT_RECORDED, count=len(value), accent=accent)
+        return Lane(
+            label=label,
+            summary=_truncate(text) if text else _NOT_RECORDED,
+            count=len(value),
+            accent=accent,
+        )
     return Lane(label=label, summary=_truncate(str(value)), accent=accent)
 
 
@@ -268,7 +273,11 @@ def _run_stage(investigation_dir: Path) -> StageRecord:
         noun = "call" if failed_count == 1 else "calls"
         meta.append(f"{failed_count} failed {noun}")
     superseded = _as_int(manifest.get("superseded_count"))
-    excerpt = _excerpt_from_file(runs_dir / "manifest.json") if not manifest.get("manifest_excerpt") else None
+    excerpt = (
+        _excerpt_from_file(runs_dir / "manifest.json")
+        if not manifest.get("manifest_excerpt")
+        else None
+    )
     manifest_excerpt = manifest.get("manifest_excerpt")
     if isinstance(manifest_excerpt, str) and manifest_excerpt.strip():
         paras = _paragraphs(manifest_excerpt)
@@ -420,7 +429,9 @@ def _apply_reach_states(stages: list[StageRecord]) -> list[StageRecord]:
     every later stage is also empty; otherwise it's "abandoned" (reached,
     produced nothing, but the arc continued past it).
     """
-    has_content = [bool(s.headline) or s.excerpt is not None or s.state == "present" for s in stages]
+    has_content = [
+        bool(s.headline) or s.excerpt is not None or s.state == "present" for s in stages
+    ]
     # _resolution_stage always sets state="present" (even when outcome is None,
     # "unresolved" is itself a recorded state) -- so resolution only reads as
     # not_reached/abandoned when it truly has no resolution.yaml AND no
@@ -492,7 +503,12 @@ def _build(investigation: Investigation) -> FlowDocument:
 
 
 def _lane_json(lane: Lane) -> dict[str, object]:
-    return {"label": lane.label, "summary": lane.summary, "count": lane.count, "accent": lane.accent}
+    return {
+        "label": lane.label,
+        "summary": lane.summary,
+        "count": lane.count,
+        "accent": lane.accent,
+    }
 
 
 def _excerpt_json(excerpt: Excerpt | None) -> dict[str, object] | None:

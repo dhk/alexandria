@@ -433,9 +433,9 @@ def render_flow_page(document_json: dict[str, Any]) -> str:
     body = f"""
 <header class="flow-header">
   <div class="flow-idea-line">
-    <div class="flow-meta">{_e(document_json['idea_slug'])}</div>
+    <div class="flow-meta">{_e(document_json["idea_slug"])}</div>
     <h1>{_e(title)}</h1>
-    <div class="flow-meta">{' &middot; '.join(_e(b) for b in meta_bits)}</div>
+    <div class="flow-meta">{" &middot; ".join(_e(b) for b in meta_bits)}</div>
   </div>
   <div class="flow-export">
     <button type="button" class="ghost-btn" id="export-flow-btn">Export Markdown</button>
