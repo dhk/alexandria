@@ -16,19 +16,5 @@ jobs:
       - run: uv sync --frozen
       - run: uv run --frozen python scripts/validate.py
 
-  mcp-server-template:
-    name: validate (templates/mcp-server)
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: templates/mcp-server
-    steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v5
-        with:
-          python-version: "3.12"
-      - run: uv sync --frozen
-      - run: uv run --frozen ruff check .
-      - run: uv run --frozen ruff format --check .
-      - run: uv run --frozen mypy src
-      - run: uv run --frozen pytest
+# templates/mcp-server's own CI job moved to dhk/minority-report along with
+# the template itself — see https://github.com/dhk/alexandria/issues/33.

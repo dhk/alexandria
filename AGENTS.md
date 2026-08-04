@@ -2,7 +2,7 @@
 
 ## Repository purpose
 
-Alexandria manages the artifacts and review process for multi-model research. The repository—not any orchestration service—is the authoritative record.
+Alexandria manages the artifacts and review process for multi-model research. The repository—not any orchestration service—is the authoritative record. The orchestration service itself (MCP server, commission dispatch, deploy tooling) lives separately in [dhk/minority-report](https://github.com/dhk/minority-report); see [issue #33](https://github.com/dhk/alexandria/issues/33).
 
 ## Working rules
 
@@ -15,7 +15,7 @@ Alexandria manages the artifacts and review process for multi-model research. Th
 7. Keep generated interpretation separate from source evidence.
 8. Do not treat model agreement as factual validation.
 9. Do not commit API keys, credentials, private session data, hidden reasoning, or copyrighted source corpora without permission.
-10. Update schemas, templates, documentation, and tests together when changing an artifact contract.
+10. Update schemas and documentation together when changing an artifact contract. If the contract change affects how Minority Report reads or writes artifacts, coordinate that change there too.
 
 ## Pull-request expectations
 

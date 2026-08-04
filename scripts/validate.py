@@ -1,10 +1,17 @@
 #!/usr/bin/env python3
-"""Run Alexandria's repository validation checks."""
+"""Validate Alexandria's tracked research/documentation artifacts.
+
+Alexandria is the research corpus now — no src/ or tests/ to lint, type
+check, or run. That half of this script moved to
+dhk/minority-report/scripts/validate.py along with the tooling it checked;
+see https://github.com/dhk/alexandria/issues/33. This half — parsing every
+tracked JSON/TOML/YAML artifact so a malformed one fails fast — stays here,
+against research/, schemas/, and the rest of the corpus.
+"""
 
 from __future__ import annotations
 
 import json
-import shutil
 import subprocess
 import sys
 import tomllib
@@ -13,19 +20,6 @@ from pathlib import Path
 import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
-
-
-def run(*command: str) -> None:
-    """Run one validation command from the repository root."""
-    executable = command[0]
-    if shutil.which(executable) is None:
-        raise RuntimeError(
-            f"{executable!r} is unavailable; run this validator with "
-            "`uv run --frozen python scripts/validate.py`"
-        )
-
-    print(f"\n==> {' '.join(command)}", flush=True)
-    subprocess.run(command, cwd=ROOT, check=True)
 
 
 def tracked_artifacts() -> list[Path]:
@@ -60,10 +54,6 @@ def validate_artifacts() -> None:
 def main() -> int:
     try:
         validate_artifacts()
-        run("ruff", "check", ".")
-        run("ruff", "format", "--check", "src", "tests", "scripts")
-        run("mypy", "src", "tests")
-        run("pytest")
     except (OSError, RuntimeError, subprocess.CalledProcessError, ValueError) as exc:
         print(f"\nvalidation failed: {exc}", file=sys.stderr)
         return 1
