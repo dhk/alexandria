@@ -16,6 +16,13 @@ Alexandria manages the artifacts and review process for multi-model research. Th
 8. Do not treat model agreement as factual validation.
 9. Do not commit API keys, credentials, private session data, hidden reasoning, or copyrighted source corpora without permission.
 10. Update schemas and documentation together when changing an artifact contract. If the contract change affects how Minority Report reads or writes artifacts, coordinate that change there too.
+11. **Verify the claim before you make it.** Any assertion that something is absent, identical, complete, current, or the only copy — in a handoff, a pull-request body, a commit message, or a report — must be checked by a command before it is written, and the check named alongside it. Report what the command returned, not what you expected it to return. An unverified "this exists only here" nearly cost merged work; a diff that compared a tree against itself was reported as a passing verification gate. Both were internally consistent and externally wrong, and in both cases the falsifying command was one line away.
+
+## Cross-repository handoff
+
+Work moves between repositories and between sessions as a **branch**, never as an archive of loose files. A branch carries its base commit, so a reviewer can see what it was written against; an archive carries nothing, and reconciling one has already cost more than the work inside it — and concealed a regression against current `main`.
+
+More than one session may be working across this repository and Minority Report at once. Before changing shared paths, check what is already in flight: open pull requests in both repositories, and recent commits on `main`. Rule 11 applies with particular force to anything you are about to tell another session is done, absent, or current.
 
 ## Pull-request expectations
 
