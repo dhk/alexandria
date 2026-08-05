@@ -1,0 +1,11 @@
+{
+  "models_dispatched": [
+    "claude-sonnet-5 (single-source interactive, not OpenRouter dispatch)"
+  ],
+  "inputs": [
+    "00-topic/source-material.md (operator transcript, verbatim)"
+  ],
+  "failures": [],
+  "superseded_count": 0,
+  "manifest_excerpt": "Single-source interactive run via Claude Code direct session (not OpenRouter), 2026-07-29T01:00:00Z to 2026-07-29T01:09:18Z. Live web search (US-only results), no repository tools beyond this investigation's own scaffold.\n\nCaveat, recorded in run-metadata.yaml at the time: single source, not graded or cross-checked against another model. Supersimple's own unreleased feature is necessarily sourced from the operator's transcript alone, not independently verified."
+}

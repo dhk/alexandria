@@ -1,0 +1,6 @@
+headline: "Not a novel technical capability, individually -- a bundling and go-to-market differentiator, if it ships as claimed"
+consensus: "N/A -- single-source pass, no second model to agree with. Do not read an empty lane here as a gap; see coverage."
+disagreement: "N/A -- single-source pass, nothing to disagree with."
+novel:
+  - "No comparison vendor (Hex, Lightdash, Tableau, Metabase, Sigma, Looker, Retool) explicitly positions its extension/plugin capability as the sanctioned home for AI-agent-built artifacts -- the least-contested part of Supersimple's pitch, per Q7."
+coverage: "Single-source Bronze pass: live web search (US-only results) against public documentation/marketing pages, not hands-on product testing. A Silver-tier multi-model dispatch through Alexandria's own commission flow was considered and explicitly not run -- spend-gated, requires the operator's explicit confirmation."

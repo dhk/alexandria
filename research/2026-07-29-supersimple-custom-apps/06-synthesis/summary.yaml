@@ -1,0 +1,12 @@
+headline: "Real, defensible positioning claim if it ships as claimed -- but a bundling differentiator, not a technical one"
+findings:
+  - "Every individual capability claim in the transcript has a live precedent somewhere in the comparison set (Sigma/Tableau plugins, Looker/Tableau/Retool write-back, Looker's entitlement model, Tableau Exchange/Sigma's gallery for reuse)."
+  - "What's actually different is the bundle: no single existing tool combines governed-model access + external write-back + org-wide reuse + explicit AI-artifact governance the way the transcript describes."
+  - "The 'shadow AI-coding' framing (a governed home for agent-built one-off reports) is the strongest and least-contested part of the pitch -- no comparison vendor has claimed that territory yet."
+evidence_base: "1 single-source Claude session (2026-07-29), live web search (US-only), 7 comparison tools plus the operator's own unreleased-feature transcript."
+not_established:
+  - "Whether the shipped feature actually delivers zero-configuration shared filter state (Q2) for externally-authored custom code, or requires the same explicit binding every comparison tool does -- sourced from a demo claim, not an API contract."
+  - "Whether admin connection controls (Q5) will ship as granular as Looker's entitlement model or as coarse as Sigma/Metabase's org-level allow-listing -- this materially changes how strong the governance claim actually is."
+open_questions:
+  - "Domo's App Framework was flagged as an unresearched close analog and could change the 'no vendor claims this territory' read in Q7 if it turns out to make a similar pitch."
+  - "A Silver-tier multi-model dispatch would meaningfully de-risk the Q2/Q5 claims specifically -- not run here, spend-gated, requires the operator's explicit confirmation."

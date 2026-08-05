@@ -31,3 +31,27 @@ notes: >
   (begin_research/run_research), which requires an explicit spend
   confirmation from the operator. See README.md for what a Silver
   upgrade of this investigation would add.
+
+# alexandria#34's flow view (RFC-0007) Idea-stage lanes. Faithful
+# compressions of brief.md's own Background/Scope sections -- not new
+# claims, just this investigation's existing framing surfaced at the
+# lane level so the flow doesn't require opening the brief to see it.
+origin: >
+  Supersimple shared an unreleased "Custom Apps" feature transcript
+  directly and asked for a research brief situating it against the
+  agent/BI dashboard landscape.
+claim_under_test: >
+  Supersimple's Custom Apps bundles governed-data access, external
+  write-back, org-wide reuse, and AI-artifact governance into one
+  differentiated, admin-controlled surface -- rather than any single
+  technically novel capability.
+why_now: >
+  Pre-launch: the transcript was shared ahead of the feature's release,
+  framed partly as a response to "shadow AI-coding" (employees already
+  building ungoverned one-off tools with agents like Claude Code).
+scope: >
+  In scope: how comparable products already solve "bring custom
+  code/apps into a governed BI platform," and what specifically differs
+  about Supersimple's framing. Out of scope: pricing, go-to-market, a
+  security audit, or hands-on testing of any vendor's product (this is
+  a pre-launch transcript, not a review).
