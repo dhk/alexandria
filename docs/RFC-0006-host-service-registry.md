@@ -2,7 +2,7 @@
 
 **Status:** Accepted for Alexandria pack tooling
 
-**Schema:** [`schemas/service-registry.schema.json`](../schemas/service-registry.schema.json)
+**Schema:** [`schemas/service-registry.schema.json`](https://github.com/dhk/minority-report/blob/main/schemas/service-registry.schema.json) in [dhk/minority-report](https://github.com/dhk/minority-report) — the registry is deploy machinery, so its schema lives with the deploy code rather than with the corpus.
 
 **Issue:** [#25](https://github.com/dhk/alexandria/issues/25)
 
@@ -136,7 +136,7 @@ or Tailscale mutation. Do not delete the registry or pick replacement ports.
 
 1. Stop concurrent pack installs.
 2. Inspect `registry.json` and `registry.json.bak`; neither contains secrets.
-3. Validate the selected copy against `schemas/service-registry.schema.json` and
+3. Validate the selected copy against `schemas/service-registry.schema.json` (in dhk/minority-report) and
    compare it with `systemctl --user`, listening sockets, health endpoints, and
    `tailscale serve status --json` / `tailscale funnel status --json`.
 4. Restore the selected copy atomically as root with owner `root:root` and mode
