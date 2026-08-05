@@ -1,19 +1,21 @@
 # Alexandria
 
-**An open, auditable system for managing multi-model research—from brief creation and model dispatch through evidence capture, comparative analysis, synthesis, and publication.**
+**The research corpus: a git-backed, auditable record of multi-model research — briefs, raw model outputs, comparative analysis, synthesis, and publication.**
 
-Alexandria treats a Git repository as the durable system of record for research. The orchestration harness is deliberately separate: models and tools may change, but the evidence trail, revisions, review decisions, and published conclusions remain visible.
+Alexandria treats this repository as the durable system of record for research. The tooling that produces these artifacts — the MCP server, commission dispatch, and deploy machinery — now lives separately in [dhk/minority-report](https://github.com/dhk/minority-report), so models and orchestration logic can keep changing without touching this repo's evidence trail or its history. See [issue #33](https://github.com/dhk/alexandria/issues/33) for the split.
 
-## What Alexandria manages
+## What this corpus records
 
-1. Define a research topic.
-2. Draft and approve a research brief.
-3. Dispatch the brief to multiple model families and research modes.
-4. Preserve prompts, inputs, raw outputs, citations, errors, and execution metadata.
-5. Normalize outputs without changing the raw evidence.
-6. Compare findings, disagreements, omissions, and unusual outliers.
-7. Produce a traceable synthesis.
-8. Review and publish through Git branches and pull requests.
+1. A defined research topic.
+2. A drafted and approved research brief.
+3. The brief dispatched to multiple model families and research modes.
+4. Prompts, inputs, raw outputs, citations, errors, and execution metadata, preserved as received.
+5. Normalized outputs, without changing the raw evidence.
+6. Findings, disagreements, omissions, and unusual outliers, compared.
+7. A traceable synthesis.
+8. Review and publication through Git branches and pull requests.
+
+Producing steps 1–7 is Minority Report's job, dispatched against briefs that live here. This repo is where the result — and the trail behind it — is kept.
 
 ## Architecture
 
@@ -21,18 +23,22 @@ Alexandria treats a Git repository as the durable system of record for research.
 
 ![How Alexandria works: operator surfaces feed an explicit review gate, independent model research, grading, immutable local run artifacts, and a separate Git research system of record.](docs/assets/alexandria-architecture.svg)
 
-The review gate is the boundary before model spend. In V0.1, completed commission
-runs remain immutable local records; promotion into the Git research repository is
-deliberate rather than automatic.
+The review gate is the boundary before model spend. Completed commission runs
+remain immutable local records; promotion into this repository is deliberate
+rather than automatic. (The "operator surfaces" and dispatch machinery this
+diagram shows now live in
+[dhk/minority-report](https://github.com/dhk/minority-report); this diagram
+predates the split and hasn't been redrawn yet.)
 
 ### Model comparison and synthesis
 
 ![How Alexandria dispatches one approved brief to independent models, preserves their raw responses, blindly grades claims, and presents consensus, disagreement, novelty, thin coverage, and silence.](docs/assets/alexandria-model-synthesis.svg)
 
 Every research model receives the same brief and inputs without seeing another
-model's answer. Alexandria preserves those answers, grades the union of material
-claims, and produces a report plus a claim landscape that keeps disagreement,
-silence, and failure visibly distinct.
+model's answer. The dispatching tool preserves those answers, grades the union
+of material claims, and produces a report plus a claim landscape that keeps
+disagreement, silence, and failure visibly distinct — the artifact this
+repository then holds.
 
 ## Research assurance levels
 
@@ -62,91 +68,26 @@ docs/          Architecture and operating rules
 docs/ux/       Published user-interface specifications and prototypes
 policies/      Bronze, Silver, and Gold assurance policies
 schemas/       Machine-readable artifact contracts
-templates/     Starting points for research artifacts and for new MCP servers
 prompts/       Versioned model instructions
 research/      Individual investigations
-scripts/       Validation and repository utilities
-deploy/        Reusable pack metadata and Ubuntu bundle installer
-src/           MCP repository recall and guarded research commissions
-tests/         Contract and provenance tests
+scripts/       Validation of tracked research/documentation artifacts
 generated/     Rebuildable indexes and reports
 ```
 
-## MCP server
+The tooling that used to live in `src/`, `deploy/`, `templates/mcp-server/`,
+and `tests/` moved to [dhk/minority-report](https://github.com/dhk/minority-report).
 
-Alexandria's tools are also available as an MCP server — read/status tools over
-`research/` plus a guarded `begin_research` / `run_research` commission flow for
-Claude Desktop, Claude Code, or any other MCP client. See
-[docs/MCP-SERVER.md](docs/MCP-SERVER.md) for what it exposes and how to run it, and
-[templates/mcp-server/](templates/mcp-server/README.md) for the
-project-agnostic scaffold (auth, config, admin dashboard) it was forked
-from — the starting point for making any future product's own tools a
-first-class MCP surface the same way.
+## Using the tooling against this corpus
 
-## Commission web surface
-
-The first end-to-end commission slice runs locally:
+Point [dhk/minority-report](https://github.com/dhk/minority-report)'s
+`ALEXANDRIA_REPO` at a checkout of this repository:
 
 ```bash
-uv sync
-uv run alexandria-web
+export ALEXANDRIA_REPO=/path/to/this/checkout
 ```
 
-Open <http://127.0.0.1:8042>. It accepts pasted content, PDF/HTML/text/Markdown
-uploads, and GitHub repository, issue, pull-request, or blob URLs. Review is a
-separate spend gate; no OpenRouter call is dispatched until the operator presses
-the priced **Run research** button. See
-[docs/COMMISSION-SURFACE.md](docs/COMMISSION-SURFACE.md) for configuration,
-artifact layout, and current limits.
-
-## MCP lifecycle
-
-Install the checkout as a uv tool, then use the lifecycle command to upgrade and
-restart every Alexandria MCP process owned by your account:
-
-```bash
-uv tool install --reinstall .
-alexandria-ctl cycle
-```
-
-`cycle` pulls the configured checkout with `--ff-only`, reinstalls the uv tool,
-stops the old HTTP and client-owned stdio processes, starts the new HTTP server,
-and prints loopback health. The upgrade happens before shutdown so a failed pull
-or install leaves the current servers running. See
-[docs/MCP-SERVER.md](docs/MCP-SERVER.md) for status, start, stop, systemd, and
-optional shell-alias details.
-
-## Deployment packs
-
-Build one secret-free archive for upload to an Ubuntu host:
-
-```bash
-uv run --frozen python scripts/pack.py
-```
-
-The command prints exact `scp`, checksum, unpack, and install commands. The
-interactive installer creates a versioned release, installs the uv tool, asks for
-missing secrets, configures the systemd user service, verifies health, and retains
-the prior release for rollback. It inventories existing paths first, prompts before
-managed replacements, preserves existing secrets, and backs up differing service
-units. On Lobster it also offers to add only the `/alexandria` Tailscale Funnel
-path and prints the resolved HTTPS connector URL; an existing conflicting route
-requires a separate confirmation. Every unpacked bundle also includes
-`./launch-docs.py`, which opens a generated human-facing documentation index. Its
-installation front panel runs no-spend “hello world” checks and turns each
-responding component green. The same
-checks can be rerun from a terminal with `./install.py --check`. After success, the
-installer preserves that front panel under the managed install root and offers to
-remove the archive, checksum, and unpacked transfer directory; `--keep-bundle`
-retains them. See
-[docs/PACKAGING.md](docs/PACKAGING.md).
-
-Before changing a service or Tailscale route, the Lobster installer also consults
-the host-wide endpoint registry. It atomically imports or verifies Wingman,
-Trent, and Alexandria's existing assignments, refuses collisions with the named
-owner, and reports listener, health, systemd, and route drift without deleting
-reservations. See
-[RFC-0006](docs/RFC-0006-host-service-registry.md).
+See that repo's README for running the MCP server, the commission web
+surface, and the deploy/packaging tooling.
 
 Each investigation follows a standard lifecycle:
 
@@ -167,11 +108,9 @@ research/<date>-<slug>/
 
 ## Status
 
-Alexandria has read-only repository recall tools and a guarded MCP commission path.
-The MCP and web surfaces can review and dispatch a brief to independent OpenRouter
-models, preserve their raw responses, grade a claim landscape, and retain the
-resulting run record. The published UX contract still describes work beyond this
-first vertical slice.
+Alexandria's corpus structure supports read/status recall and a guarded
+commission-and-publish path via the Minority Report tooling. The published
+UX contract still describes work beyond this first vertical slice.
 
 ## Contributing
 
