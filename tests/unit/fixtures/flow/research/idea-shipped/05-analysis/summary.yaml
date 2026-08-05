@@ -6,3 +6,9 @@ disagreement:
 novel:
   - "One model surfaced an undocumented embedding API not mentioned in the public changelog."
 coverage: "2 of 3 dispatched models returned research; the failed call left the access-control claim thinly covered."
+groups:
+  consensus: 4
+  disagreement: 2
+  novel: 1
+  thin: 1
+  silent: 0

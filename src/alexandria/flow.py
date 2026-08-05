@@ -9,12 +9,10 @@ module introduces to close the gaps RFC-0007 SS12 flagged as unresolved:
   ``why_now``, ``scope``) read for the Idea stage's four lanes. Absent fields
   render "Not recorded" -- this module never invents lane prose (RFC-0007's
   non-goals: "No summarisation by the UI").
-- ``resolution.yaml`` at the investigation root is the file this module reads for
-  stage 06. Its shape anticipates issue #35's taxonomy (``outcome``: one of
-  ``implemented`` / ``morphed`` / ``nixed``, or the file absent entirely for
-  "unresolved") but does not implement #35's validation -- that is #35's own
-  scope, not this view's. An unmapped outcome string is rendered verbatim, per
-  RFC-0007 SS03 and SS07.
+- ``resolution.yaml`` at the investigation root is read and validated by
+  ``alexandria.resolution`` (issue #35's taxonomy: ``implemented`` /
+  ``morphed`` / ``nixed``, or the file absent entirely for "unresolved").
+  This module only renders what that module hands back.
 
 Nothing here writes to the repository. This module is read-only, same discipline
 as research_repo.py.
@@ -31,6 +29,12 @@ import yaml
 
 from alexandria.infrastructure.config import Config
 from alexandria.infrastructure.research_repo import Investigation, find_investigation
+from alexandria.resolution import (
+    RESOLUTION_FILENAME,
+    Resolution,
+    ResolutionError,
+    parse_resolution_yaml,
+)
 
 # RFC-0007 SS03's six stages, in fixed display order, mapped onto the lifecycle
 # directories they read from. Not every LIFECYCLE_STAGES entry is shown -- the
@@ -96,21 +100,12 @@ class StageRecord:
 
 
 @dataclass(frozen=True)
-class Resolution:
-    outcome: str | None  # None = unresolved
-    expression: str | None
-    decided_by: str | None
-    decided_at: str | None
-    rationale: str | None
-
-
-@dataclass(frozen=True)
 class FlowDocument:
     idea_slug: str
     title: str
     opened: str | None
     stages: tuple[StageRecord, ...]  # exactly six, SS08 order
-    resolution: Resolution
+    resolution: Resolution | None  # None = unresolved (issue #35's taxonomy)
 
 
 def _as_int(value: object, default: int = 0) -> int:
@@ -351,13 +346,13 @@ def _synthesis_stage(investigation_dir: Path) -> StageRecord:
     )
 
 
-def _resolution_stage(investigation_dir: Path, resolution: Resolution) -> StageRecord:
-    if resolution.outcome is None:
+def _resolution_stage(investigation_dir: Path, resolution: Resolution | None) -> StageRecord:
+    if resolution is None:
         lanes = (
             Lane("Outcome", "UNRESOLVED"),
-            _lane("Expression", resolution.expression),
+            _lane("Expression", None),
             _lane("Decided by & when", None),
-            _lane("Rationale", resolution.rationale),
+            _lane("Rationale", None),
         )
         headline = "Unresolved"
     else:
@@ -379,12 +374,12 @@ def _resolution_stage(investigation_dir: Path, resolution: Resolution) -> StageR
         for candidate in sorted(published_dir.glob("*.md")):
             excerpt = _excerpt_from_file(candidate)
             break
-    if excerpt is None and resolution.rationale:
+    if excerpt is None and resolution is not None and resolution.rationale:
         paras = _paragraphs(resolution.rationale)
         excerpt = Excerpt(
             paragraphs=paras[:2],
             shown_of_total=(min(2, len(paras)), len(paras)),
-            artifact_path=str(investigation_dir / "resolution.yaml"),
+            artifact_path=str(investigation_dir / RESOLUTION_FILENAME),
             sha256=None,
         )
     return StageRecord(
@@ -412,16 +407,16 @@ def _empty_stage(key: str) -> StageRecord:
     )
 
 
-def _read_resolution(investigation_dir: Path) -> Resolution:
-    data = _read_yaml(investigation_dir / "resolution.yaml")
-    outcome = data.get("outcome")
-    return Resolution(
-        outcome=str(outcome) if outcome else None,
-        expression=str(data["expression"]) if data.get("expression") else None,
-        decided_by=str(data["decided_by"]) if data.get("decided_by") else None,
-        decided_at=str(data["decided_at"]) if data.get("decided_at") else None,
-        rationale=str(data["rationale"]) if data.get("rationale") else None,
-    )
+def _read_resolution(investigation_dir: Path) -> Resolution | None:
+    """None means unresolved (no resolution.yaml) -- the ordinary, expected
+    state for an idea still in flight. Raises FlowDataError if the file
+    exists but violates the taxonomy (issue #35's own module owns that
+    validation; this just surfaces it as flow.py's one exception type).
+    """
+    try:
+        return parse_resolution_yaml(investigation_dir / RESOLUTION_FILENAME)
+    except ResolutionError as exc:
+        raise FlowDataError(str(exc)) from exc
 
 
 def _apply_reach_states(stages: list[StageRecord]) -> list[StageRecord]:
@@ -486,7 +481,7 @@ def _build(investigation: Investigation) -> FlowDocument:
     # Resolution reads as reached ("present", possibly with outcome=None ->
     # UNRESOLVED) only once synthesis actually happened -- otherwise there is
     # nothing to resolve and it should read not_reached like its neighbours.
-    if synthesis.state == "present" or resolution.outcome is not None:
+    if synthesis.state == "present" or resolution is not None:
         stage_resolution = _resolution_stage(investigation_dir, resolution)
     else:
         stage_resolution = _empty_stage("resolution")
@@ -537,6 +532,24 @@ def _stage_json(stage: StageRecord) -> dict[str, object]:
     }
 
 
+def _resolution_json(resolution: Resolution | None) -> dict[str, object]:
+    if resolution is None:
+        return {
+            "outcome": None,
+            "expression": None,
+            "decided_by": None,
+            "decided_at": None,
+            "rationale": None,
+        }
+    return {
+        "outcome": resolution.outcome,
+        "expression": resolution.expression,
+        "decided_by": resolution.decided_by,
+        "decided_at": resolution.decided_at,
+        "rationale": resolution.rationale,
+    }
+
+
 def flow_document_json(document: FlowDocument) -> dict[str, object]:
     """The wire shape the client-side flow renders from -- RFC-0007 SS08's schema."""
     return {
@@ -544,11 +557,5 @@ def flow_document_json(document: FlowDocument) -> dict[str, object]:
         "title": document.title,
         "opened": document.opened,
         "stages": [_stage_json(stage) for stage in document.stages],
-        "resolution": {
-            "outcome": document.resolution.outcome,
-            "expression": document.resolution.expression,
-            "decided_by": document.resolution.decided_by,
-            "decided_at": document.resolution.decided_at,
-            "rationale": document.resolution.rationale,
-        },
+        "resolution": _resolution_json(document.resolution),
     }

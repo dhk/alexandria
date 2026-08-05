@@ -91,6 +91,7 @@ def test_shipped_excerpts_never_exceed_available_paragraphs(config: Config) -> N
 def test_shipped_resolution_outcome_and_forward_pointer(config: Config) -> None:
     doc = build_flow_document(config, "idea-shipped")
     assert doc is not None
+    assert doc.resolution is not None
     assert doc.resolution.outcome == "implemented"
     assert doc.resolution.expression == "08-published/recommendation.md"
     resolution_stage = next(s for s in doc.stages if s.key == "resolution")
