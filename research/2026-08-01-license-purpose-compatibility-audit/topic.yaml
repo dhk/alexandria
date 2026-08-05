@@ -1,0 +1,46 @@
+# Alexandria investigation metadata.
+# Schema not yet formalized under schemas/ (see
+# src/alexandria/infrastructure/research_repo.py) — this follows the
+# lenient best-effort shape that module reads: title, status,
+# assurance_level. Additional fields below are documentation, not
+# machine-read yet.
+
+title: "License & dependency purpose-compatibility auditing — prior art and feasibility"
+status: "single-source-draft"
+assurance_level: "bronze"
+
+slug: 2026-08-01-license-purpose-compatibility-audit
+opened: 2026-08-01
+requested_by: operator (davehk@gmail.com)
+
+topic_kind: feature-scoping
+subject_product: "License & dependency purpose-compatibility auditor (unbuilt feature idea, scoped alongside the repo-doc-audit tool family)"
+
+comparison_set:
+  - FOSSA
+  - OSS Review Toolkit (ORT)
+  - ScanCode Toolkit
+  - flict
+  - pip-licenses
+  - license-checker (npm)
+  - cargo-deny
+  - go-licenses
+  - licensee / licensed
+  - REUSE (FSFE)
+  - Snyk License Compliance
+  - Mend (WhiteSource)
+  - Black Duck
+
+notes: >
+  Single-source (Claude, this session) exploratory pass. Not yet dispatched
+  through Alexandria's multi-model commission pipeline (begin_research/
+  run_research), which requires an explicit spend confirmation from the
+  operator. See README.md for what a Silver upgrade of this investigation
+  would add.
+
+  Hard constraint carried into any downstream build from this research: the
+  resulting tool must never author, choose, or edit a LICENSE file — it is
+  strictly a detection/reporting tool. This constraint is out of scope for
+  the research questions themselves (it's a product requirement, not a
+  prior-art question) but should be preserved in any brief revision or
+  synthesis.

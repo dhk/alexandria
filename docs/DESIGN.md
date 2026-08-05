@@ -59,6 +59,11 @@ claim also has thin coverage. A
 
 The operative commission-surface contract is [RFC-0005 — The commission surface](ux/RFC-0005-commission-surface.md). Its [interactive prototype](ux/prototype/index.html) demonstrates all five specified screens without implementing the application.
 
+[RFC-0007 — The idea-to-expression flow](ux/RFC-0007-idea-to-expression-flow.md) specifies the
+collapsible, left-to-right rail tracing one idea from conception through resolution, reading the
+`research/` lifecycle directory rather than the commission surface's own run records. Served at
+`GET /flow/{slug}`.
+
 ## Host operations
 
 [RFC-0006 — Host service endpoint registry](RFC-0006-host-service-registry.md)
