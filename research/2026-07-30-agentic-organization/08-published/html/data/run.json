@@ -1,0 +1,32 @@
+{
+  "run_id": "r-2026-0730-03",
+  "brief_revision": "A",
+  "brief_sha256": "422a3a731560c7ca63babf7a725cb78514bd29ba1668ae1f6bf1543514eb1de7",
+  "status": "completed",
+  "created_at": "2026-07-30T13:56:24.260840Z",
+  "completed_at": "2026-07-30T13:59:18.501411Z",
+  "cost_estimate": 1.17045,
+  "cost_actual": 0.378921,
+  "elapsed_seconds": 174.241,
+  "inputs": [
+    {
+      "name": "pasted-content.md",
+      "format": "md",
+      "bytes": 24660,
+      "extracted_chars": 24656,
+      "encoding": "utf-8-sig",
+      "sha256": "915473411878e7b7c74105046478eb4a31bb3b1c0d515f95935bd3af949e1c1b",
+      "state": "extracted",
+      "warning": null,
+      "source_url": null,
+      "extraction_method": "text-decode"
+    }
+  ],
+  "dispatched_models": [
+    "openai/gpt-5.4",
+    "anthropic/claude-opus-4.7",
+    "google/gemini-3.1-pro-preview"
+  ],
+  "grading_model": "anthropic/claude-sonnet-4.6",
+  "limitations": []
+}
