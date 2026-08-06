@@ -1,0 +1,13 @@
+headline: "A narrow script-first workflow is worth validating, but the market gap is not established"
+consensus: "Three models favored merge-triggered repo analysis plus a short human interview and a provenance-bearing demo specification; agreement is directional, not factual validation."
+disagreement: "No material disagreement on MVP shape; models differed mainly in the specificity of prior-art and implementation suggestions."
+novel:
+  - "Storybook and visual-regression outputs may provide a low-cost screenshot path for component-level changes."
+  - "The concept may be stronger as an integration layer over an existing demo platform than as a standalone product."
+groups:
+  consensus: 6
+  disagreement: 0
+  novel: 5
+  thin: 5
+  silent: 0
+coverage: "Bronze multi-model run using supplied material only; no live web access, current-product verification, buyer research, or hands-on capture testing."

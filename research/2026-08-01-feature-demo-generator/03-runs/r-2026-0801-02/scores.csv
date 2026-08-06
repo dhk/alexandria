@@ -1,0 +1,64 @@
+claim_id,model_id,score,quote,grading_call_id
+c-001,openai/gpt-5.4,2,merge/PR event → repo-aware factual extraction → 2-minute human product-context interview → demo script as canonical artifact → optional screenshots/video/voiceover,gen-1785608555-6Z86VIQXZ3mGdgo71wvd
+c-001,anthropic/claude-opus-4.7,3,"the specific join between: 1. a merge-triggered repo interrogation that identifies the user-visible surface of a change, and 2. a sub-two-minute structured product-context interview captured while the author still has it in their head, and 3. a demo spec (structured intermediate representation) from which scripts, screenshots, recorded walkthroughs, and narrated videos are all rendered",gen-1785608555-6Z86VIQXZ3mGdgo71wvd
+c-001,google/gemini-3.1-pro-preview,2,"A connective tissue that uses CI/CD triggers to pull facts from Category 1, interviews the human, and pushes a script/spec to Category 2",gen-1785608555-6Z86VIQXZ3mGdgo71wvd
+c-002,openai/gpt-5.4,2,direct prior art is unconfirmed,gen-1785608555-6Z86VIQXZ3mGdgo71wvd
+c-002,anthropic/claude-opus-4.7,2,I am not aware of a shipping product whose primary flow is 'merge event → repo interrogation → PM interview → demo artifact',gen-1785608555-6Z86VIQXZ3mGdgo71wvd
+c-002,google/gemini-3.1-pro-preview,1,none of which natively occupy the proposed end-to-end wedge,gen-1785608555-6Z86VIQXZ3mGdgo71wvd
+c-003,openai/gpt-5.4,2,The RFC explicitly states the demo script should be the intermediate representation from which screenshots/video/voiceover are derived,gen-1785608555-6Z86VIQXZ3mGdgo71wvd
+c-003,anthropic/claude-opus-4.7,2,Matches the RFC's own conclusion that 'the demo script is the natural intermediate representation',gen-1785608555-6Z86VIQXZ3mGdgo71wvd
+c-003,google/gemini-3.1-pro-preview,2,"The system should output a script/spec that can be fed into the APIs of tools like Arcade, Loom, or Playwright",gen-1785608555-6Z86VIQXZ3mGdgo71wvd
+c-004,openai/gpt-5.4,2,"Capturing a feature reliably requires: environment access, auth/session setup, seed data, deterministic state, navigation logic, resilience to flaky UI timing",gen-1785608555-6Z86VIQXZ3mGdgo71wvd
+c-004,anthropic/claude-opus-4.7,2,"Auth + seed data for headless capture. Almost every non-trivial SaaS demo needs a logged-in state with meaningful data. This is a per-customer integration problem, not a product problem you solve once.",gen-1785608555-6Z86VIQXZ3mGdgo71wvd
+c-004,google/gemini-3.1-pro-preview,2,"Automated UI capture breaks easily due to auth, state, and CSS changes",gen-1785608555-6Z86VIQXZ3mGdgo71wvd
+c-005,openai/gpt-5.4,2,CI/repo event creates a draft → Human prompt requests 2-minute context completion → Optional capture session runs only if visual assets are needed,gen-1785608555-6Z86VIQXZ3mGdgo71wvd
+c-005,anthropic/claude-opus-4.7,3,"CI does Pass 1 (repo interrogation) and drafts the interview automatically on merge → author is pinged (Slack + PR comment) with a link to a two-minute pre-filled form → script is produced with zero further human effort → optional capture pass is a separate, deferrable action",gen-1785608555-6Z86VIQXZ3mGdgo71wvd
+c-005,google/gemini-3.1-pro-preview,2,CI triggers the script/interview; human/agent drives the capture if needed,gen-1785608555-6Z86VIQXZ3mGdgo71wvd
+c-006,openai/gpt-5.4,3,No-go for full product build; go for sharply scoped validation. The RFC supports building a script-first MVP,gen-1785608555-6Z86VIQXZ3mGdgo71wvd
+c-006,anthropic/claude-opus-4.7,3,"Conditional GO on a tightly scoped MVP that produces only demo scripts (not video) from only merged PRs on only web-app repos, with the interview as the hero UX. Defer capture/video entirely to Phase 2.",gen-1785608555-6Z86VIQXZ3mGdgo71wvd
+c-006,google/gemini-3.1-pro-preview,2,Phase 1: The 'Script-Only' Wedge (Validation Phase),gen-1785608555-6Z86VIQXZ3mGdgo71wvd
+c-007,openai/gpt-5.4,2,"Edit, don't author. The RFC already says this and it is likely critical. Each answer should be prefilled from repo/context guesses, even if weak.",gen-1785608555-6Z86VIQXZ3mGdgo71wvd
+c-007,anthropic/claude-opus-4.7,3,Never a blank field. Every question is pre-filled with a best-guess draft or an honest 'I couldn't infer this.' Show your work. Each pre-filled answer shows the source,gen-1785608555-6Z86VIQXZ3mGdgo71wvd
+c-007,google/gemini-3.1-pro-preview,2,"Every question must have a generated draft answer based on Pass 1. The engineer's job is strictly to edit/confirm, not author.",gen-1785608555-6Z86VIQXZ3mGdgo71wvd
+c-008,openai/gpt-5.4,2,Bad AI drafts can cause users to approve subtly wrong positioning,gen-1785608555-6Z86VIQXZ3mGdgo71wvd
+c-008,anthropic/claude-opus-4.7,3,The tool's credibility dies the first time it invents a customer segment. Prefer 'I don't know — you tell me' over confident wrongness,gen-1785608555-6Z86VIQXZ3mGdgo71wvd
+c-008,google/gemini-3.1-pro-preview,1,Engineers will rubber-stamp bad AI drafts if the tool fires too often,gen-1785608555-6Z86VIQXZ3mGdgo71wvd
+c-009,openai/gpt-5.4,2,Not every merge deserves a demo; low trigger precision could kill adoption,gen-1785608555-6Z86VIQXZ3mGdgo71wvd
+c-009,anthropic/claude-opus-4.7,3,"Needs a gate: PR label (demo), size heuristic (touches UI files above threshold), or explicit opt-in per PR",gen-1785608555-6Z86VIQXZ3mGdgo71wvd
+c-009,google/gemini-3.1-pro-preview,2,"Do not fire on every commit. Use a PR label (e.g., demo-worthy) or size heuristic.",gen-1785608555-6Z86VIQXZ3mGdgo71wvd
+c-010,openai/gpt-5.4,0,,gen-1785608555-6Z86VIQXZ3mGdgo71wvd
+c-010,anthropic/claude-opus-4.7,3,"Storybook + Chromatic: component stories rendered per commit, screenshotted, diffed. If the changed surface has a Story, you already have a before/after screenshot for free.",gen-1785608555-6Z86VIQXZ3mGdgo71wvd
+c-010,google/gemini-3.1-pro-preview,0,,gen-1785608555-6Z86VIQXZ3mGdgo71wvd
+c-011,openai/gpt-5.4,3,"Each should include: value, source = inferred / human-confirmed / human-authored, confidence",gen-1785608555-6Z86VIQXZ3mGdgo71wvd
+c-011,anthropic/claude-opus-4.7,3,"Every field carries provenance (source, confirmed) so we can display 'drafted from X' in the UI and never lose the audit trail.",gen-1785608555-6Z86VIQXZ3mGdgo71wvd
+c-011,google/gemini-3.1-pro-preview,1,"""use_case"": ""string"", ""customer_persona"": ""string""",gen-1785608555-6Z86VIQXZ3mGdgo71wvd
+c-012,openai/gpt-5.4,2,The product may be trying to stitch together the least reliable part of the stack... if users already tolerate a much cheaper substitute—PR summary + Loom + PM follow-up—then this may be a workflow optimization without enough pain or budget behind it,gen-1785608555-6Z86VIQXZ3mGdgo71wvd
+c-012,anthropic/claude-opus-4.7,3,"The RFC diagnoses a symptom (demos don't get made) and attributes it to a friction problem (extra work, knowledge decay). But the underlying cause may be a prioritization problem: demos don't get made because nobody's job depends on them getting made.",gen-1785608555-6Z86VIQXZ3mGdgo71wvd
+c-012,google/gemini-3.1-pro-preview,2,"The wedge is a feature, not a product, and the technical execution is inherently contradictory.",gen-1785608555-6Z86VIQXZ3mGdgo71wvd
+c-013,openai/gpt-5.4,2,"relies on memory/compliance, adds user step, may be inconsistently executed across teams",gen-1785608555-6Z86VIQXZ3mGdgo71wvd
+c-013,anthropic/claude-opus-4.7,2,Depends on human invocation. Reintroduces the exact 'extra step that gets skipped' that the RFC is trying to solve.,gen-1785608555-6Z86VIQXZ3mGdgo71wvd
+c-013,google/gemini-3.1-pro-preview,2,"Relies on the engineer remembering to invoke it, risking the exact 'skipped work' problem it aims to solve.",gen-1785608555-6Z86VIQXZ3mGdgo71wvd
+c-014,openai/gpt-5.4,2,are scripts actually reused by PM/sales/support?,gen-1785608555-6Z86VIQXZ3mGdgo71wvd
+c-014,anthropic/claude-opus-4.7,3,"Distribution: demos generated but unused — High likelihood, Very high impact... if <30% by Phase 1 end, the problem statement is wrong",gen-1785608555-6Z86VIQXZ3mGdgo71wvd
+c-014,google/gemini-3.1-pro-preview,2,"Downstream Reuse: Are > 30% of generated artifacts utilized in changelogs, sales enablement, or external comms within 14 days?",gen-1785608555-6Z86VIQXZ3mGdgo71wvd
+c-015,openai/gpt-5.4,2,Repo facts do not map cleanly to demo flows. Changed files/tests may not identify what visible product action should be shown.,gen-1785608555-6Z86VIQXZ3mGdgo71wvd
+c-015,anthropic/claude-opus-4.7,3,"Identifying the user-visible surface from a diff. Backend refactors, dependency bumps, and internal-tool changes will trip a naive 'look at changed files' heuristic. Need a classifier or explicit demo: PR label.",gen-1785608555-6Z86VIQXZ3mGdgo71wvd
+c-015,google/gemini-3.1-pro-preview,1,"Use a PR label (e.g., demo-worthy) or size heuristic",gen-1785608555-6Z86VIQXZ3mGdgo71wvd
+c-016,openai/gpt-5.4,0,,gen-1785608555-6Z86VIQXZ3mGdgo71wvd
+c-016,anthropic/claude-opus-4.7,3,Video assembly: Remotion (React-based programmatic video) or FFmpeg direct. Remotion is the strongest fit because your intermediate is a structured script.,gen-1785608555-6Z86VIQXZ3mGdgo71wvd
+c-016,google/gemini-3.1-pro-preview,0,,gen-1785608555-6Z86VIQXZ3mGdgo71wvd
+c-017,openai/gpt-5.4,0,,gen-1785608555-6Z86VIQXZ3mGdgo71wvd
+c-017,anthropic/claude-opus-4.7,3,"could this be built as a layer on top of Supademo or Arcade rather than a standalone product? A 'Supademo trigger from GitHub' plugin would capture much of the value if their APIs allow programmatic demo creation. [UNVERIFIED — need to check their APIs]. If yes, the standalone-product thesis weakens meaningfully.",gen-1785608555-6Z86VIQXZ3mGdgo71wvd
+c-017,google/gemini-3.1-pro-preview,0,,gen-1785608555-6Z86VIQXZ3mGdgo71wvd
+c-018,openai/gpt-5.4,0,,gen-1785608555-6Z86VIQXZ3mGdgo71wvd
+c-018,anthropic/claude-opus-4.7,2,Danger.js / Danger Systems — the canonical 'run stuff on a PR and comment back' framework. Directly relevant scaffolding.,gen-1785608555-6Z86VIQXZ3mGdgo71wvd
+c-018,google/gemini-3.1-pro-preview,0,,gen-1785608555-6Z86VIQXZ3mGdgo71wvd
+c-019,openai/gpt-5.4,2,"The product touches engineering, PM, marketing, support, and enablement. Buying center may be unclear.",gen-1785608555-6Z86VIQXZ3mGdgo71wvd
+c-019,anthropic/claude-opus-4.7,0,,gen-1785608555-6Z86VIQXZ3mGdgo71wvd
+c-019,google/gemini-3.1-pro-preview,0,,gen-1785608555-6Z86VIQXZ3mGdgo71wvd
+c-020,openai/gpt-5.4,1,"Run manual concierge workflow: pick recent merged features, ask engineer the five questions, produce script, ask PM/sales/support whether it was useful",gen-1785608555-6Z86VIQXZ3mGdgo71wvd
+c-020,anthropic/claude-opus-4.7,3,"Phase 0 (2 weeks) — Discovery, not build. 10 interviews with target users... Look at 50 recently merged PRs from 3–5 friendly repos and hand-classify: how many are demo-worthy?",gen-1785608555-6Z86VIQXZ3mGdgo71wvd
+c-020,google/gemini-3.1-pro-preview,0,,gen-1785608555-6Z86VIQXZ3mGdgo71wvd
+c-021,openai/gpt-5.4,1,"If the engineer skips the interview, route to PM/EM rather than dropping the artifact entirely.",gen-1785608555-6Z86VIQXZ3mGdgo71wvd
+c-021,anthropic/claude-opus-4.7,2,"E4: Author vs. reviewer. Does the interview work better when addressed to the PR author, or to a designated demo-owner? The RFC assumes author; that assumption deserves testing.",gen-1785608555-6Z86VIQXZ3mGdgo71wvd
+c-021,google/gemini-3.1-pro-preview,0,,gen-1785608555-6Z86VIQXZ3mGdgo71wvd

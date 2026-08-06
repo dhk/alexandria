@@ -1,0 +1,223 @@
+# RFC-0001: Feature Demo Generator
+
+**Status:** Draft
+**Author:** Dave (with Claude)
+**Date:** 2026-08-01
+
+## Summary
+
+Every landed feature creates a communication problem: engineering knows exactly
+what shipped, but PMs, sales, marketing, support, and leadership only find out
+via a changelog line or a Slack message, if at all. The gap between "the code
+merged" and "someone outside engineering can show it off" is almost always
+closed manually, late, and inconsistently — if it's closed at all.
+
+This RFC proposes a tool that closes that gap automatically. When a feature
+branch lands, the tool interrogates the repo for what actually changed,
+interviews the person who landed it with a short set of product-management
+questions, and produces a ready-to-share demo of the feature — as a script,
+screenshots, a screen-recorded video, or a narrated video.
+
+## Problem
+
+- Demos are typically built by hand, days or weeks after a feature ships, by
+  someone (often not the author) reconstructing intent from memory or a PR
+  description.
+- The person best positioned to explain a feature — the engineer who just
+  built it, with full context still in their head — is rarely the person who
+  packages it for external consumption.
+- That knowledge decays fast. A week after merge, "why did we build this" and
+  "what does it replace" are already fuzzier than they were at merge time.
+- Existing artifacts (commit messages, PR descriptions, changelogs) capture
+  *what* changed but not *why it matters* — the use case, the customer, the
+  outcome, the benefit, what it replaces. Those are exactly the things a demo
+  needs and a diff can't tell you.
+- Because building a demo is extra, unscheduled work, it's the first thing
+  skipped under deadline pressure — so the features most worth showing off are
+  often the least likely to get shown off.
+
+## Goals
+
+1. Trigger automatically (or on a lightweight manual command) when a feature
+   lands — a merged PR, a tagged release, or a branch merge into main.
+2. Reconstruct factual context from the repo itself: which commits/PR(s) are
+   in scope, what files and surfaces changed, what the diff actually does.
+3. Ask a short, opinionated set of product-management questions to capture the
+   context the repo *can't* tell you — use case, customer, outcome, benefit,
+   what it replaces — from the person landing the feature, while it's fresh.
+4. Generate a demo from the combination of (repo facts + interview answers),
+   in the requesting user's choice of format:
+   - a demo script (spoken narrative + beat-by-beat actions)
+   - a set of annotated screenshots
+   - a screen-recorded walkthrough video
+   - a narrated ("voiceover") explainer video
+5. Make the output good enough to send to a non-technical stakeholder without
+   further editing, or at minimum a strong first draft.
+6. Keep the interview short enough that it doesn't become the new "extra work
+   that gets skipped" — this only works if it's faster than doing nothing.
+
+## Non-Goals
+
+- Not trying to replace changelog/release-notes generators (e.g. auto-written
+  "what's new" text) — those describe *that* something shipped; this shows
+  someone *using* it.
+- Not trying to replace full product-marketing launch processes, positioning
+  docs, or pricing/packaging decisions — this produces a demo asset, not a
+  go-to-market plan.
+- Not trying to be a general screen-recording or presentation tool — video
+  capture and voiceover are means to an end here, not the product itself.
+- Not trying to infer product intent (use case, customer, benefit) purely from
+  code — the repo tells us *what* changed, not *why it matters*; that always
+  comes from the human interview step, not from guessing at commit messages.
+- Not, at this stage, trying to fully automate demo generation with zero human
+  input — the interrogation step is deliberately human-in-the-loop.
+
+## Product Concept
+
+A code- or IDE-adjacent tool ("Cursor-based" — living where the developer
+already is: CLI, git hook, or editor/agent integration) that:
+
+1. **Detects a landed feature** — via a git hook (post-merge), a CI step on
+   merge to main, a manual invocation (`demo generate` / a slash command), or
+   a scheduled sweep of recently merged PRs.
+2. **Interrogates the repo** for the commits/PR(s) in scope:
+   - Full diff and list of touched files/surfaces (UI, API, schema, config)
+   - Commit messages and PR title/description
+   - Linked issues/tickets, if referenced
+   - Associated tests (a good proxy for "what behavior is this supposed to
+     produce") and any docs/README changes
+   - Prior related history (is this iterating on something, or net-new?)
+3. **Interviews the human** with a short, fixed set of PM-style questions,
+   pre-filled with best-guess answers drawn from step 2 where possible so the
+   human is editing, not writing from scratch:
+   - What's the use case? When would someone reach for this?
+   - Who's the customer? (persona, segment, or specific named account)
+   - What's the outcome? What can they now do that they couldn't before?
+   - What's the big benefit? (time saved, risk removed, revenue unlocked...)
+   - What does it replace? (a manual process, a competitor, a workaround, a
+     worse version of itself)
+   - (Optional/expandable) What's the one thing that would make someone say
+     "oh, that's cool"? Any caveats or known limitations to acknowledge? Who
+     should NOT be shown this yet (still behind a flag, needs a caveat)?
+4. **Generates the demo artifact(s)** in the requested output format(s),
+   combining repo facts (what to click, what to show, what the before/after
+   looks like) with interview answers (why it matters, framed for the stated
+   customer/outcome).
+5. **Hands off** the output for review/distribution — not necessarily
+   auto-published; the default posture is "produced a strong draft," not
+   "silently sent something out."
+
+## Target Users
+
+- **Engineers landing a feature** — lowest-friction path to "I don't have to
+  become a demo-builder to get credit for this."
+- **PMs** — a running library of demo-ready material per feature, without
+  chasing engineering for a walkthrough weeks later.
+- **DevRel / Sales Engineering / Customer Success** — fresh, accurate demo
+  assets they didn't have to build themselves and can trust are current.
+- **Founders / small teams** — where there is no dedicated demo-builder role
+  and this work otherwise just doesn't happen.
+
+## The Interrogation, in Detail
+
+Two distinct interrogation passes, and the tool should keep them visibly
+separate rather than blending them into one undifferentiated context blob:
+
+**Pass 1 — Repo facts (automatic, no human needed):**
+Commits/diff in scope, files and surfaces touched, commit messages, PR
+title/description, linked tickets, tests added/changed, docs touched, and
+whether this is new functionality or a change to existing behavior.
+
+**Pass 2 — Product context (human interview, short by design):**
+The five core questions (use case, customer, outcome, benefit, replaces-what)
+plus a small set of optional follow-ups. Every question should be pre-filled
+with a best-effort draft answer inferred from Pass 1 so the human's job is
+confirm/edit, not blank-page authoring. Target: under two minutes to get
+through the interview for a typical feature.
+
+## Output Formats
+
+| Format | What it is | Best for | Production cost |
+|---|---|---|---|
+| **Demo script** | A written beat-by-beat narrative: setup, steps to click through, talking points per beat, the "why it matters" framing per beat | Someone else delivering the demo live (sales, CS); a source doc other formats are generated from | Lowest |
+| **Screenshot set** | Annotated screenshots of the before/after or step-by-step flow, captioned with the talking points | Async sharing (Slack, docs, changelog), accessibility, quick skim | Low |
+| **Screen-recorded video** | A captured walkthrough following the script, no narration (or captions only) | Embedding in release notes, quick social/Slack share, low-effort "see it in action" | Medium |
+| **Voiceover explainer video** | Screen recording + narrated audio (script read aloud, TTS or recorded), possibly with intro/outro | External-facing demos, sales enablement, launch announcements | Highest |
+
+The demo script is the natural intermediate representation: screenshots,
+video, and voiceover are all derivable from (script + actual UI state), so the
+architecture should treat script generation as the core artifact and the other
+three as renderers on top of it, not four independent generators.
+
+## Architecture Options
+
+Two shapes worth weighing against each other in the research pass:
+
+1. **Code-based / CI-triggered**: a git hook or CI job that fires on merge,
+   runs headless (repo interrogation + async interview via a bot comment/CLI
+   prompt + generation), and deposits output as a PR comment, artifact, or
+   doc. Strength: fully automatic, no one has to remember to invoke it.
+   Weakness: capturing screenshots/video of a running app headlessly is much
+   harder than in an interactive session — likely needs a scripted/Playwright
+   walkthrough driven by the demo script itself.
+
+2. **Cursor-/agent-based (interactive)**: invoked by the person landing the
+   feature, inside their editor/agent session, right after they land it. The
+   interview happens conversationally; screen capture happens live against
+   whatever environment they already have running. Strength: real UI capture
+   is trivial because a human (or their agent) is already driving the app.
+   Weakness: depends on someone remembering to invoke it — reintroduces the
+   "extra step that gets skipped" risk the whole project exists to avoid.
+
+A hybrid is plausible: CI triggers the repo interrogation and drafts the
+script + pre-filled interview automatically; a human (or their agent) is
+pinged to complete the two-minute interview and, only if video/screenshots are
+wanted, drive the live capture pass.
+
+## Success Metrics
+
+- % of landed features with a demo artifact within N days of merge (target:
+  near 100%, vs. today's ad hoc/rare baseline).
+- Time from "feature lands" to "shareable demo exists" (target: minutes to
+  hours, not weeks).
+- Time cost to the engineer (target: interview under 2 minutes; capture pass,
+  if any, under 10).
+- Downstream reuse: are these demos actually getting used in changelogs, sales
+  calls, onboarding, exec updates — or just generated and ignored?
+
+## Risks
+
+- **Interview fatigue**: if this fires on every merge regardless of size,
+  people will start rubber-stamping or ignoring it. Needs a "is this
+  demo-worthy" gate (feature flag, PR label, size heuristic) rather than
+  firing on every commit.
+- **Stale or wrong repo inference**: pre-filled answers drawn from diffs can
+  be confidently wrong; the interview step must make it obviously easy to
+  overwrite the draft, not just confirm it.
+- **Capture fragility**: automated screenshot/video capture against a live app
+  is the highest-effort, highest-breakage part of the system (auth, seed
+  data, flaky UI states).
+- **Where output lives**: generated demos that don't get distributed
+  anywhere useful (PR comment no one reads, a doc no one finds) fail even if
+  generation itself works perfectly.
+
+## Open Questions (for research / prior art)
+
+- Do existing "PR/commit → summary" bots (release-note generators, AI
+  changelog tools, Copilot-style PR summarizers) already do the repo
+  interrogation half of this well enough to build on rather than reinvent?
+- Do existing demo/screen-capture tools (Arcade, Supademo, Guidde, Tella,
+  Scribe, Loom, Storylane, and similar "how-to"/interactive-demo builders)
+  already cover the output-format half — and if so, is the gap specifically
+  the *automatic trigger on merge + repo-aware content* piece, not the
+  capture/rendering piece?
+- Is there prior art specifically tying git/PR events to demo or
+  documentation generation (as opposed to changelog text)?
+- How do existing tools handle the "ask the human a few product questions"
+  step — is there a known good pattern for short, high-signal interviews tied
+  to a code change, anywhere (docs generators, changelog tools, PM tooling)?
+- What's the state of the art for turning a script + live app into a
+  narrated video with minimal human effort (TTS quality, auto-editing,
+  auto-highlighting of UI actions)?
+- Are there internal-tools precedents at other companies (blog posts,
+  conference talks) for "demo bots" tied to CI/CD, even if not productized?
