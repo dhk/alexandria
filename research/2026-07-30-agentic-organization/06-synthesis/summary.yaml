@@ -1,0 +1,13 @@
+headline: "Test a single-role, evidence-gated lifecycle before adding managers or broader multi-agent structure"
+findings:
+  - "Build the first experiment around explicit role contracts, constrained tools, immutable traces, structured feedback, held-out evaluation, and tested revocation."
+  - "The natural-language onboarding compiler is the load-bearing unsupported assumption and should be benchmarked against hand-authored configuration."
+  - "Multi-agent structure should earn its complexity through measured quality-adjusted value over a fixed single-agent baseline."
+evidence_base: "Three successful research-model responses, one grader pass, normalized claims and scores, and a comparative synthesis from commission r-2026-0730-03."
+not_established:
+  - "Which existing products or frameworks already solve the proposed lifecycle capabilities."
+  - "Whether the Shen et al. collective-misalignment finding is verified and generalizable."
+  - "Whether onboarding, evaluator independence, and complete offboarding are feasible in practice."
+open_questions:
+  - "A follow-up web-discovery landscape commission is drafted but has not been dispatched."
+  - "The captured run metadata's declared brief hash does not match any preserved brief or input file."

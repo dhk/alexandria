@@ -1,0 +1,31 @@
+{
+  "run_id": "r-2026-0730-03",
+  "brief_revision": "A",
+  "brief_sha256": "422a3a731560c7ca63babf7a725cb78514bd29ba1668ae1f6bf1543514eb1de7",
+  "grading_model": "anthropic/claude-sonnet-4.6",
+  "resolved_model_ids": {
+    "openai/gpt-5.4": "openai/gpt-5.4",
+    "anthropic/claude-opus-4.7": "anthropic/claude-opus-4.7",
+    "google/gemini-3.1-pro-preview": "google/gemini-3.1-pro-preview"
+  },
+  "generation_ids": [
+    "gen-1785419784-FJIUhvRhk7fseBzOKxfu",
+    "gen-1785419784-0WkiIRRWWAhJNlAAbIxg",
+    "gen-1785419784-Wp5rgWiwOBpxDNFP5H3T",
+    "gen-1785419858-OothbWhgd3WPMu3dUrYx"
+  ],
+  "extraction_method": {
+    "pasted-content.md": "text-decode"
+  },
+  "redispatched_models": [],
+  "artifacts": [
+    "run.json",
+    "brief.md",
+    "claims.json",
+    "scores.csv",
+    "report.md",
+    "manifest.json",
+    "raw/",
+    "inputs/"
+  ]
+}
