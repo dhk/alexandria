@@ -72,3 +72,12 @@ new work makes an existing analysis stale.
 The [documentation index](README.md) classifies current contracts, shared
 boundaries, history, and research outputs. Operational documentation lives only
 in Minority Report.
+
+## Proposed V0.2 direction
+
+The [preliminary research-perspectives design](PRELIMINARY-RESEARCH-PERSPECTIVES.md)
+proposes expanding Alexandria from research synthesis to evidence application and
+rubric review. It defines commission shape, research perspective, and dispatch mode
+as independent axes, introduces a separate findings artifact, and includes initial
+software-design-document and cross-provider code-review scaffolds. The proposal is
+preliminary and does not supersede the current V0.1 contracts.
