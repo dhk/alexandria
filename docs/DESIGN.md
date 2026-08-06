@@ -71,6 +71,15 @@ defines the shared-host authority for local ports and external Tailscale routes.
 Alexandria's pack tooling incubates the implementation while preserving the
 repository as the research system of record.
 
+## Proposed V0.2 direction
+
+The [preliminary research-perspectives design](PRELIMINARY-RESEARCH-PERSPECTIVES.md)
+proposes expanding Alexandria from research synthesis to evidence application and
+rubric review. It defines commission shape, research perspective, and dispatch mode
+as independent axes, introduces a separate findings artifact, and includes initial
+software-design-document and cross-provider code-review scaffolds. The proposal is
+preliminary and does not supersede the current V0.1 contracts.
+
 ## Research assurance
 
 Bronze, Silver, and Gold describe increasingly rigorous research processes. They are cumulative process requirements, not labels of factual certainty.
