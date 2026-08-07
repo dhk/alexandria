@@ -1,139 +1,28 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
-  <title id="title">How Alexandria works</title>
-  <desc id="desc">Architecture diagram showing Alexandria's web and MCP surfaces, input resolution, explicit review and spend gate, OpenRouter research and grading, immutable local run records, and the separate Git research repository.</desc>
+  <title id="title">Alexandria and Minority Report repository boundary</title>
+  <desc id="desc">Replaceable operator tools and providers feed Minority Report. Candidate artifacts cross an explicit human review and promotion boundary into Alexandria's durable governed corpus.</desc>
   <defs>
-    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
-      <path d="M 0 0 L 10 5 L 0 10 z" fill="#2b50e8"/>
-    </marker>
-    <marker id="arrow-muted" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
-      <path d="M 0 0 L 10 5 L 0 10 z" fill="#5a5d78"/>
-    </marker>
-    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
-      <feDropShadow dx="0" dy="3" stdDeviation="6" flood-color="#0d0f1a" flood-opacity="0.10"/>
-    </filter>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0 0L12 6L0 12Z" fill="#155eef"/></marker>
     <style>
-      text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #0d0f1a; }
-      .title { font-size: 46px; font-weight: 700; letter-spacing: -1px; }
-      .subtitle { font-size: 20px; fill: #2a2d42; }
-      .zone { font-size: 14px; font-weight: 700; letter-spacing: 2px; fill: #5a5d78; }
-      .card-title { font-size: 23px; font-weight: 700; }
-      .card-copy { font-size: 17px; fill: #2a2d42; }
-      .small { font-size: 15px; fill: #5a5d78; }
-      .mono { font-family: "SFMono-Regular", Consolas, monospace; font-size: 15px; }
-      .edge-label { font-size: 14px; font-weight: 600; fill: #2b50e8; }
-      .edge-label-muted { font-size: 14px; font-weight: 600; fill: #5a5d78; }
-      .node { fill: #ffffff; stroke: #c8cde0; stroke-width: 2; rx: 14; filter: url(#shadow); }
-      .node-blue { fill: #edf1ff; stroke: #2b50e8; stroke-width: 2; rx: 14; filter: url(#shadow); }
-      .node-purple { fill: #f7effd; stroke: #8b2adc; stroke-width: 2; rx: 14; filter: url(#shadow); }
-      .node-teal { fill: #eaf8f8; stroke: #0ea5b0; stroke-width: 2; rx: 14; filter: url(#shadow); }
-      .node-orange { fill: #fff2ed; stroke: #e05c2a; stroke-width: 2; rx: 14; filter: url(#shadow); }
-      .flow { fill: none; stroke: #2b50e8; stroke-width: 3; marker-end: url(#arrow); }
-      .flow-muted { fill: none; stroke: #5a5d78; stroke-width: 2.5; marker-end: url(#arrow-muted); }
-      .flow-dashed { fill: none; stroke: #5a5d78; stroke-width: 2.5; stroke-dasharray: 8 8; marker-end: url(#arrow-muted); }
+      .bg{fill:#f8fafc}.panel{fill:#fff;stroke:#cbd5e1;stroke-width:2}.accent{fill:#eff6ff;stroke:#155eef;stroke-width:3}.gate{fill:#fff7ed;stroke:#ea580c;stroke-width:3}.h{font:700 34px system-ui,sans-serif;fill:#0f172a}.hsmall{font:700 30px system-ui,sans-serif;fill:#0f172a}.t{font:500 24px system-ui,sans-serif;fill:#334155}.s{font:600 20px ui-monospace,monospace;fill:#475569}.line{stroke:#155eef;stroke-width:5;fill:none;marker-end:url(#arrow)}
     </style>
   </defs>
-
-  <rect width="1600" height="900" fill="#f5f6fa"/>
-  <text class="title" x="60" y="70">How Alexandria works</text>
-  <text class="subtitle" x="60" y="105">A local, auditable research commission pipeline with an explicit boundary before model spend.</text>
-
-  <rect x="40" y="140" width="1110" height="710" rx="24" fill="#eceef5" stroke="#c8cde0" stroke-width="2"/>
-  <text class="zone" x="70" y="177">OPERATOR’S MACHINE</text>
-
-  <rect x="1180" y="140" width="380" height="710" rx="24" fill="#f0eff8" stroke="#c8cde0" stroke-width="2"/>
-  <text class="zone" x="1210" y="177">EXTERNAL SERVICES</text>
-
-  <!-- Surfaces -->
-  <rect class="node-blue" x="75" y="205" width="275" height="110"/>
-  <text class="card-title" x="100" y="245">Local web UI</text>
-  <text class="card-copy" x="100" y="276">Paste, upload, review</text>
-  <text class="mono" x="100" y="299">alexandria-web</text>
-
-  <rect class="node-blue" x="385" y="205" width="320" height="110"/>
-  <text class="card-title" x="410" y="245">MCP server</text>
-  <text class="card-copy" x="410" y="276">Recall + commission tools</text>
-  <text class="mono" x="410" y="299">stdio · tokenized HTTP</text>
-
-  <rect class="node" x="740" y="205" width="370" height="110"/>
-  <text class="card-title" x="765" y="245">Operator-supplied inputs</text>
-  <text class="card-copy" x="765" y="276">Pasted text · PDF · HTML · Markdown</text>
-  <text class="card-copy" x="765" y="299">GitHub repo · issue · PR · blob URL</text>
-
-  <!-- Commission pipeline -->
-  <rect class="node" x="75" y="390" width="225" height="125"/>
-  <text class="card-title" x="100" y="430">Resolve</text>
-  <text class="card-copy" x="100" y="461">Extract text</text>
-  <text class="card-copy" x="100" y="485">Hash every input</text>
-
-  <rect class="node" x="335" y="390" width="225" height="125"/>
-  <text class="card-title" x="360" y="430">Draft</text>
-  <text class="card-copy" x="360" y="461">Verbatim brief</text>
-  <text class="card-copy" x="360" y="485">Models + cost ceiling</text>
-
-  <rect class="node-orange" x="595" y="375" width="235" height="155"/>
-  <text class="zone" x="620" y="405" style="fill:#b3451e">SPEND BOUNDARY</text>
-  <text class="card-title" x="620" y="443">Explicit review</text>
-  <text class="card-copy" x="620" y="474">Nothing dispatches until</text>
-  <text class="card-copy" x="620" y="498">the operator confirms.</text>
-
-  <rect class="node-purple" x="865" y="390" width="245" height="125"/>
-  <text class="card-title" x="890" y="430">Commission</text>
-  <text class="card-copy" x="890" y="461">Parallel research calls</text>
-  <text class="card-copy" x="890" y="485">Then blind grading</text>
-
-  <path class="flow" d="M 300 452 L 335 452"/>
-  <path class="flow" d="M 560 452 L 595 452"/>
-  <path class="flow" d="M 830 452 L 865 452"/>
-
-  <path class="flow" d="M 212 315 L 212 360 L 187 360 L 187 390"/>
-  <path class="flow" d="M 545 315 L 545 345 L 270 345 L 270 390"/>
-  <path class="flow-muted" d="M 925 315 L 925 350 L 245 350 L 245 390"/>
-
-  <!-- Local storage -->
-  <rect class="node-teal" x="75" y="650" width="500" height="155"/>
-  <text class="zone" x="100" y="681" style="fill:#087983">DURABLE SYSTEM OF RECORD</text>
-  <text class="card-title" x="100" y="720">Git research repository</text>
-  <text class="card-copy" x="100" y="751">Briefs · evidence · analysis · review · publication</text>
-  <text class="mono" x="100" y="780">research/&lt;investigation&gt;/00-topic … 08-published</text>
-
-  <rect class="node-purple" x="640" y="635" width="470" height="170"/>
-  <text class="zone" x="665" y="667" style="fill:#6f1ead">IMMUTABLE LOCAL RUN</text>
-  <text class="card-title" x="665" y="706">Commission artifacts</text>
-  <text class="mono" x="665" y="738">run.json · raw/*.json · claims.json</text>
-  <text class="mono" x="665" y="765">scores.csv · report.md · manifest.json</text>
-  <text class="small" x="665" y="790">Failed call = ✕ · graded silence = —</text>
-
-  <path class="flow-muted" d="M 545 315 L 545 350 L 575 350 L 575 575 L 325 575 L 325 650"/>
-  <text class="edge-label-muted" x="385" y="563">read-only recall</text>
-  <path class="flow" d="M 988 515 L 988 635"/>
-  <path class="flow-dashed" d="M 640 720 L 575 720"/>
-  <text class="edge-label-muted" x="440" y="620">promotion to the repository is manual in V0.1</text>
-
-  <!-- External services -->
-  <rect class="node" x="1215" y="230" width="310" height="130"/>
-  <text class="card-title" x="1240" y="270">GitHub API</text>
-  <text class="card-copy" x="1240" y="301">Resolve repository content</text>
-  <text class="card-copy" x="1240" y="325">and research briefs</text>
-
-  <rect class="node-blue" x="1215" y="430" width="310" height="235"/>
-  <text class="card-title" x="1240" y="470">OpenRouter</text>
-  <text class="card-copy" x="1240" y="501">Live pricing lookup</text>
-  <line x1="1240" y1="525" x2="1500" y2="525" stroke="#c8cde0" stroke-width="2"/>
-  <text class="card-copy" x="1240" y="558">Independent research models</text>
-  <text class="card-copy" x="1240" y="586">→ raw responses preserved</text>
-  <text class="card-copy" x="1240" y="622">Grading model</text>
-  <text class="card-copy" x="1240" y="646">→ claims, scores, groups, report</text>
-
-  <rect class="node-orange" x="1215" y="710" width="310" height="95"/>
-  <text class="card-title" x="1240" y="748">Local secret</text>
-  <text class="mono" x="1240" y="778">secrets.env · never sent to UI</text>
-
-  <path class="flow-muted" d="M 1215 295 L 1135 295 L 1135 355 L 187 355 L 187 390"/>
-  <text class="edge-label-muted" x="1146" y="283">URL fetch</text>
-  <path class="flow" d="M 1110 452 L 1215 452"/>
-  <path class="flow" d="M 1215 590 L 1145 590 L 1145 720 L 1110 720"/>
-  <path class="flow-muted" d="M 1370 710 L 1370 665"/>
-  <text class="edge-label-muted" x="1385" y="698">API key</text>
-
-  <text class="small" x="60" y="880">Alexandria V0.1 · agreement among models is not independent verification</text>
+  <rect class="bg" width="1600" height="900"/>
+  <text class="h" x="800" y="75" text-anchor="middle">Two repositories, one reviewable research trail</text>
+  <rect class="panel" x="80" y="150" width="300" height="560" rx="18"/>
+  <text class="hsmall" x="230" y="210" text-anchor="middle">Replaceable inputs</text>
+  <text class="t" x="230" y="290" text-anchor="middle">MCP clients</text><text class="t" x="230" y="345" text-anchor="middle">Web surface</text><text class="t" x="230" y="400" text-anchor="middle">Provider APIs</text><text class="t" x="230" y="455" text-anchor="middle">Local configuration</text>
+  <text class="s" x="230" y="620" text-anchor="middle">credentials stay local</text>
+  <rect class="accent" x="480" y="150" width="390" height="560" rx="18"/>
+  <text class="h" x="675" y="210" text-anchor="middle">Minority Report</text>
+  <text class="t" x="675" y="285" text-anchor="middle">orchestration + grading</text><text class="t" x="675" y="340" text-anchor="middle">provider adapters</text><text class="t" x="675" y="395" text-anchor="middle">MCP + web surfaces</text><text class="t" x="675" y="450" text-anchor="middle">local run records</text><text class="t" x="675" y="505" text-anchor="middle">packaging + host ops</text>
+  <text class="s" x="675" y="620" text-anchor="middle">candidate artifacts</text>
+  <rect class="gate" x="940" y="300" width="220" height="260" rx="18"/>
+  <text class="h" x="1050" y="365" text-anchor="middle">Review</text><text class="t" x="1050" y="425" text-anchor="middle">rights</text><text class="t" x="1050" y="470" text-anchor="middle">privacy</text><text class="t" x="1050" y="515" text-anchor="middle">promotion</text>
+  <rect class="panel" x="1230" y="150" width="300" height="560" rx="18"/>
+  <text class="h" x="1380" y="210" text-anchor="middle">Alexandria</text>
+  <text class="t" x="1380" y="285" text-anchor="middle">evidence + lifecycle</text><text class="t" x="1380" y="340" text-anchor="middle">schemas + policy</text><text class="t" x="1380" y="395" text-anchor="middle">provenance</text><text class="t" x="1380" y="450" text-anchor="middle">analysis + synthesis</text><text class="t" x="1380" y="505" text-anchor="middle">governance + history</text>
+  <text class="s" x="1380" y="620" text-anchor="middle">durable corpus</text>
+  <path class="line" d="M380 430H465"/><path class="line" d="M870 430H925"/><path class="line" d="M1160 430H1215"/>
+  <text class="t" x="800" y="805" text-anchor="middle">Tooling can change without rewriting the reviewed evidence trail.</text>
 </svg>

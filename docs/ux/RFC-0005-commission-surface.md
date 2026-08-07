@@ -1,9 +1,12 @@
 # RFC-0005 — The commission surface
 
-Design v1.0 · Published · 28 July 2026 · Depends on `docs/DESIGN.md`, `AGENTS.md`
+Design v1.0 · Historical · 28 July 2026
 
-All five open UX/functional decisions are resolved (§10). This document is normative for
-implementation; changes require a new version and the review discipline in CONTRIBUTING.md.
+This is the preserved design record for the original commission surface. Current
+executable behavior and operational guidance are authoritative in
+[Minority Report](https://github.com/dhk/minority-report/blob/main/docs/COMMISSION-SURFACE.md).
+The artifact and honesty rationale below remains useful history, but this file no
+longer governs implementation.
 
 A single-operator web UI that commissions one research brief to several models, then
 presents the result as a claim landscape with evidence one click away. The UI reads the

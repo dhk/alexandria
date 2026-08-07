@@ -1,84 +1,74 @@
-# Alexandria Design
+# Alexandria corpus design
 
-Alexandria is version control for research.
+Alexandria is version control for research: a durable, inspectable record that
+survives changes in models, providers, orchestration, interfaces, and hosts.
 
-Its purpose is not merely to generate reports. It is to make research durable, inspectable, reproducible, and governable across people, models, tools, and time.
+## Boundary
 
-## Design thesis
+Alexandria owns the corpus and the rules that make it trustworthy:
 
-Research should be treated as an engineering discipline. Briefs, prompts, source records, model outputs, claims, analyses, reviews, and publications are first-class artifacts. Each artifact has a lifecycle, provenance, and review history.
+- lifecycle and directory conventions;
+- briefs, source records, raw evidence, analyses, synthesis, and publications;
+- schemas, assurance policy, provenance, corrections, and review governance.
 
-## Core principles
+[Minority Report](https://github.com/dhk/minority-report) owns all executable
+behavior: dispatch, grading, provider adapters, local run storage, MCP/web
+surfaces, packaging, deployment, and host operations. Its output is a candidate
+for promotion, not automatically part of the corpus.
 
-1. **Artifacts are primary.** Conversations are transient; reviewed artifacts endure.
-2. **Evidence is preserved.** Raw inputs and model outputs are not silently rewritten after merge.
-3. **Provenance is mandatory.** Conclusions should be traceable to sources, prompts, runs, models, and reviewers.
-4. **Claims are reviewable units.** Synthesis should not obscure which evidence supports which proposition.
-5. **Model disagreement is information.** Agreement is not automatically truth, and disagreement should be analyzed rather than averaged away.
-6. **Human judgment is explicit.** Approval, adjudication, and unresolved uncertainty must be visible.
-7. **Research is reproducible.** A future reviewer should be able to reconstruct how a conclusion was reached.
-
-## System boundaries
-
-The Git repository is the durable system of record. Provider adapters, orchestration services, user interfaces, and analysis engines are replaceable components around it.
-
-Alexandria should avoid rebuilding commodity capabilities when existing tools can satisfy them. The first research project will test this assumption directly and identify where a thin integration layer is preferable to a new platform.
+This separation is consequential: tooling can be upgraded or replaced without
+rewriting the evidence trail, and a reviewed evidence record does not inherit the
+security or lifecycle assumptions of the machine that produced it.
 
 ## Architecture
 
-### System flow
+![Minority Report and other replaceable tools produce candidate artifacts; a human review and promotion boundary leads to Alexandria's governed corpus.](assets/alexandria-architecture.svg)
 
-![Alexandria's web and MCP surfaces feed input resolution, an explicit review and spend gate, model commissioning, immutable local run artifacts, and a separate Git research system of record.](assets/alexandria-architecture.svg)
+There is no repository recombination. Cross-repository contracts are links and
+schemas, not copied authoritative manuals. Alexandria defines what a promoted
+artifact means; Minority Report documents how its code produces and reads it.
 
-The operator can enter through the local web surface or an MCP client. Both paths
-reuse the same input-resolution and commission services. The review gate is the
-boundary before model spend. The OpenRouter key stays local, raw responses are
-preserved, and the web and MCP result surfaces read the resulting run record.
+## Artifact lifecycle
 
-V0.1 stores completed commissions as immutable local run directories. Moving a run
-into the Git research lifecycle remains a deliberate operator action rather than an
-automatic side effect. A [1600×900 PNG](assets/alexandria-architecture.png) is also
-available for publication.
+1. **Frame** the topic and record permitted sources.
+2. **Approve** a versioned brief and, where used, a run plan.
+3. **Capture** provider/model/prompt identity, execution metadata, failures, and
+   raw responses without alteration.
+4. **Normalize** into derived artifacts without replacing the source evidence.
+5. **Analyze** claims, disagreement, silence, coverage, uncertainty, and limits.
+6. **Synthesize** conclusions with explicit inputs and traceable provenance.
+7. **Review** evidence, methods, rights, privacy, and unresolved uncertainty.
+8. **Publish** an approved expression while retaining the trail behind it.
 
-### Model comparison and synthesis
+Not every investigation reaches every stage. Missing, abandoned, failed, and
+superseded states must remain visible rather than being smoothed into completion.
 
-![One approved brief fans out to independent models; Alexandria preserves each response, blindly grades the union of material claims, and produces consensus, disagreement, novelty, thin-coverage, and silence groups.](assets/alexandria-model-synthesis.svg)
+## Integrity rules
 
-Every research model receives the same approved brief and inputs without seeing
-another model's answer. Alexandria keeps each raw response, compares material claims
-blindly, assigns integer scores from −3 to +3 with exact supporting quotes, and emits
-a traceable report plus `claims.json` and `scores.csv`.
+- Git history and reviewed artifacts are the system of record.
+- Raw evidence is immutable after merge; corrections are additive.
+- Derived work declares its exact inputs and must not masquerade as evidence.
+- A provider failure is an observation; graded silence is a different state.
+- Model agreement is not independent factual verification.
+- Human approval is explicit at spend, promotion, and publication boundaries.
+- Claims of completeness, identity, or current status require a named check.
 
-The landscape keeps the honesty semantics visible: `—` means a model responded but
-made no bearing statement; `✕` means the call failed and no output exists. Model
-agreement is not independent verification, and disagreement takes precedence when a
-claim also has thin coverage. A
-[1600×900 PNG](assets/alexandria-model-synthesis.png) is available for publication.
+## Provenance and schemas
 
-## User interfaces
+A reconstructable run identifies the approved brief revision and checksum,
+inputs and transformations, provider and model, prompt/instructions, execution
+time, tool and network access, raw-response checksum, failures, and derived
+artifacts. Normative machine shapes live in `schemas/`; implementations consume
+those contracts but do not define them by accident.
 
-The operative commission-surface contract is [RFC-0005 — The commission surface](ux/RFC-0005-commission-surface.md). Its [interactive prototype](ux/prototype/index.html) demonstrates all five specified screens without implementing the application.
+## Assurance and governance
 
-[RFC-0007 — The idea-to-expression flow](ux/RFC-0007-idea-to-expression-flow.md) specifies the
-collapsible, left-to-right rail tracing one idea from conception through resolution, reading the
-`research/` lifecycle directory rather than the commission surface's own run records. Served at
-`GET /flow/{slug}`.
+Bronze, Silver, and Gold are cumulative process levels, not truth labels.
+Structural, methodological, schema, policy, and publication changes receive the
+same branch-and-review discipline as research output. Reviewers must consider
+source rights, personal data, secrets, citation quality, provenance, and whether
+new work makes an existing analysis stale.
 
-## Host operations
-
-[RFC-0006 — Host service endpoint registry](RFC-0006-host-service-registry.md)
-defines the shared-host authority for local ports and external Tailscale routes.
-Alexandria's pack tooling incubates the implementation while preserving the
-repository as the research system of record.
-
-## Research assurance
-
-Bronze, Silver, and Gold describe increasingly rigorous research processes. They are cumulative process requirements, not labels of factual certainty.
-
-- **Bronze:** exploratory mapping and uncertainty identification.
-- **Silver:** decision-support research with broader coverage, source auditing, and independent review.
-- **Gold:** claim-level verification, adversarial testing, source-lineage review, and expert approval.
-
-## Governance
-
-All substantive changes are made on branches and merged through pull requests. Structural and methodological changes require the same review discipline as research outputs.
+The [documentation index](README.md) classifies current contracts, shared
+boundaries, history, and research outputs. Operational documentation lives only
+in Minority Report.

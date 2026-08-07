@@ -1,117 +1,89 @@
 # Alexandria
 
-**The research corpus: a git-backed, auditable record of multi-model research — briefs, raw model outputs, comparative analysis, synthesis, and publication.**
+Alexandria is the durable, git-backed corpus for multi-model research. It owns
+briefs, source records, preserved evidence, analyses, synthesis, publication,
+schemas, policy, provenance, and research governance.
 
-Alexandria treats this repository as the durable system of record for research. The tooling that produces these artifacts — the MCP server, commission dispatch, and deploy machinery — now lives separately in [dhk/minority-report](https://github.com/dhk/minority-report), so models and orchestration logic can keep changing without touching this repo's evidence trail or its history. See [issue #33](https://github.com/dhk/alexandria/issues/33) for the split.
+[Minority Report](https://github.com/dhk/minority-report) is the separate
+executable system that operates on this corpus: provider adapters, commission
+orchestration, MCP and web surfaces, packaging, deployment, and host operations.
 
-## What this corpus records
+## Why the split matters
 
-1. A defined research topic.
-2. A drafted and approved research brief.
-3. The brief dispatched to multiple model families and research modes.
-4. Prompts, inputs, raw outputs, citations, errors, and execution metadata, preserved as received.
-5. Normalized outputs, without changing the raw evidence.
-6. Findings, disagreements, omissions, and unusual outliers, compared.
-7. A traceable synthesis.
-8. Review and publication through Git branches and pull requests.
-
-Producing steps 1–7 is Minority Report's job, dispatched against briefs that live here. This repo is where the result — and the trail behind it — is kept.
+Research tooling is replaceable; the evidence trail is not. Providers, models,
+interfaces, and deployment machinery can change in Minority Report without
+rewriting Alexandria's reviewed artifacts or their Git history. Conversely, a
+corpus contract can be reviewed here without importing host-specific concerns.
 
 ## Architecture
 
-### System flow
+![Two-repository architecture: Minority Report produces candidate artifacts through an explicit review boundary; Alexandria preserves the reviewed corpus and its governance.](docs/assets/alexandria-architecture.svg)
 
-![How Alexandria works: operator surfaces feed an explicit review gate, independent model research, grading, immutable local run artifacts, and a separate Git research system of record.](docs/assets/alexandria-architecture.svg)
-
-The review gate is the boundary before model spend. Completed commission runs
-remain immutable local records; promotion into this repository is deliberate
-rather than automatic. (The "operator surfaces" and dispatch machinery this
-diagram shows now live in
-[dhk/minority-report](https://github.com/dhk/minority-report); this diagram
-predates the split and hasn't been redrawn yet.)
-
-### Model comparison and synthesis
-
-![How Alexandria dispatches one approved brief to independent models, preserves their raw responses, blindly grades claims, and presents consensus, disagreement, novelty, thin coverage, and silence.](docs/assets/alexandria-model-synthesis.svg)
-
-Every research model receives the same brief and inputs without seeing another
-model's answer. The dispatching tool preserves those answers, grades the union
-of material claims, and produces a report plus a claim landscape that keeps
-disagreement, silence, and failure visibly distinct — the artifact this
-repository then holds.
-
-## Research assurance levels
-
-Alexandria supports three cumulative levels:
-
-- **Bronze — exploratory:** fast multi-model mapping of a topic and its main uncertainties.
-- **Silver — decision-support:** broader provider coverage, source auditing, targeted follow-up, and independent review.
-- **Gold — high assurance:** claim-level verification, adversarial analysis, source-lineage review, and expert approval.
-
-A level describes the strength of the research process. It does not guarantee that a proposition is true.
-
-## Core rules
-
-- The repository is the system of record.
-- All substantive work is performed on a branch and reviewed through a pull request.
-- Raw model outputs are immutable after merge.
-- Derived analyses declare their exact inputs.
-- Agreement among models is not treated as independent verification.
-- Published conclusions must be traceable to claims, sources, runs, prompts, and the approved brief.
-- Human approval is required at consequential research boundaries.
+The arrow into Alexandria is a deliberate promotion and review step, not an
+automatic write. A successful local run is not yet a reviewed corpus artifact.
 
 ## Repository map
 
 ```text
-.github/       Issue, pull-request, and validation workflows
-docs/          Architecture and operating rules
-docs/ux/       Published user-interface specifications and prototypes
-policies/      Bronze, Silver, and Gold assurance policies
+docs/          Corpus design, contracts, governance, and historical pointers
 schemas/       Machine-readable artifact contracts
-prompts/       Versioned model instructions
-research/      Individual investigations
-scripts/       Validation of tracked research/documentation artifacts
-generated/     Rebuildable indexes and reports
+research/      Reviewed investigations and their evidence lifecycle
+generated/     Rebuildable indexes derived from reviewed artifacts
+scripts/       Corpus validation
 ```
 
-The tooling that used to live in `src/`, `deploy/`, `templates/mcp-server/`,
-and `tests/` moved to [dhk/minority-report](https://github.com/dhk/minority-report).
+Start with the durable [documentation index](docs/README.md) and
+[corpus design](docs/DESIGN.md).
 
-## Using the tooling against this corpus
+## Clone, configure, and validate
 
-Point [dhk/minority-report](https://github.com/dhk/minority-report)'s
-`ALEXANDRIA_REPO` at a checkout of this repository:
+Alexandria has no product installation step:
 
 ```bash
-export ALEXANDRIA_REPO=/path/to/this/checkout
+git clone https://github.com/dhk/alexandria.git
+cd alexandria
+uv sync --frozen
+uv run --frozen python scripts/validate.py
 ```
 
-See that repo's README for running the MCP server, the commission web
-surface, and the deploy/packaging tooling.
+To use the executable tooling, clone Minority Report separately and point its
+`ALEXANDRIA_REPO` setting at this checkout. Do not point it at a packaged release
+or at Minority Report's own checkout.
 
-Each investigation follows a standard lifecycle:
+## Research lifecycle
 
 ```text
 research/<date>-<slug>/
 ├── topic.yaml
 ├── README.md
-├── 00-topic/
-├── 01-brief/
-├── 02-run-plan/
-├── 03-runs/
-├── 04-normalized/
-├── 05-analysis/
-├── 06-synthesis/
-├── 07-review/
-└── 08-published/
+├── 00-topic/       source framing
+├── 01-brief/       reviewed question and constraints
+├── 02-run-plan/    intended models, modes, and budgets
+├── 03-runs/        preserved responses and execution metadata
+├── 04-normalized/  derived, non-destructive normalization
+├── 05-analysis/    claims, comparison, and limitations
+├── 06-synthesis/   traceable conclusions
+├── 07-review/      human review and adjudication
+└── 08-published/   approved expression
 ```
+
+Raw evidence is immutable after merge. Corrections and superseding work are new,
+linked artifacts. Model agreement is evidence of convergence, not factual proof.
+
+## Public data handling
+
+Only commit material that may be public. Record source identity, retrieval date,
+rights or license constraints, and transformations where applicable. Minimize or
+redact personal data before promotion. Never commit credentials, capability URLs,
+private research inputs, local run records, hidden reasoning, private host details,
+or copyrighted source corpora without permission. Preserve useful excerpts and
+citations only when their use is authorized and proportionate.
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for ownership routing and review rules.
 
 ## Status
 
-Alexandria's corpus structure supports read/status recall and a guarded
-commission-and-publish path via the Minority Report tooling. The published
-UX contract still describes work beyond this first vertical slice.
-
-## Contributing
-
-Read [CONTRIBUTING.md](CONTRIBUTING.md) and [AGENTS.md](AGENTS.md). The design is described in [docs/DESIGN.md](docs/DESIGN.md).
+The repository split is implemented and both repositories have independent
+validation paths. The complete live provider-to-publication workflow has not been
+verified end to end on an operator host; do not infer operational readiness from
+corpus validation or unit tests alone.
