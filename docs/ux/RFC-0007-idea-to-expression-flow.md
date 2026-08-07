@@ -1,10 +1,11 @@
 # RFC-0007 — The idea-to-expression flow
 
-Design v1.0 · Draft · 4 August 2026 · Implements issue #34 · Depends on RFC-0005, `docs/DESIGN.md`, `AGENTS.md`
+Design v1.0 · Historical draft · 4 August 2026 · Implements issue #34
 
 This document is the design handoff required by issue #34's first acceptance criterion. It is
-normative for implementation; changes require a new version and the review discipline in
-CONTRIBUTING.md.
+preserved as product-design history. Current implementation and operator guidance
+are owned by [Minority Report](https://github.com/dhk/minority-report); paths below
+refer to that repository unless explicitly described as corpus paths.
 
 One left-to-right rail carrying an idea from conception to a finished piece, collapsed to
 headlines by default and openable stage by stage. The flow reads the artifact trail. It
@@ -289,10 +290,11 @@ Not part of the original design pass; decided while building against real fixtur
 same discipline of stating rather than silently resolving.
 
 - **Where the flow lives:** a route on the local commission surface (`GET /flow/{slug}`,
-  `src/alexandria/web.py`), not a generated static page. The commission surface already exists
+  [`src/alexandria/web.py`](https://github.com/dhk/minority-report/blob/main/src/alexandria/web.py)), not a generated static page. The commission surface already exists
   and already owns the token stylesheets and Starlette routing this needed; a static-site
   generator would have been new infrastructure the RFC never asked for.
-- **Who writes the headlines and lane summaries:** an analysis layer (`src/alexandria/flow.py`)
+- **Who writes the headlines and lane summaries:** an analysis layer
+  ([`src/alexandria/flow.py`](https://github.com/dhk/minority-report/blob/main/src/alexandria/flow.py))
   reads them directly from upstream artifacts — `topic.yaml`'s four new fields (`origin`,
   `claim_under_test`, `why_now`, `scope`) for stage 01, `01-brief/brief.md`'s existing verbatim
   format for stage 02, and new `manifest.json` / `summary.yaml` conventions for stages 03–05 —
@@ -320,5 +322,5 @@ same discipline of stating rather than silently resolving.
 
 - Design component with wireframes for every level and the stacked layout: `AlexandriaFlowSpec.dc.html`
 - Resolution taxonomy: issue #35
-- Implementation: `src/alexandria/flow.py` (data assembly), `src/alexandria/flow_view.py` (rendering), `GET /flow/{slug}` in `src/alexandria/web.py`
-- Tests: `tests/unit/test_flow.py`, fixtures under `tests/unit/fixtures/flow/`
+- Implementation: [`src/alexandria/flow.py`](https://github.com/dhk/minority-report/blob/main/src/alexandria/flow.py) (data assembly), [`src/alexandria/flow_view.py`](https://github.com/dhk/minority-report/blob/main/src/alexandria/flow_view.py) (rendering), `GET /flow/{slug}` in [`src/alexandria/web.py`](https://github.com/dhk/minority-report/blob/main/src/alexandria/web.py)
+- Tests: [`tests/unit/test_flow.py`](https://github.com/dhk/minority-report/blob/main/tests/unit/test_flow.py), fixtures under [`tests/unit/fixtures/flow/`](https://github.com/dhk/minority-report/tree/main/tests/unit/fixtures/flow)
