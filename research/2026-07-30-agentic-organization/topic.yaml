@@ -1,0 +1,12 @@
+title: "Agentic Organization OS: Technical Feasibility Assessment"
+status: "bronze-complete-prior-art-gap"
+assurance_level: "bronze"
+slug: 2026-07-30-agentic-organization
+opened: 2026-07-30
+topic_kind: technical-design
+decision: "Identify the narrowest credible agent lifecycle architecture to prototype."
+scope_limitation: "Existing commercial and open-source solutions were not systematically assessed."
+brief_revision: "sha256:915473411878e7b7c74105046478eb4a31bb3b1c0d515f95935bd3af949e1c1b"
+commission_run: r-2026-0730-03
+run_status: completed
+published_deliverable: 08-published/html/index.html

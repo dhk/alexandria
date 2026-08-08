@@ -1,0 +1,61 @@
+claim_id,model_id,score,quote,grading_call_id
+c-001,openai/gpt-5.4,2,language feedback and memory can improve later attempts in some settings,gen-1785419858-OothbWhgd3WPMu3dUrYx
+c-001,anthropic/claude-opus-4.7,2,Language feedback + episodic memory improves later attempts without weight updates | Reflexion (Shinn et al.) | Supported for the narrow claim,gen-1785419858-OothbWhgd3WPMu3dUrYx
+c-001,google/gemini-3.1-pro-preview,2,Linguistic feedback and episodic memory improve later trials without model-weight updates. Evidence Strength: Strong. Supported by Shinn et al. (Reflexion).,gen-1785419858-OothbWhgd3WPMu3dUrYx
+c-002,openai/gpt-5.4,2,reusable skills can help,gen-1785419858-OothbWhgd3WPMu3dUrYx
+c-002,anthropic/claude-opus-4.7,2,"Experience can be consolidated into reusable skills | Voyager (Wang et al.), Anthropic Agent Skills | Supported in a game/task environment and as a packaging pattern",gen-1785419858-OothbWhgd3WPMu3dUrYx
+c-002,google/gemini-3.1-pro-preview,2,"Experience can be consolidated into reusable, portable skills separate from the core prompt. Evidence Strength: Strong. Supported by Wang et al. (Voyager) and Anthropic's Agent Skills research.",gen-1785419858-OothbWhgd3WPMu3dUrYx
+c-003,openai/gpt-5.4,2,The cited multi-agent peer review study supports gains from rubric-based feedback exchange. But the brief itself correctly notes that peer agreement is not truth.,gen-1785419858-OothbWhgd3WPMu3dUrYx
+c-003,anthropic/claude-opus-4.7,2,Gains are conditional on diversity and rubric quality; consensus ≠ truth. Brief correctly hedges this.,gen-1785419858-OothbWhgd3WPMu3dUrYx
+c-003,google/gemini-3.1-pro-preview,2,"peer critique is useful against a rubric, but peer consensus is not a substitute for factual validation",gen-1785419858-OothbWhgd3WPMu3dUrYx
+c-004,openai/gpt-5.4,2,"The brief cites Anthropic's report that multi-agent setups incur substantial token overhead and fit better for parallel, high-value work.",gen-1785419858-OothbWhgd3WPMu3dUrYx
+c-004,anthropic/claude-opus-4.7,2,"Multi-agent systems have large token overhead and only pay off on parallel, high-value work | Anthropic engineering report | Supported. This is the strongest empirical constraint in the brief.",gen-1785419858-OothbWhgd3WPMu3dUrYx
+c-004,google/gemini-3.1-pro-preview,2,"Anthropic's multi-agent research highlights substantial token overhead, suggesting multi-agent topologies are only economically viable for highly parallel, high-value work",gen-1785419858-OothbWhgd3WPMu3dUrYx
+c-005,openai/gpt-5.4,1,The brief cites a study claiming agent groups can become more effective yet less aligned.,gen-1785419858-OothbWhgd3WPMu3dUrYx
+c-005,anthropic/claude-opus-4.7,-1,"Cited but I cannot verify from supplied materials. If accurate, it is a critical constraint; if speculative, the 'collective misalignment' section rests on a single source. Flag for verification.",gen-1785419858-OothbWhgd3WPMu3dUrYx
+c-005,google/gemini-3.1-pro-preview,1,Shen et al. demonstrates that groups of agents can actually become less aligned than individual agents,gen-1785419858-OothbWhgd3WPMu3dUrYx
+c-006,openai/gpt-5.4,-2,the supplied material does not demonstrate that job descriptions are consistently precise enough for this to work with acceptable human effort,gen-1785419858-OothbWhgd3WPMu3dUrYx
+c-006,anthropic/claude-opus-4.7,-2,Compiled onboarding from a job description is feasible with acceptable human effort | None cited | Unsupported. This is the brief's most novel and load-bearing claim. Pure speculation until measured.,gen-1785419858-OothbWhgd3WPMu3dUrYx
+c-006,google/gemini-3.1-pro-preview,-2,There is no primary evidence provided that this compilation pipeline is currently feasible or reliable.,gen-1785419858-OothbWhgd3WPMu3dUrYx
+c-007,openai/gpt-5.4,1,Evidence-gated prompt/skill updates beat fixed-prompt baseline on held-out tasks,gen-1785419858-OothbWhgd3WPMu3dUrYx
+c-007,anthropic/claude-opus-4.7,1,Evidence-gated learning prevents policy drift | Analogy to CI/CD and ML eval practices | Plausible but unproven for open-ended skill/prompt diffs. Regression suites tend to under-represent long-tail drift.,gen-1785419858-OothbWhgd3WPMu3dUrYx
+c-007,google/gemini-3.1-pro-preview,1,"Validated skill evolution improves performance on novel, held-out cases, not just replayed historical cases",gen-1785419858-OothbWhgd3WPMu3dUrYx
+c-008,openai/gpt-5.4,-2,the brief has not shown it is superior to a governed workflow engine plus agent registry,gen-1785419858-OothbWhgd3WPMu3dUrYx
+c-008,anthropic/claude-opus-4.7,-2,The HR framing may be a useful mnemonic but has no shown benefit over standard config-as-code + IAM,gen-1785419858-OothbWhgd3WPMu3dUrYx
+c-008,google/gemini-3.1-pro-preview,-1,"the brief assumes human HR constructs (probation, promotion, performance reviews) map cleanly to computational state machines. This analogy risks obscuring the reality that a 'promoted' bot is simply a script with expanded API permissions.",gen-1785419858-OothbWhgd3WPMu3dUrYx
+c-009,openai/gpt-5.4,2,"least privilege, short-lived credentials, typed tool inputs, output validation, sandboxing, separation of powers, independent evaluation, drills for shutdown/rollback/offboarding. These are concrete and prototype-worthy.",gen-1785419858-OothbWhgd3WPMu3dUrYx
+c-009,anthropic/claude-opus-4.7,2,"The IAM half (credential revocation, least privilege) is well-established security practice",gen-1785419858-OothbWhgd3WPMu3dUrYx
+c-009,google/gemini-3.1-pro-preview,2,"Prove that the system can successfully execute a 'drill' for suspension/offboarding (credential revocation, schedule cancellation, trace preservation).",gen-1785419858-OothbWhgd3WPMu3dUrYx
+c-010,openai/gpt-5.4,2,"Shared model lineage, correlated failure, and evaluator capture remain major caveats.",gen-1785419858-OothbWhgd3WPMu3dUrYx
+c-010,anthropic/claude-opus-4.7,2,The 'separation of powers' between operator and evaluator holds when both share a base model. The brief acknowledges this in passing but the whole change-control story depends on independence that may be illusory.,gen-1785419858-OothbWhgd3WPMu3dUrYx
+c-010,google/gemini-3.1-pro-preview,2,"Bots evaluating their own or their peers' outputs may overfit to historical feedback or capture the evaluation process (evaluator capture), especially if the operator and evaluator share a model lineage.",gen-1785419858-OothbWhgd3WPMu3dUrYx
+c-011,openai/gpt-5.4,2,"A single agent inside a framework with versioned prompts, trace logging, approval gates, tool restrictions, evaluation harness. This captures much of the value without committing to the 'organization' abstraction.",gen-1785419858-OothbWhgd3WPMu3dUrYx
+c-011,anthropic/claude-opus-4.7,2,"Option 3 is the sleeper: it may capture most of the benefit of the full proposal at a fraction of the complexity, and I'd argue for including it as a fifth condition.",gen-1785419858-OothbWhgd3WPMu3dUrYx
+c-011,google/gemini-3.1-pro-preview,2,"The narrowest architecture worth prototyping is a Single-Role, Evidence-Gated Lifecycle System.",gen-1785419858-OothbWhgd3WPMu3dUrYx
+c-012,openai/gpt-5.4,2,Deleting sensitive facts from derived artifacts and learned skills is much harder than revoking credentials.,gen-1785419858-OothbWhgd3WPMu3dUrYx
+c-012,anthropic/claude-opus-4.7,2,"Derived credentials, delegated work, memory in shared skills, cached artifacts — hard to guarantee full revocation.",gen-1785419858-OothbWhgd3WPMu3dUrYx
+c-012,google/gemini-3.1-pro-preview,2,"If a bot is suspended but its delegated sub-agents, queued tasks, or leased credentials are not fully revoked, the system remains vulnerable to unauthorized actions and runaway compute costs.",gen-1785419858-OothbWhgd3WPMu3dUrYx
+c-013,openai/gpt-5.4,2,Approval loops / diffusion of responsibility — No human feels accountable because 'the system approved it.',gen-1785419858-OothbWhgd3WPMu3dUrYx
+c-013,anthropic/claude-opus-4.7,2,Approval queues degrade to rubber-stamping under load.,gen-1785419858-OothbWhgd3WPMu3dUrYx
+c-013,google/gemini-3.1-pro-preview,1,The four feedback channels + promotion approvals + drill exercises may re-create the oversight cost the system claims to reduce.,gen-1785419858-OothbWhgd3WPMu3dUrYx
+c-014,openai/gpt-5.4,2,Skill drift — Small prompt/skill changes gradually distort role behavior.,gen-1785419858-OothbWhgd3WPMu3dUrYx
+c-014,anthropic/claude-opus-4.7,2,"Skill libraries remain coherent as they grow. Voyager showed accumulation in a bounded environment. Combinatorial interaction, versioning conflicts, and dead-skill accumulation are unaddressed.",gen-1785419858-OothbWhgd3WPMu3dUrYx
+c-014,google/gemini-3.1-pro-preview,0,,gen-1785419858-OothbWhgd3WPMu3dUrYx
+c-015,openai/gpt-5.4,-2,Add a second 'review/control' actor only if it beats a single-agent baseline on a concrete low-risk task portfolio.,gen-1785419858-OothbWhgd3WPMu3dUrYx
+c-015,anthropic/claude-opus-4.7,-2,"Explicitly defer: onboarding compiler, manager/control bot classes, peer review, org-wide training, employment-record semantics, promotion/reassignment, multi-agent topologies.",gen-1785419858-OothbWhgd3WPMu3dUrYx
+c-015,google/gemini-3.1-pro-preview,-2,Do not prototype a multi-agent organization.,gen-1785419858-OothbWhgd3WPMu3dUrYx
+c-016,openai/gpt-5.4,2,"Prompt injection via tools or retrieved content — Especially dangerous if bot can update memory, create tasks, or delegate.",gen-1785419858-OothbWhgd3WPMu3dUrYx
+c-016,anthropic/claude-opus-4.7,2,Prompt injection through work inputs | High | Any tool-using bot with external inputs is exposed; the brief mentions but does not specify defenses.,gen-1785419858-OothbWhgd3WPMu3dUrYx
+c-016,google/gemini-3.1-pro-preview,1,Security and Operational Failure Modes,gen-1785419858-OothbWhgd3WPMu3dUrYx
+c-017,openai/gpt-5.4,2,offboarding/rollback drills fail materially,gen-1785419858-OothbWhgd3WPMu3dUrYx
+c-017,anthropic/claude-opus-4.7,2,I would make H5 (drills) an absolute prerequisite — no economic result justifies proceeding without reliable revocation and rollback.,gen-1785419858-OothbWhgd3WPMu3dUrYx
+c-017,google/gemini-3.1-pro-preview,2,"Lifecycle controls (revocation, rollback, reassignment) succeed 100% of the time in operational drills.",gen-1785419858-OothbWhgd3WPMu3dUrYx
+c-018,openai/gpt-5.4,2,"The brief's best learning idea is: no silent self-modification in production, capture traces and feedback, propose prompt/skill diffs, run replay/regression/held-out checks, canary and approve by risk tier. That is technically sensible.",gen-1785419858-OothbWhgd3WPMu3dUrYx
+c-018,anthropic/claude-opus-4.7,2,Its strongest contribution is the evidence-gated learning pipeline and content-addressed configuration.,gen-1785419858-OothbWhgd3WPMu3dUrYx
+c-018,google/gemini-3.1-pro-preview,1,Prove that artifact-based feedback can generate a prompt/skill diff that passes regression and held-out evaluation.,gen-1785419858-OothbWhgd3WPMu3dUrYx
+c-019,openai/gpt-5.4,0,,gen-1785419858-OothbWhgd3WPMu3dUrYx
+c-019,anthropic/claude-opus-4.7,-1,What happens on model upgrade? Brief lists this as an 'open decision' but it is architecturally central.,gen-1785419858-OothbWhgd3WPMu3dUrYx
+c-019,google/gemini-3.1-pro-preview,-1,"Does a bot instance (and its learned skills) persist across underlying foundational model upgrades, or does a model change necessitate a complete 're-hiring' and onboarding process?",gen-1785419858-OothbWhgd3WPMu3dUrYx
+c-020,openai/gpt-5.4,0,,gen-1785419858-OothbWhgd3WPMu3dUrYx
+c-020,anthropic/claude-opus-4.7,2,Risk tiers can be reliably assigned. The matrix presumes a classification step that is itself an open problem.,gen-1785419858-OothbWhgd3WPMu3dUrYx
+c-020,google/gemini-3.1-pro-preview,2,The whole governance matrix depends on this.,gen-1785419858-OothbWhgd3WPMu3dUrYx
