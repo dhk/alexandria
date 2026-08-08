@@ -1,0 +1,37 @@
+{
+  "run_id": "r-2026-0801-01",
+  "brief_revision": "A",
+  "brief_sha256": "6bc3b4de370a3452ffda1102614fb18534c188f7eda735a84a03feb4faf2f873",
+  "status": "failed",
+  "created_at": "2026-08-01T18:15:20.067205Z",
+  "completed_at": "2026-08-01T18:15:20.752384Z",
+  "cost_estimate": 0.195938,
+  "cost_actual": null,
+  "elapsed_seconds": 0.685,
+  "inputs": [
+    {
+      "name": "pasted-content.md",
+      "format": "md",
+      "bytes": 12555,
+      "extracted_chars": 12495,
+      "encoding": "utf-8-sig",
+      "sha256": "d0a4971db3e57783936cccb748e90697686833018b17af08019461260a6fabc8",
+      "state": "extracted",
+      "warning": null,
+      "source_url": null,
+      "extraction_method": "text-decode"
+    }
+  ],
+  "dispatched_models": [
+    "openai/gpt-5.4",
+    "anthropic/claude-opus-4.7",
+    "google/gemini-3.1-pro-preview"
+  ],
+  "grading_model": "anthropic/claude-sonnet-4.6",
+  "limitations": [
+    "openai/gpt-5.4 failed; its claim cells are missing observations (✕), not silence.",
+    "anthropic/claude-opus-4.7 failed; its claim cells are missing observations (✕), not silence.",
+    "google/gemini-3.1-pro-preview failed; its claim cells are missing observations (✕), not silence.",
+    "Every research call failed; no claim landscape is available."
+  ]
+}

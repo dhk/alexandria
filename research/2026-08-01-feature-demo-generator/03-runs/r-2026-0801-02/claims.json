@@ -1,0 +1,128 @@
+[
+  {
+    "claim_id": "c-001",
+    "text": "The core market gap is the specific join between a merge-triggered repo interrogation, a structured product-context interview captured while the author still has context, and a demo spec as intermediate representation from which multiple formats are rendered.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-002",
+    "text": "No verified existing product connects a git merge event through a structured PM-style interview to a multi-format demo artifact as a single flow.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-003",
+    "text": "The demo script should be the intermediate representation (canonical artifact) from which screenshots, video, and voiceover are derived.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-004",
+    "text": "Automated headless UI capture is the highest-risk component due to authentication, seed data, non-deterministic UI state, and selector fragility.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-005",
+    "text": "A hybrid architecture is recommended: CI/repo event creates a draft and triggers the interview, while visual capture is a separate, deferrable, opt-in action.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-006",
+    "text": "The MVP should produce only demo scripts (not video or screenshots) to validate the core thesis before investing in capture automation.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-007",
+    "text": "Every interview question must be pre-filled with a best-effort draft answer derived from repo/PR facts; the engineer's role is to edit or confirm, not author from scratch.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-008",
+    "text": "Confidently wrong pre-filled answers (hallucinated customer segment, benefit, or outcome) are the highest-trust-destruction failure mode and should be avoided by preferring explicit uncertainty over confident wrongness.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-009",
+    "text": "The trigger should not fire on every merge; a gate based on a PR label, UI-file heuristic, or explicit opt-in is required to avoid interview fatigue and low-signal outputs.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-010",
+    "text": "Storybook combined with visual regression tools (e.g., Chromatic) represents an under-appreciated adjacency for screenshot capture because component stories are already rendered and screenshotted per commit.",
+    "group": "novel",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-011",
+    "text": "The demo spec data model should carry provenance metadata (source and confidence) on every human-context field to distinguish inferred from human-confirmed values.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-012",
+    "text": "The strongest argument against building the product is that the underlying cause of missing demos may be a prioritization or culture problem rather than a friction problem, meaning the tool will be adopted only by teams already disciplined enough to make demos without it.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-013",
+    "text": "The interactive (editor/agent/CLI) architecture reintroduces the 'extra step that gets skipped' risk because it depends on the engineer remembering to invoke it after merge.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-014",
+    "text": "Downstream reuse of generated artifacts (scripts used in changelogs, sales enablement, or external communications) is the critical validation signal; generation without reuse indicates the problem statement is wrong.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-015",
+    "text": "Identifying the user-visible surface from a diff is a non-trivial classification problem; backend refactors, dependency bumps, and internal-tool changes will produce false positives without an explicit classifier or PR label.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-016",
+    "text": "Remotion (React-based programmatic video) is a strong fit for the video rendering layer because the intermediate representation is a structured script.",
+    "group": "novel",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-017",
+    "text": "The product could potentially be built as a layer on top of existing interactive demo platforms (e.g., Supademo or Arcade) via their APIs rather than as a standalone product, which would weaken the standalone-product thesis if their APIs permit programmatic demo creation.",
+    "group": "novel",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-018",
+    "text": "Danger.js is directly relevant scaffolding for the CI/PR-comment orchestration layer of this product.",
+    "group": "novel",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-019",
+    "text": "The buying center for this product is unclear because it spans engineering, PM, marketing, support, and sales enablement, creating a horizontal-tool adoption problem.",
+    "group": "novel",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-020",
+    "text": "A Phase 0 discovery step (user interviews and hand-classification of recent merged PRs) should precede any software build to validate that the pain is real and that a sufficient fraction of merges are demo-worthy.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-021",
+    "text": "The interview should address whether the feature is intended for the PR author or a designated demo-owner, as the RFC's assumption that the author is the right interviewee deserves explicit testing.",
+    "group": "consensus",
+    "responding_model_count": 3
+  }
+]

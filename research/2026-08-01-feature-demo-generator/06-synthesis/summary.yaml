@@ -1,0 +1,14 @@
+headline: "Validate the interview-to-script loop before building automated capture"
+findings:
+  - "The defensible hypothesis is the join between merge-time repository facts, a short human product-context interview, and a provenance-bearing demo specification."
+  - "A script-first MVP tests the core behavior without depending on brittle browser capture, authentication, or seeded application state."
+  - "Downstream reuse and interview completion are stronger validation measures than the number of generated artifacts."
+evidence_base: "Three-model Bronze commission over RFC-0001 with no live web access; raw responses, grading output, claims, and scores are retained under 03-runs/r-2026-0801-02."
+not_established:
+  - "Whether a current product already occupies the proposed end-to-end workflow."
+  - "Whether target teams experience enough pain or have enough budget to adopt it."
+  - "Whether existing demo platforms expose APIs that make an integration-layer strategy preferable."
+open_questions:
+  - "What proportion of merged changes are genuinely demo-worthy?"
+  - "Should the interview target the PR author, a PM, or a designated demo owner?"
+  - "Can pre-filled product context remain useful without confident hallucination?"

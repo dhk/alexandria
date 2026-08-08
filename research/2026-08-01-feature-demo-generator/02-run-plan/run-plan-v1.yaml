@@ -1,0 +1,17 @@
+assurance_level: bronze
+brief_revision: A
+brief_sha256: 6bc3b4de370a3452ffda1102614fb18534c188f7eda735a84a03feb4faf2f873
+input_sha256: d0a4971db3e57783936cccb748e90697686833018b17af08019461260a6fabc8
+research_models:
+  - openai/gpt-5.4
+  - anthropic/claude-opus-4.7
+  - google/gemini-3.1-pro-preview
+grading_model: anthropic/claude-sonnet-4.6
+research_max_tokens: 12000
+grading_max_tokens: 8000
+tool_access:
+  web: false
+  supplied_materials_only: true
+cost_ceiling_usd: 1.00
+successful_run: r-2026-0801-02
+supersedes_run: r-2026-0801-01
