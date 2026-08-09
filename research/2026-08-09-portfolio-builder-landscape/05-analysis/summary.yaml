@@ -1,0 +1,17 @@
+headline: "Build-vs-buy recommendation holds up under an adversarial verification pass -- and gains one hard constraint: never scrape LinkedIn, require user-supplied input"
+consensus: "N/A -- single-source pass, no second model to agree with. Do not read an empty lane here as a gap; see coverage."
+disagreement: "N/A -- single-source pass, nothing to disagree with."
+novel:
+  - "No product found (Product Hunt / YC / stealth-directory scan, 2025-2026) chains brand-discovery interview, audience definition, and a traceable palette/layout proposal into one pipeline before building -- the nearest miss (Cactus, YC S25) covers website creation as one line item in an unrelated admin-automation bundle, with no interview or audience step."
+  - "The audience-definition gap is not merely under-searched: the two nearest adjacent categories (B2B ICP-generator tools, human web-design-agency intake questionnaires) both miss it structurally -- wrong audience type in one case, no software artifact in the other."
+coverage: >
+  Two single-source Bronze passes: live web search (US-only results)
+  against public documentation/marketing pages, not hands-on product
+  testing. A Silver-tier multi-model dispatch through Alexandria's own
+  commission flow was attempted three times (not merely "considered and
+  not run," per the supersimple precedent's phrasing) and failed each
+  time with a client-side timeout traced to a synchronous, unbounded
+  dispatch call with no recovery path -- see
+  https://github.com/dhk/minority-report/issues/33. A few WebFetch calls
+  were also blocked by this session's network egress policy; those
+  claims rest on WebSearch snippets instead of a direct page read.

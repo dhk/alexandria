@@ -1,0 +1,96 @@
+# Alexandria investigation metadata.
+# Schema not yet formalized under schemas/ (see
+# src/alexandria/infrastructure/research_repo.py) — this follows the
+# lenient best-effort shape that module reads: title, status,
+# assurance_level. Additional fields below are documentation, not
+# machine-read yet.
+
+title: "Portfolio-website brand-interview pipeline — market scan and build vs. buy"
+status: "single-source-draft"
+assurance_level: "bronze"
+
+slug: 2026-08-09-portfolio-builder-landscape
+opened: 2026-08-09
+requested_by: operator (davehk@gmail.com)
+
+topic_kind: feature-scoping
+subject_product: >
+  Portfolio-website design service (unbuilt product idea): a five-step
+  pipeline -- (1) a brand-discovery interview seeded from a resume and
+  LinkedIn profile, (2) adaptive follow-up questions, (3) explicit
+  audience/ICP definition, (4) a palette-and-layout proposal traceable
+  back to steps 1-3, (5) build/publish the site.
+
+comparison_set:
+  - Butternut AI
+  - SpaceLoom
+  - Artfolio
+  - FolioGenerator
+  - QuickCV
+  - Kleap
+  - MakeMyAISite
+  - Xelta
+  - Seekario
+  - Resumly
+  - Bloomberry
+  - SelfBrand AI
+  - Junia
+  - Hoppy Copy
+  - Khroma
+  - Coolors
+  - Huemint
+  - Looka
+  - Tailor Brands
+  - B12
+  - 10Web
+  - Dora
+  - Durable
+  - Framer AI
+  - Wix ADI
+  - Squarespace
+  - Wix
+  - Framer
+  - Carrd
+  - Webflow
+  - Notion + Super.so
+  - Cactus (YC S25) # adjacent, added in the verification pass — see brief
+  - Lemlist ICP Generator # adjacent B2B tooling, added for the audience-gap check
+
+notes: >
+  Two single-source passes, both run interactively (Claude Code direct
+  session, not Alexandria's own multi-model commission pipeline):
+
+  1. A first-pass market scan (2026-08-08) against the comparison set
+     above, organized by which step of the five-step pipeline each tool
+     actually covers.
+  2. A verification pass (2026-08-09) stress-testing the first pass's
+     central claim -- that no product chains all five steps -- plus four
+     follow-up questions (see 01-brief/brief.md).
+
+  The verification pass was drafted for dispatch through Alexandria's own
+  begin_research/run_research commission flow (three research models,
+  live web search, grading) for independent verification. All three
+  dispatch attempts (two on draft d-ad437ad944e0, one on d-64823efe589b)
+  failed identically: the run_research tool call timed out client-side at
+  exactly 60 seconds with no corresponding server-side result, tracing to
+  a synchronous, unbounded dispatch call in mcp_server.py with no
+  async/poll path for a caller to recover a result once the client gives
+  up waiting. Filed as https://github.com/dhk/minority-report/issues/33.
+  The verification pass in 03-runs/claude-2026-08-09/ was run directly
+  instead, single-source, once that dispatch path proved unusable in this
+  session -- a provider/tooling failure is an observation to record, not
+  a reason to silently retry into a different result (DESIGN.md's
+  integrity rules).
+
+  Hard constraint carried into any downstream build from this research:
+  the interview step must never scrape LinkedIn. It must require the
+  user to supply their own profile data directly -- pasted text, a
+  one-time fetch of a URL they provide, or LinkedIn's own official data
+  export -- never an automated scrape of someone's profile. This is a
+  product requirement, not a prior-art question, so it's out of scope
+  for the research questions themselves, but should be preserved in any
+  brief revision or synthesis. See 05-analysis/analysis.md's "LinkedIn
+  data — legal/ToS risk" section for the reasoning it's based on.
+
+  See README.md for what a Silver upgrade of this investigation would
+  add, once run_research is usable again.

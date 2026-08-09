@@ -1,0 +1,49 @@
+# Run metadata (AGENTS.md rule 6: provider, model, prompt, brief revision,
+# execution time, tool access, checksums — recorded for every run).
+
+provider: "Anthropic, via Claude Code direct session (not OpenRouter dispatch)"
+model: claude-sonnet-5
+run_kind: single-source-interactive
+brief_path: 01-brief/brief.md
+brief_revision: 1
+brief_sha256: 99a85883c02be0edc30afbb676b17d16bb74d791d35366d2a792cc63616c466e
+execution_started: 2026-08-08T00:00:00Z
+execution_completed: 2026-08-09T03:20:00Z
+tool_access:
+  - WebSearch (live, US-only results)
+  - WebFetch (blocked by this session's egress proxy for several sources
+    attempted mid-pass; see caveats)
+  - repository read tools (mcp_server.py, CONTRIBUTING.md, and precedent
+    investigations in this repo, read to match structure and to route
+    the failure report to the correct repository)
+prompt: >
+  Two prompts, run as separate passes. Pass one (2026-08-08): "go out and
+  find out what tools are out there [for a portfolio-website
+  brand-interview pipeline]. Look at the build versus buy decision. Also,
+  any best practices or guidelines that are out there" (Q1). Pass two
+  (2026-08-09): the brief at 01-brief/brief.md, Q2-Q6, answered
+  independently with live web search after the operator's begin_research/
+  run_research commission to Alexandria's own multi-model pipeline failed
+  three times (see caveats). Q7 is deliberately not answered here — see
+  05-analysis/analysis.md.
+caveats: >
+  Single source, not graded or cross-checked against another model. Web
+  search is US-only per tool constraints and returns a snapshot of public
+  marketing/documentation pages, not hands-on product testing. Several
+  WebFetch calls for deeper LinkedIn-ToS sourcing (nubela.co, sociavault.com)
+  were blocked by this session's network egress proxy mid-pass; those
+  claims are sourced from WebSearch result snippets instead and should be
+  treated as slightly lower-confidence than a direct page read.
+
+  This run exists because the intended path -- dispatching
+  01-brief/brief.md through Alexandria's begin_research/run_research
+  commission flow for three independent research models plus grading --
+  failed. Two attempts on draft d-ad437ad944e0 and one on a fresh draft
+  d-64823efe589b all timed out client-side at exactly 60 seconds with no
+  server-side result recoverable from this session. Root-caused (with
+  source access to mcp_server.py) to a synchronous, unbounded dispatch
+  call with no async/poll path for a caller to recover a result once the
+  client's wait expires. Filed as
+  https://github.com/dhk/minority-report/issues/33. Per DESIGN.md's
+  integrity rules ("a provider failure is an observation"), this is
+  recorded here rather than silently worked around.
