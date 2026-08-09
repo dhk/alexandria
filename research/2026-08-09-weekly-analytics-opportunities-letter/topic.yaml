@@ -1,0 +1,60 @@
+# Alexandria investigation metadata.
+# Schema not yet formalized under schemas/ (see
+# src/alexandria/infrastructure/research_repo.py) — this follows the
+# lenient best-effort shape that module reads: title, status,
+# assurance_level. Additional fields below are documentation, not
+# machine-read yet.
+
+title: "Weekly opportunities letter for mid-career analysts — competitive-landscape verification"
+status: "single-source-draft"
+assurance_level: "bronze"
+
+slug: 2026-08-09-weekly-analytics-opportunities-letter
+opened: 2026-08-09
+requested_by: operator (davehk@gmail.com)
+
+topic_kind: product-positioning validation
+subject_product: >
+  Working concept (not yet built): a free weekly note curating a small
+  selection of opportunities shared through the operator's professional
+  network, for mid-career data analysts and analytics engineers, with
+  personal editorial context on the work, the organization, and open
+  questions a candidate should investigate. Full concept, market
+  analysis, and six-week manual pilot plan in
+  00-topic/source-material.md.
+
+comparison_set:
+  # Named in the source brief:
+  - Analytics Engineering Jobs
+  - DataAnalyst.com
+  - Data Elixir
+  - Locally Optimistic
+  - Never Search Alone
+  - Tech Jobs for Good
+  - Welcome to the Jungle
+  # Surfaced by this Bronze pass, not in the original brief:
+  - Saturday Data Drop (VizMasters, Substack)
+  - "odd jobs" by imagined (Ritvik Varghese/Arora)
+  - D+P Jobs (Substack)
+  - dbt Labs community newsletter / Analytics Engineering Roundup
+
+notes: >
+  Single-source (Claude, this session) exploratory pass, requested by the
+  operator as an explicit "bronze level search" following the pattern
+  established by the 2026-08-01 license-purpose-compatibility-audit
+  investigation. Verifies the source brief's seven named competitors via
+  live web search and scans for close analogs the brief's own source list
+  didn't name.
+
+  Not yet dispatched through Alexandria's multi-model commission pipeline
+  (begin_research/run_research), which requires an explicit spend
+  confirmation from the operator. See 02-brief/brief.md for what a Silver
+  upgrade of this investigation would need to close, including several
+  claims this pass could only source from search snippets because
+  WebFetch was blocked by this session's egress proxy for the relevant
+  domains (Substack, analyticsengineeringjobs.com).
+
+  The source brief itself (00-topic/source-material.md) was prepared for
+  the operator ahead of this session and supplied as a PDF; it is not
+  this session's own output. This investigation's own contribution is
+  01-verification/bronze-findings.md and 02-brief/brief.md.
