@@ -1,0 +1,158 @@
+[
+  {
+    "claim_id": "c-001",
+    "text": "ASD-STE100 restricts sentence length to a maximum of 20 words for procedures and 25 words for descriptive text.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-002",
+    "text": "ASD-STE100 requires one approved meaning per word and restricts each word to one part of speech.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-003",
+    "text": "ASD-STE100 explicitly restricts its scope to technical procedural and descriptive prose and does not apply to marketing, narrative, or argumentative writing.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-004",
+    "text": "The repo's ste skill does not embed the full ASD-STE100 Part 2 approved-word dictionary, representing a fidelity gap relative to the standard.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-005",
+    "text": "The humanize skill's sentence-length coefficient of variation threshold (CV > 0.4) is a repo-specific heuristic not grounded in established readability research.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-006",
+    "text": "Readability formulas such as Flesch-Kincaid correlate with comprehension but directly optimizing against them can produce choppy, incoherent prose that scores well but reads poorly.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-007",
+    "text": "Gopen and Swan's 'The Science of Scientific Writing' (1990) establishes that important information should appear in the stress position at sentence end, sentences should begin with familiar information in the topic position, and subject and verb should be kept close together.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-008",
+    "text": "The humanize skill correctly includes an academic/scientific override that preserves calibrated hedging, allows passive voice in methods sections, and suspends general cadence rules for genre-conventional writing.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-009",
+    "text": "The humanize skill explicitly rejects manufactured humanization techniques such as deliberate typos, forced slang, and staccato fragment stacks, which are themselves becoming recognizable as AI-generated artifacts.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-010",
+    "text": "Post-ChatGPT corpora show statistically significant increases in words such as 'delve,' 'underscores,' 'pivotal,' 'intricate,' and 'realm,' providing empirical grounding for AI vocabulary-tell lists.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-011",
+    "text": "AI text detectors have documented high false-positive rates against non-native English writing, meaning 'humanize' defaults that push toward idiomatic committed English can disadvantage L2 writers.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-012",
+    "text": "The repo lacks a context-routing or pre-flight skill that classifies purpose, audience, stakes, and genre before selecting which writing mode to apply.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-013",
+    "text": "The repo has no dedicated plain-language document skill aligned with ISO 24495-1 or plainlanguage.gov, leaving a gap between the STE controlled-language mode and the essay-oriented humanize mode.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-014",
+    "text": "The repo contains no explicit AI-disclosure guidance or integration with venue-specific disclosure policies such as those of Nature, IEEE, or ACM.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-015",
+    "text": "The plainspoken skill implements the Pyramid Principle's answer-first structure and is scoped explicitly to chat register, not document deliverables.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-016",
+    "text": "The voice-profile mechanism, which grounds personalization in the user's own unedited writing samples, is a stronger approach to humanization than generic anti-AI style transformations.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-017",
+    "text": "The humanize skill's acceptance criterion requiring the piece to take at least one arguable position is appropriate for essays but harmful when applied to neutral documentation, legal, or regulated writing.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-018",
+    "text": "The repo's three skills have no defined precedence rules for when two modes are active simultaneously, such as ste and humanize together.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-019",
+    "text": "The tells catalog in the repo is a static snapshot that will drift as language models are trained on their own outputs and editors adapt, requiring a refresh process.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-020",
+    "text": "LLM assistance on professional writing tasks has been shown to reduce stylistic diversity and homogenize output across writers.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-021",
+    "text": "ISO 24495-1:2023 is the first international plain-language standard and defines quality by reader outcomes: whether the reader can find, understand, and use the information.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-022",
+    "text": "The humanize skill's README framing of the goal as making text 'appear human-written' or 'read like a human wrote it' risks being interpreted as optimizing for concealment rather than clarity.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-023",
+    "text": "The repo does not model audience variation within genres, such as novice versus expert, native versus non-native speaker, or executive versus practitioner.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-024",
+    "text": "Orwell's sixth rule—'break any of these rules sooner than say anything outright barbarous'—is essential to his framework and is often omitted in derivative style guides.",
+    "group": "novel",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-025",
+    "text": "The humanize skill's genre overrides exist only for scientific and academic writing, with no parallel overrides for legal, regulatory, medical, financial-disclosure, or other high-stakes genres.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-026",
+    "text": "Controlled-language standards such as STE improve comprehension for non-native readers and reduce translation cost and error, but perform worse than general prose for engagement, persuasion, and expressive tasks.",
+    "group": "consensus",
+    "responding_model_count": 3
+  }
+]

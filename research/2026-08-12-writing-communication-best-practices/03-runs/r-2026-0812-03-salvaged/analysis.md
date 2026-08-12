@@ -1,9 +1,10 @@
-# Comparative analysis — writing-practice brief
+# Comparative analysis — r-2026-0812-03 (web search on, recovered)
 
-Produced by the grading model (`anthropic/claude-sonnet-4.6`) over the
-three research outputs in [`outputs/`](outputs/). **Recovered from a
-malformed response** — see [`provenance.md`](provenance.md); the run's
-own `report.md` is an empty stub.
+Produced by `anthropic/claude-sonnet-4.6` over the three research outputs
+of `r-2026-0812-03`, and recovered from a response the pipeline could not
+parse — see [`recovery.md`](recovery.md). The canonical analysis for this
+investigation is [`../../05-analysis/analysis.md`](../../05-analysis/analysis.md),
+from the clean run `r-2026-0812-04`.
 
 ---
 

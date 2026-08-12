@@ -1,0 +1,150 @@
+[
+ {
+  "claim_id": "c-001",
+  "text": "ASD-STE100 Issue 9 was published in January 2025."
+ },
+ {
+  "claim_id": "c-002",
+  "text": "ASD-STE100 was originally developed for aircraft maintenance documentation to serve non-native English-speaking airlines."
+ },
+ {
+  "claim_id": "c-003",
+  "text": "STE's official maintainers state that no software tool can guarantee full STE compliance because only human writers can judge whether a sentence makes good sense."
+ },
+ {
+  "claim_id": "c-004",
+  "text": "STE was never intended to become a general writing standard, though it has been adopted beyond aerospace."
+ },
+ {
+  "claim_id": "c-005",
+  "text": "Caterpillar Fundamental English was discontinued in 1982 partly because its guidelines were not enforceable in practice."
+ },
+ {
+  "claim_id": "c-006",
+  "text": "The U.S. Plain Writing Act of 2010 requires federal agencies to use clear language that the public can understand."
+ },
+ {
+  "claim_id": "c-007",
+  "text": "ISO 24495-1:2023 defines four plain-language principles: content is relevant, findable, understandable, and usable for the intended reader."
+ },
+ {
+  "claim_id": "c-008",
+  "text": "Plain language is not about dumbing down content but about using language the intended audience understands."
+ },
+ {
+  "claim_id": "c-009",
+  "text": "Gopen and Swan's reader-expectation principles hold that readers interpret prose more easily when information is placed where they expect it, with old information in the topic position and new/important information in the stress position."
+ },
+ {
+  "claim_id": "c-010",
+  "text": "Gopen and Swan explicitly frame their guidance as principles, not rules."
+ },
+ {
+  "claim_id": "c-011",
+  "text": "Barbara Minto's Pyramid Principle is not universally applicable and should be avoided when the audience needs emotional engagement before the conclusion, when delivering bad news requiring context first, or when no recommendation yet exists."
+ },
+ {
+  "claim_id": "c-012",
+  "text": "Traditional readability formulas such as Flesch-Kincaid rely on surface characteristics like sentence length and syllable count while ignoring deeper linguistic factors that affect comprehension."
+ },
+ {
+  "claim_id": "c-013",
+  "text": "AI text detectors show unstable and declining accuracy, with paraphrasing or light editing sharply degrading detector performance."
+ },
+ {
+  "claim_id": "c-014",
+  "text": "AI text detectors show systematic bias against non-native English speakers, with false positive rates as high as 61.3% on TOEFL essays compared to near-zero on native English writing."
+ },
+ {
+  "claim_id": "c-015",
+  "text": "Vanderbilt University disabled Turnitin's AI detection feature, noting that even a 1% false positive rate applied to 75,000 papers would yield approximately 750 wrongful accusations annually."
+ },
+ {
+  "claim_id": "c-016",
+  "text": "Disclosing AI use can reduce reader trust in the human author even when text quality is unchanged, a phenomenon described as a 'transparency penalty.'"
+ },
+ {
+  "claim_id": "c-017",
+  "text": "The trust penalty from AI disclosure is moderated by individual differences, with AI-literate individuals showing a smaller decline in trust upon disclosure."
+ },
+ {
+  "claim_id": "c-018",
+  "text": "Readers generally perceive AI disclosure as more necessary than writers do, and view it as more necessary when AI's contribution is direct, irreplaceable, or not intentionally steered by the writer."
+ },
+ {
+  "claim_id": "c-019",
+  "text": "Using AI humanizers to deliberately mask AI authorship is considered academic misconduct in scholarly contexts."
+ },
+ {
+  "claim_id": "c-020",
+  "text": "AI vocabulary tells are model-generation-specific and shift with each major model release, making static tell catalogs time-decaying."
+ },
+ {
+  "claim_id": "c-021",
+  "text": "Human language is converging with AI language as LLMs influence human speech and writing, making AI tells harder to distinguish."
+ },
+ {
+  "claim_id": "c-022",
+  "text": "ICMJE requires authors, editors, publishers, and reviewers to be transparent about AI use, and states that nondisclosure can require corrective action and may constitute misconduct."
+ },
+ {
+  "claim_id": "c-023",
+  "text": "The academic community should shift focus from AI detection to transparency and ethical guidelines, because detection-based approaches have fundamental limitations."
+ },
+ {
+  "claim_id": "c-024",
+  "text": "The repo's `humanize` skill correctly imports Gopen and Swan's stress-position and topic-position principles for its scientific-paper override."
+ },
+ {
+  "claim_id": "c-025",
+  "text": "The repo's `humanize` skill frames its goal as making drafts appear to have been written by a person, which risks conflating quality editing with concealment of AI authorship."
+ },
+ {
+  "claim_id": "c-026",
+  "text": "The repo lacks a dedicated plain-language document skill aligned with Federal or ISO plain-language standards."
+ },
+ {
+  "claim_id": "c-027",
+  "text": "The repo lacks an audience/purpose analysis step before applying style rules, which is the first principle in plain-language and rhetorical-genre guidance."
+ },
+ {
+  "claim_id": "c-028",
+  "text": "The repo's `ste` skill ships an approved-verb list but not the full ~900-word STE dictionary, limiting its claim to full STE compliance."
+ },
+ {
+  "claim_id": "c-029",
+  "text": "The repo contains no disclosure or provenance support for contexts where AI-use transparency is required."
+ },
+ {
+  "claim_id": "c-030",
+  "text": "The `humanize` skill's sentence-length coefficient-of-variation threshold of 0.4 is a house heuristic, not a validated writing standard from the academic literature."
+ },
+ {
+  "claim_id": "c-031",
+  "text": "The repo's `ste` skill applies STE to READMEs and reports without warning users that the standard was designed for safety-critical maintenance documentation, not general software documentation."
+ },
+ {
+  "claim_id": "c-032",
+  "text": "The `plainspoken` skill's scope note limiting it to chat prose rather than deliverables is a sound design choice that acknowledges genre differences."
+ },
+ {
+  "claim_id": "c-033",
+  "text": "The `humanize` skill's voice-profile mechanism, which calibrates to a real author's documented habits rather than a generic human style, is a stronger design choice than generic humanization."
+ },
+ {
+  "claim_id": "c-034",
+  "text": "A plain-language randomized trial found that plain-language versions improved adults' understanding of health recommendations."
+ },
+ {
+  "claim_id": "c-035",
+  "text": "The `humanize` skill's anti-overcorrection warning against staccato fragments, forced slang, and fake typos reflects sound editorial practice."
+ },
+ {
+  "claim_id": "c-036",
+  "text": "The `ste` skill does not gate its procedure, description, and safety-critical rules at the invocation layer, even though the STE standard treats these as genre-distinct with different sentence-length caps."
+ },
+ {
+  "claim_id": "c-037",
+  "text": "Rhetorical genre theory holds that genre should be understood as social action in response to recurrent rhetorical situations defined by purpose, audience, and occasion."
+ }
+]

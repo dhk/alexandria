@@ -1,0 +1,112 @@
+claim_id,model_id,score,quote,grading_call_id
+c-001,openai/gpt-5.4,2,"The official STE site states that the current version is **Issue 9, January 15, 2025**",gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-001,anthropic/claude-opus-4.7,2,"The current edition, published in January 2025, consists of 53 writing rules and a dictionary of approximately 900 approved words.",gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-001,x-ai/grok-4.5,2,Issue 9 (January 2025) comprises ~53 writing rules plus a dictionary of ~900 approved words,gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-002,openai/gpt-5.4,2,ASD-STE100 is a controlled language standard originally developed for maintenance documentation,gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-002,anthropic/claude-opus-4.7,3,"originally developed in the 1980s by the European Association of Aerospace Industries (AECMA) at the request of the European Airline industry, which wanted a standardized form of English for aircraft maintenance documentation that could be easily understood by non-native English-speakers",gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-002,x-ai/grok-4.5,2,"STE is optimized for **procedures and safety-critical description**, not for persuasive essays, literary voice, or open scientific argumentation",gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-003,openai/gpt-5.4,2,The official STE site warns that software tools can support checking but do not themselves 'write STE' or reliably convert arbitrary prose into compliant STE.,gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-003,anthropic/claude-opus-4.7,3,"No language checker can guarantee full compliance with STE, because the goal of STE is clarity — only human writers can judge whether a sentence or paragraph makes good sense.",gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-003,x-ai/grok-4.5,0,,gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-004,openai/gpt-5.4,2,"controlled language is highly useful in: maintenance procedures, safety notices, operational instructions… But it is a weaker fit for: exploratory essays, persuasive blog posts, nuanced argument",gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-004,anthropic/claude-opus-4.7,3,"The STE guide was never meant to become a general writing standard; nevertheless, it was successfully adopted by many industries.",gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-004,x-ai/grok-4.5,2,Official guidance stresses STE is **not a standalone style guide**—it must sit with domain specs and professional judgment. Over-application outside maintenance/procedure genres is a known misapplication risk.,gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-005,openai/gpt-5.4,0,,gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-005,anthropic/claude-opus-4.7,3,CFE was discontinued by Caterpillar in 1982 because (among other reasons) the basic guidelines of CFE were not enforceable in the English documents produced.,gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-005,x-ai/grok-4.5,0,,gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-006,openai/gpt-5.4,1,"The Federal Plain Language Guidelines define the outcome in user terms: readers should be able to find, understand, and use what they need.",gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-006,anthropic/claude-opus-4.7,3,"the broadest, clearest, and most well-known plain language law is the Plain Writing Act of 2010, signed into law on October 13, 2010. It aims to make government information easier for people to access and understand, and requires federal agencies to use clear language that the public can understand.",gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-006,x-ai/grok-4.5,2,U.S. Federal Plain Language Guidelines (implementing the Plain Writing Act of 2010),gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-007,openai/gpt-5.4,0,,gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-007,anthropic/claude-opus-4.7,0,,gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-007,x-ai/grok-4.5,3,"**ISO 24495-1:2023** frames four governing principles: content is **relevant**, **findable**, **understandable**, and **usable** for the intended reader.",gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-008,openai/gpt-5.4,2,"Plain-language guidance generally advises replacing jargon when everyday words preserve the same meaning, not eliminating precision.",gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-008,anthropic/claude-opus-4.7,3,One of the most common plain language myths is that you have to 'dumb down' your content so that everyone can read it. That's not true. Use language your audience understands and feels comfortable with.,gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-008,x-ai/grok-4.5,2,"""Plain"" is audience-relative. A term that is plain to a senior engineer is jargon to a citizen.",gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-009,openai/gpt-5.4,2,"Gopen and Swan argue that clarity depends heavily on placing information where readers expect it, especially using sentence openings to orient readers and sentence endings to carry emphasis.",gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-009,anthropic/claude-opus-4.7,3,Put in the topic position the old information that links backward; put in the stress position the new information you want the reader to emphasize.,gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-009,x-ai/grok-4.5,2,"Gopen–Swan flow, evidence-calibrated hedges, genre structure",gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-010,openai/gpt-5.4,0,,gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-010,anthropic/claude-opus-4.7,3,Gopen and Swan also make clear that these are 'principles' not 'rules.',gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-010,x-ai/grok-4.5,0,,gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-011,openai/gpt-5.4,1,"the Pyramid Principle and related business-writing advice support leading with the answer, especially for decision-making contexts",gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-011,anthropic/claude-opus-4.7,3,"avoid the Pyramid Principle when your audience needs to be emotionally engaged before hearing your conclusion, when you're delivering bad news that requires context first, or when you genuinely don't have a recommendation yet.",gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-011,x-ai/grok-4.5,1,"Pyramid answer-first, decide-don't-survey, owned voice",gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-012,openai/gpt-5.4,2,"Traditional readability formulas focus on surface proxies such as word and sentence length. Those proxies can correlate with reading difficulty, but they are incomplete.",gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-012,anthropic/claude-opus-4.7,3,The Flesch-Kincaid readability assessment tool along with other traditional metrics remains widely used to measure text complexity yet fails to accurately measure text difficulty because it only evaluates quantifiable characteristics of word length and sentence structure,gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-012,x-ai/grok-4.5,2,"Formulas ignore content difficulty, prior knowledge, layout, cohesion, and retrieval aids.",gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-013,openai/gpt-5.4,2,"detectors trained on earlier outputs perform worse on newer, more sophisticated models, and that data diversity and model evolution remain major challenges",gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-013,anthropic/claude-opus-4.7,2,Perkins et al. evaluated six major detectors and found their average accuracy (already a modest 39.5%) dropped to 17.4% when faced with texts lightly modified to evade detection.,gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-013,x-ai/grok-4.5,2,"Paraphrasing and light editing sharply degrade detector accuracy (e.g., DIPPER paraphrases collapsing DetectGPT-style performance while preserving semantics). OpenAI retired its own classifier citing low accuracy.",gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-014,openai/gpt-5.4,0,,gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-014,anthropic/claude-opus-4.7,3,"Studies also demonstrated systematic bias against non-native English speakers, with seven detectors showing 61.3% false positive rates on TOEFL essays compared to near-zero on native English writing.",gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-014,x-ai/grok-4.5,2,false positives have harmed non-native writers in academic settings,gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-015,openai/gpt-5.4,0,,gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-015,anthropic/claude-opus-4.7,3,"Vanderbilt University disabled Turnitin's AI detection in August 2023, noting that even 1% false positives applied to 75,000 papers yields ~750 wrongful accusations annually.",gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-015,x-ai/grok-4.5,0,,gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-016,openai/gpt-5.4,2,disclosure may also lower perceived quality or authenticity in some evaluative settings,gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-016,anthropic/claude-opus-4.7,3,"Several studies show that when readers learn AI contributed to a text, their trust in the human author declines even if the quality of the text is unchanged. This 'transparency penalty' challenges the conventional assumption that openness builds trust.",gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-016,x-ai/grok-4.5,2,Multiple experiments find **disclosing AI use can reduce trust** in the actor ('transparency dilemma').,gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-017,openai/gpt-5.4,0,,gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-017,anthropic/claude-opus-4.7,3,"People with more positive attitudes toward AI show a smaller decline in trust upon disclosure. A user's AI literacy plays a significant role in shaping their perceptions — AI-literate individuals tend to view its use as pragmatic, whereas less knowledgeable readers may interpret it as a sign of incompetence or laziness.",gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-017,x-ai/grok-4.5,0,,gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-018,openai/gpt-5.4,2,"a recent vignette study found readers often see disclosure as more necessary than writers do, and view disclosure as more necessary when AI's contribution is direct, irreplaceable, or not intentionally steered by the writer",gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-018,anthropic/claude-opus-4.7,0,,gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-018,x-ai/grok-4.5,2,Readers often want disclosure more than writers do; necessity judgments depend on how central/irreplaceable AI contribution was.,gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-019,openai/gpt-5.4,2,nondisclosure can require corrective action and may amount to misconduct in some cases,gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-019,anthropic/claude-opus-4.7,3,"using AI content humanizers to deliberately mask AI authorship is seen as cheating and dishonest, even if it helps you pass initial AI detection checks",gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-019,x-ai/grok-4.5,2,Integrity risk: tools that maximize 'undetectable' output facilitate undisclosed AI use in academic/professional contexts where disclosure or human authorship is required.,gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-020,openai/gpt-5.4,2,"advice based on a fixed list of 'AI tells' is, at best, heuristic. It may catch stereotyped generated prose, but it cannot be treated as robust detection science.",gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-020,anthropic/claude-opus-4.7,3,"2023 to mid-2024 (GPT-4): Additionally, boasts, bolstered, crucial, delve… Mid-2024 to mid-2025 (GPT-4o): align with, bolstered, crucial… The signs of AI use vary between models and are constantly changing over time.",gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-020,x-ai/grok-4.5,2,"These are **probabilistic style markers**, not proof.",gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-021,openai/gpt-5.4,0,,gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-021,anthropic/claude-opus-4.7,3,"Human speech and writing is being influenced by LLMs, and thus they are becoming more similar. This was already evident in 2024, as shown by a study that detected a significant LLM influence in spoken content (e.g. conversational podcasts).",gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-021,x-ai/grok-4.5,0,,gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-022,openai/gpt-5.4,3,"ICMJE now says authors, editors, publishers, and reviewers should be transparent about AI use, including which tool was used and for what purpose. It also indicates that nondisclosure can require corrective action and may amount to misconduct in some cases.",gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-022,anthropic/claude-opus-4.7,0,,gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-022,x-ai/grok-4.5,1,Scholarly norms increasingly push disclosure of material AI assistance; undisclosed use risks retraction and reputational harm.,gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-023,openai/gpt-5.4,1,"Detection remains unstable and model-contingent, while disclosure norms are strengthening",gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-023,anthropic/claude-opus-4.7,3,we aim to demonstrate why the academic community should shift focus from detection to transparency and ethical guidelines,gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-023,x-ai/grok-4.5,2,Cat-and-mouse: humanizers exist largely to evade detectors; detection and evasion co-evolve and neither is reliable.,gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-024,openai/gpt-5.4,2,"The scientific-paper override is notably better than the generic mode. It correctly protects calibrated hedging, related-work balance, technical vocabulary, and conventional structure. It also imports Gopen & Swan in a way that is more evidence-based than the rest of the repo.",gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-024,anthropic/claude-opus-4.7,3,"invokes Gopen & Swan by name for the scientific-paper override section (stress position, topic position, old-to-new flow, subject-verb proximity)",gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-024,x-ai/grok-4.5,2,"Academic overrides (calibrated hedges, IMRaD, passive-as-tool, Gopen–Swan positive moves, don't flag precise technical vocabulary) are unusually well aligned with scientific writing research.",gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-025,openai/gpt-5.4,-2,"The description says 'rewrite drafts so a person appears to have written them.' That frames the task as **appearance management**, not clarity or audience fit.",gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-025,anthropic/claude-opus-4.7,-2,"The skill's job description ('Rewrite drafts so a person appears to have written them') is ambiguous between two goals — improving prose whose *tells* are the problem, and making AI-written prose harder to attribute.",gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-025,x-ai/grok-4.5,-2,**Primary framing ('so a person appears to have written them')** sits on the detectability/evasion axis.,gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-026,openai/gpt-5.4,-2,"There is no middle mode for public-facing docs, health-style explainers, product docs for mixed audiences, or executive summaries.",gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-026,anthropic/claude-opus-4.7,-2,A `plainlang` skill. The repo has an aerospace-standard skill (`ste`) and a de-slop skill (`humanize`) but not a plain-language skill aligned with the Federal Plain Language Guidelines / PLAIN.,gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-026,x-ai/grok-4.5,-2,**Plain-language-as-document-standard is missing** as a first-class skill; plainspoken ≠ Federal/ISO plain language for public docs.,gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-027,openai/gpt-5.4,-2,The literature starts with audience/task analysis; the repo starts with stylistic transformation. That is backwards from the strongest evidence.,gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-027,anthropic/claude-opus-4.7,-2,Audience/purpose specification is not a first-class input. The plain-language literature (§1.3) and rhetorical-genre theory (§1.1) both put audience/purpose *before* rules. The repo puts rules first.,gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-027,x-ai/grok-4.5,-2,"**Audience model is implicit**, not operationalized (no lightweight audience/purpose/risk preamble before applying rules).",gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-028,openai/gpt-5.4,-1,The README claims it 'compresses the full standard' into one skill. But the official STE site says no tool can simply write STE for you or reliably convert arbitrary prose into STE,gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-028,anthropic/claude-opus-4.7,-2,The skill correctly identifies the standard… but the skill inherits a scope confusion that the standard's own maintainers warn against.,gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-028,x-ai/grok-4.5,-2,**STE dictionary gap** (verbs ≠ full dictionary) limits claim of full STE compliance.,gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-029,openai/gpt-5.4,-2,"There is no skill for drafting AI-use disclosures, diligence statements, or provenance notes for scholarly or professional contexts.",gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-029,anthropic/claude-opus-4.7,-2,The disclosure/ethics dimension is absent.,gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-029,x-ai/grok-4.5,-2,**Disclosure / provenance / appropriate-use policy** absent despite material trust literature.,gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-030,openai/gpt-5.4,-2,"The requirement that sentence-length coefficient of variation exceed 0.4, and that a piece must take at least one arguable position, are house heuristics, not established writing standards.",gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-030,anthropic/claude-opus-4.7,-1,Criterion 3 ('Sentence-length coefficient of variation is above 0.4…') is a defensible operationalization of the practitioner claim that uniform sentence length is one of the strongest signs of AI writing in any text. But it inherits the readability-formula critique from §1.5: it is a surface metric,gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-030,x-ai/grok-4.5,-2,**Cadence CV > 0.4** is a reasonable anti-metronome heuristic but **not** a validated readability or 'humanness' standard in the academic literature; risk of cargo-cult variation.,gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-031,openai/gpt-5.4,-1,"It overextends STE to genres where controlled language is not clearly best. The README scopes `ste` to docs, procedures, READMEs, reports, UI text. Some of those fit better than others.",gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-031,anthropic/claude-opus-4.7,-2,"The repo's framing does not warn the user that they are applying an aerospace-safety controlled language to a blog-adjacent artefact, which will strip legitimate voice from a README that has no safety exposure.",gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-031,x-ai/grok-4.5,-1,Persistence default ON when unsure is operationally aggressive; STE misapplied to persuasive or narrative chat can harm register fit,gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-032,openai/gpt-5.4,2,"Its scope note—'chat prose, not deliverables'—is one of the repo's best design choices because it acknowledges genre differences.",gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-032,anthropic/claude-opus-4.7,2,"`plainspoken` SKILL.md acknowledges 'if the honest answer is ""it depends""' and 'if you don't know,' but does not address the two harder cases: emotional-context-first and bad-news delivery.",gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-032,x-ai/grok-4.5,1,Excellent for assistant chat. Not a document plain-language skill,gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-033,openai/gpt-5.4,2,"The voice-profile mechanism is also a serious design choice: it shifts the goal from 'generic human' to 'this author's documented habits,' which is more honest and produces better stylistic fit.",gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-033,anthropic/claude-opus-4.7,2,Voice-profile design in `humanize`. Requiring three-to-five unedited samples and letting the profile override generic rules is well-aligned with plain-language theory's 'write for your audience',gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-033,x-ai/grok-4.5,2,Voice-profile calibration outranking generic rules—addresses 'generic human' failure mode.,gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-034,openai/gpt-5.4,2,A randomized trial found that plain-language versions improved adults' understanding of health recommendations.,gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-034,anthropic/claude-opus-4.7,0,,gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-034,x-ai/grok-4.5,0,,gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-035,openai/gpt-5.4,1,The repo's own warning not to introduce errors intentionally,gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-035,anthropic/claude-opus-4.7,2,explicitly warns against overcorrection ('Aggressive de-slopping has its own tells'),gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-035,x-ai/grok-4.5,2,**Anti-overcorrection** section shows editorial maturity beyond typical 'humanizer' products.,gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-036,openai/gpt-5.4,-1,"It risks confusing 'clarity' with 'compliance.' Sentence caps and verb restrictions are legitimate within STE, but not a general readability science.",gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-036,anthropic/claude-opus-4.7,-2,"`ste` doesn't gate procedures vs descriptions vs safety-critical at the invocation layer, even though the standard treats these as genre-distinct.",gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-036,x-ai/grok-4.5,-2,No built-in usability-test reminder (plain-language literature's closing loop).,gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-037,openai/gpt-5.4,0,,gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-037,anthropic/claude-opus-4.7,3,"A rhetorical approach to genre should focus not on form or content but on recurrent rhetorical action. Genre is reconceived as social action in response to recurrent rhetorical situations perceived as a combination of purpose, audience, and occasion.",gen-1786548963-7qkwDt9LAmErI1fjjoNN
+c-037,x-ai/grok-4.5,0,,gen-1786548963-7qkwDt9LAmErI1fjjoNN

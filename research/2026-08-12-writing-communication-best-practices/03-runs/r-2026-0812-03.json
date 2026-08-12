@@ -1,0 +1,41 @@
+{
+ "brief_sha256": "2f4b3fc840ed85b1a89eab29ebf1ca0364e8371ea801c40a96d8f98e47895939",
+ "completed_at": "2026-08-12T15:39:16.387073Z",
+ "cost_actual": 3.032061,
+ "cost_estimate": 0.287288,
+ "created_at": "2026-08-12T15:31:38.466980Z",
+ "dispatched_models": [
+  "openai/gpt-5.4",
+  "anthropic/claude-opus-4.7",
+  "x-ai/grok-4.5"
+ ],
+ "grading_model": "anthropic/claude-sonnet-4.6",
+ "raw_responses": {
+  "files": [
+   {
+    "bytes": 121124,
+    "file": "anthropic-claude-opus-4.7.json",
+    "sha256": "3f96322064c887e9e080df779364ef45778624b2125b6444489f319c2f804957"
+   },
+   {
+    "bytes": 92310,
+    "file": "grading.json",
+    "sha256": "2fc764d69640b0edc7ae1b83f1a70d6051846290c31262fa45efc4630044cd8f"
+   },
+   {
+    "bytes": 91654,
+    "file": "openai-gpt-5.4.json",
+    "sha256": "e57d6274249153e298a935a2555630849dbf6aa8bbf62a11f00f1a1d5248ebf7"
+   },
+   {
+    "bytes": 230295,
+    "file": "x-ai-grok-4.5.json",
+    "sha256": "c0a7c93733040f28bd65da8542e92102a4e54e94e5d42470b268a7589f093579"
+   }
+  ],
+  "published": false
+ },
+ "run_id": "r-2026-0812-03",
+ "status": "partial",
+ "web_search": true
+}
