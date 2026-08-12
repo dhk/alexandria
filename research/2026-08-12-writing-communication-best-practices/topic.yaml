@@ -1,0 +1,52 @@
+# Alexandria investigation metadata.
+# Schema not yet formalized under schemas/ (see
+# src/alexandria/infrastructure/research_repo.py) — this follows the
+# lenient best-effort shape that module reads: title, status,
+# assurance_level. Additional fields below are documentation, not
+# machine-read yet.
+
+title: "Written-communication best practices, and the claude-writing-skills repo measured against them"
+status: "graded-multi-model"
+assurance_level: "silver"
+
+slug: 2026-08-12-writing-communication-best-practices
+opened: 2026-08-12
+requested_by: operator (davehk@gmail.com)
+
+topic_kind: literature-synthesis-then-tool-evaluation
+subject_product: "github.com/nonatofabio/claude-writing-skills — three skills (ste, plainspoken, humanize)"
+
+# The brief's own ordering constraint: establish the external evidence
+# base first, and only then turn to the tool. The intended use is a
+# collaborative proposal to that repo's maintainer, so the synthesis has
+# to stand on its own as citable independent of the tool.
+research_models:
+  - openai/gpt-5.4
+  - anthropic/claude-opus-4.7
+  - x-ai/grok-4.5
+grading_model: anthropic/claude-sonnet-4.6
+
+runs:
+  - id: r-2026-0812-02
+    outcome: failed
+    note: >-
+      anthropic/claude-opus-4.7 and the grading call both returned HTTP 402;
+      the OpenRouter key's weekly limit could not cover a reservation of
+      max_tokens x completion price. No claims, no report.
+  - id: r-2026-0812-03
+    outcome: partial-recovered
+    note: >-
+      All four calls succeeded and were billed. The grader's JSON failed to
+      parse over six unescaped double quotes, so the pipeline wrote an empty
+      claim landscape; the content was complete and was recovered. See
+      03-runs/r-2026-0812-03/provenance.md.
+
+web_search: true
+
+notes: >-
+  Web search was on for r-2026-0812-03, so the research outputs rest on
+  live sources read on 2026-08-12 and the run is not reproducible from its
+  inputs alone. A web-search-off re-run is intended to give a reproducible
+  companion pass; it is blocked until the tooling sets max_tokens
+  explicitly, because three concurrent reservations exceed the key's
+  remaining weekly credit.
