@@ -1,51 +1,60 @@
-## Comparative Analysis Report
+## Comparative analysis report
 
-### Overview
+### Scope
+Three outputs address the same commissioned brief: settle ASD-STE100 provenance from primary sources, widen the comparison set to include Hemingway Editor, Hotaling (2020), and the full `claude-writing-skills` repository, and produce an updated decision procedure. All three outputs were produced independently.
 
-All three outputs reach the same headline verdict—ASD-STE100 is not a general-purpose writing standard and is actively harmful for persuasive writing—and share a common structural argument: STE is well-specified for its original domain (safety-critical aerospace procedures, L2 readers, translation pipelines) and poorly specified for everything else. The outputs differ substantially in depth of external citation, specificity of historical claims, and the granularity of their decision frameworks.
+---
 
-### Points of Strong Agreement
+### High-confidence consensus (all three agree, sourced)
 
-**Verdict on the circulating claim.** All three reject the claim that STE is the right tool for clear, concise, *persuasive* writing. The rejection is unambiguous and identically reasoned: STE removes the devices persuasion depends on (varied rhythm, synonymy, figurative language, voice, narrative) by design, and those removals are virtues in a maintenance manual and liabilities in an essay or argument.
+**Provenance.** All three outputs converge on the same core lineage: AECMA (European Association of Aerospace Industries) originated STE in the late 1970s with AIA collaboration; the SEWG was formally constituted in 1983 at a meeting associated with Fokker in Amsterdam; the first public guide appeared in 1986 as PSC-85-16598; the organizational rename to ASD and STEMG occurred in 2004; the first issue under the ASD-STE100 specification title appeared in 2005; and Issue 9 (15 January 2025) is the current release, now designated an international standard. All three explicitly retract or refuse to confirm Douglas/McDonnell Douglas involvement as unsourceable from authoritative primary materials.
 
-**STE's genuine strengths.** All three affirm STE's value for procedural, safety-critical, multilingual technical documentation. The mechanism is consistently identified: one-word-one-meaning, short sentences, imperative structure, and controlled vocabulary reduce ambiguity and translation cost for L2 technician readers under operational pressure.
+**Substantive conclusions.** All three confirm the prior run's three main findings without revision: (1) STE is not a general-purpose writing standard; (2) it is actively harmful for persuasion because it removes by design the devices persuasion depends on; (3) its current popularity in AI/tooling circles tracks machine-operability, not fitness for general prose.
 
-**The missing dictionary problem.** All three flag that the repository's STE skill encodes rules without the approved-word dictionary, making it an incomplete implementation. All three agree this matters because the dictionary is where STE's distinctive anti-ambiguity value lives.
+**Shared-assumption analysis.** All three independently identify the same cluster of assumptions across rule-list and readability-formula tools—that surface features proxy quality and that shorter is generally better—and all three reach the same verdict: valid as a diagnostic, not as an optimization target. The Goodhart's Law framing (optimize the score, worsen the prose) appears in all three.
 
-**The missing context router.** All three independently identify the absence of a context router—a mechanism that selects writing techniques based on purpose, audience, and context—as the key architectural gap in the repository.
+**AI-tell catalog.** All three characterize the `humanize` skill's tell list as practitioner consensus or folklore derived from community-maintained sources (Wikipedia's 'Signs of AI writing'), not validated experimental research.
 
-**Readability formulas as misused diagnostics.** All three treat readability formulas as diagnostic tools that become harmful when used as writing targets. Two explicitly flag the CV > 0.4 sentence-variance threshold in the repository as an ungrounded heuristic.
+---
 
-**Why the enthusiasm is epistemically suspect.** All three explain the current popularity of STE in AI/writing-tool communities as driven by its machine-operability and rule-based legibility rather than its original safety rationale—a form of tool transfer from a bounded domain to a general one.
+### Partial agreement and nuance differences
 
-### Points of Meaningful Difference
+**1985 vs. 1986 first release.** One output explicitly resolves this as Issue 0 (pre-release, 1985) vs. Issue 1 (first public guide, 1986), citing a CEUR-WS paper. The other two collapse to 1986 as the official figure. The three-way picture is: the official STEMG site says 1986; secondary sources say 1985; the most granular output reconciles both as distinct releases. The 1985/1986 ambiguity is real and should not be flattened.
 
-**Depth of external citation.** Output 2 is the most heavily cited, naming specific studies (Chervak & Drury on aircraft maintenance instructions; Sopory & Dillard's 2002 metaphor meta-analysis; Green & Brock 2000 on narrative transportation; Kincaid et al. 1975 on readability formulas; Pullum 2009 on Strunk & White), specific editions of key texts (Williams 12th ed., O'Keefe 3rd ed., Toulmin updated 2003), and a specific survey article (Kuhn 2014 in *Computational Linguistics*). Output 3 cites many of the same sources but with slightly less specificity on study details. Output 1 makes no external citations and explicitly acknowledges that the supplied materials do not include the texts of ISO 24495-1, Gopen & Swan, or Williams—a methodologically honest but substantively thinner position.
+**ATA requirement date.** One output gives 1987 (citing Issue 9 directly); another gives 1986 (collapsing it with the guide's first release). The Issue 9 citation is the stronger source.
 
-**Historical specificity on STE's origins.** Outputs 2 and 3 provide the founding lineage (AECMA Simplified English, early 1980s; Fokker and Douglas involvement; 2004/2005 renaming to ASD-STE100). Output 1 explicitly declines to assert this history, noting it is not established by the supplied materials—a defensible epistemic choice but one that leaves the historical account incomplete.
+**Hemingway formula identification.** Two outputs confidently identify ARI as the formula used; one notes that product articles mention both ARI and Flesch–Kincaid and that third-party tests have treated the grade as ARI. The uncertainty is real: Hemingway does not publish a peer-reviewed methodology paper.
 
-**Approved-verb list size.** Only Output 2 specifies the approved-verb list as "roughly 80 verbs." The other two do not quantify it.
+**Hotaling's ten rules.** One output lists all ten rules verbatim; the others characterize them. The verbatim list is more useful for verification.
 
-**Sentence-length caps by text type.** Only Output 3 specifies the differential caps (~20 words for procedures, ~25 for descriptions). Output 1 notes caps exist; Output 2 does not differentiate.
+**Special usage rights in Issue 9.** Only one output details the eight categories of irrevocable free-of-charge usage rights. This is material for tool builders and researchers and is absent from the other two.
 
-**Strunk and White critique.** Only Output 2 explicitly names Strunk & White as containing factual grammatical errors and cites Pullum's 2009 critique. The others do not address this.
+**EU Trade Mark dates.** Only one output notes the 2006 and 2018 EUTM grants. The others mention the trademark number without dates.
 
-**Narrative transportation as a persuasion mechanism.** Only Output 2 explicitly cites Green & Brock (2000) on narrative transportation as among the strongest persuasion effects in the literature and connects it to devices STE bans. Output 3 references narrative persuasion literature generically; Output 1 does not.
+**Issue 10 scheduling.** Only one output notes that Issue 10 is scheduled for January 2028.
 
-**Decision framework granularity.** All three provide decision tables, but they differ in structure. Output 2's table is the most compact and action-oriented. Output 3's is the most granular, with a four-step procedure and explicit layering rules. Output 1's is the most discursive, embedding the decision logic in prose with a summary router at the end.
+**`humanize` cadence CV threshold.** Two outputs explicitly flag the CV > 0.4 threshold as an ungrounded heuristic. One does not address it.
 
-**Treatment of ISO 24495-1.** All three mention ISO 24495-1:2023 as the relevant plain-language standard. Outputs 2 and 3 describe it as principles-based and contrast it with STE's rule-based approach. Output 1 mentions it only in passing in a comparison table.
+**STEMG's 'not for writers' quote.** One output quotes STEMG's own training material directly: *STE is not a simplified version of English for the writers.* The others convey the same idea without the direct quote.
 
-### What This Run Does Not Establish
+---
 
-**Direct experimental evidence on STE and persuasion.** No output cites an RCT or controlled study comparing STE-restricted persuasive text against rhetorically crafted text on attitude change, behavioral compliance, or trust. All three acknowledge this gap; Output 2 states explicitly that no such study exists to its knowledge. The anti-persuasion conclusion rests on strong theoretical grounds (the persuasion literature identifies devices STE removes as load-bearing) but not on STE-specific experimental data.
+### Divergences
 
-**Clean causal evidence that STE reduces accident rates.** All three note that isolating STE's contribution to safety outcomes from other concurrent changes (training, tooling, design, workflow) is methodologically difficult. The safety case rests on mechanism and institutional adoption, not clean experimental isolation.
+**Fokker sourcing confidence.** One output treats Fokker's involvement as settled from official STEMG pages and a practitioner history (Chiarello 2013). A second output says it could find no authoritative primary source naming individual companies and treats all specific airframer claims as unverified. A third occupies a middle position, citing Chiarello 2013 for Fokker leadership while noting the meeting date rests on that secondary source rather than a scanned minute. The divergence reflects genuine source-access differences rather than factual disagreement: the Chiarello 2013 source (a STEMG-affiliated practitioner history) is treated as near-primary by two outputs and as unavailable by one.
 
-**Whether the dictionary or the syntactic rules drive STE's L2 comprehension benefit.** All three flag this as an open question with practical implications for the repository's rules-only implementation. No output resolves it.
+**Scope of the `ste` skill's failure mode.** One output focuses on the skill being a lossy compression of the dictionary (copyright-correct but fidelity-limited). Another focuses on the skill's scope being broader than STE's intended domain (docs, READMEs, UI text vs. aircraft maintenance manuals) without justification for the transfer. Both are valid and complementary failure modes.
 
-**Validation of any sentence-variance threshold as a comprehension predictor.** The CV > 0.4 threshold is flagged as ungrounded by two outputs, but neither provides a validated alternative threshold. Sentence-length variation is endorsed as a marker of rhetorical rhythm (Williams tradition), not as a numeric quality gate.
+**Decision procedure format.** All three produce a decision procedure, but they differ in granularity and format: one uses a six-step prose procedure with sub-routines by genre; one uses a step-by-step procedure with a lookup table; one uses a six-step procedure with a one-page pseudocode cheat sheet. The underlying logic is consistent across all three.
 
-**Whether ISO 24495-1:2023's principles produce measurable comprehension gains.** Output 2 notes the standard is new (2023) and that follow-through empirical studies have not yet appeared. The plain-language recommendation rests on the older plain-language evidence base and the standard's codification of that consensus, not on ISO 24495-1-specific trials.
+---
 
-**LLM-specific failure mode distribution.** All three note that the case for STE as an LLM guardrail depends on what LLM prose actually fails at. None provides a systematic taxonomy of LLM writing failures across genres tested against different remediation techniques.
+### What this run does not establish
+
+- **Full SEWG founding membership roster.** No output retrieved a primary scan of the 1983 SEWG membership list. Fokker's role rests on a practitioner history (Chiarello 2013), not on AECMA archival minutes. Any specific OEM seat claim beyond Fokker remains unverified.
+- **Empirical outcome studies for STE.** All three outputs note the absence of RCTs or strong quasi-experiments showing STE rules improve comprehension, error reduction, or safety outcomes in open sources. The institutional adoption record (ATA, S1000D, airworthiness authorities) is documented; causal efficacy is not.
+- **Hemingway's exact formula and validation.** No output retrieved a peer-reviewed Hemingway methodology paper. The ARI identification is based on product help pages and third-party reverse engineering, not a published white paper from the Hemingway team.
+- **Empirical validation of AI-tell detection.** The tell catalog's effectiveness at improving reader perception has not been tested in controlled studies. All three outputs treat it as practitioner consensus that will shift as base models change.
+- **Causal evidence that lowering ARI improves reader outcomes across genres.** All three outputs assert this is absent; none found a study supplying it.
+- **The 1979 AEA request document.** The late-1970s/1979 origin date is repeated across practitioner literature but the primary letter or meeting record was not retrieved by any output.
+- **Whether 'international standard' status for Issue 9 reflects external ISO-like ratification or is ASD's own characterization.** One output flags this explicitly; the others do not resolve it.

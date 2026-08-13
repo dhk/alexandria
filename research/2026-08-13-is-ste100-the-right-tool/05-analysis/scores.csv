@@ -1,85 +1,103 @@
 claim_id,model_id,score,quote,grading_call_id
-c-001,openai/gpt-5.4,3,"STE is a strong specialized standard for technical and safety-critical instruction, not the right general tool for persuasive writing",gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-001,anthropic/claude-opus-4.7,3,"Applied to persuasion, narrative, essay, or any writing whose effect depends on voice, rhythm, register, connotation, figuration, or reader emotion, STE-100 systematically degrades the writing by removing the very devices those effects require.",gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-001,x-ai/grok-4.5,3,"It is a poor default for persuasive, voice-bearing, or general-purpose writing, and using it as one systematically degrades those outcomes.",gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-002,openai/gpt-5.4,3,"STE is probably excellent for: maintenance instructions, operating procedures, warnings and cautions, regulated technical documentation, contexts where readers must do the correct thing more than admire the prose.",gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-002,anthropic/claude-opus-4.7,3,"STE-100 is an excellent tool for the job it was designed for — safety-critical procedural instructions for aerospace maintenance, read under pressure by non-native English speakers, translated into many languages",gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-002,x-ai/grok-4.5,3,"ASD-STE100 is among the best-specified tools for clear, consistent, translatable instructional technical English in regulated domains.",gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-003,openai/gpt-5.4,2,Source: ASD-STE100 Issue 9 (2025-01-15).,gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-003,anthropic/claude-opus-4.7,2,Current edition: Issue 9 (15 January 2025).,gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-003,x-ai/grok-4.5,2,The supplied skill cites Issue 9 (2025-01-15); the standard is distributed by ASD (asd-ste100.org).,gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-004,openai/gpt-5.4,0,,gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-004,anthropic/claude-opus-4.7,2,"Its lineage runs to AECMA Simplified English (1986), itself derived from earlier controlled English efforts by Fokker, Douglas, and others in the late 1970s–early 1980s. It was renamed ASD-STE100 in 2004/2005.",gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-004,x-ai/grok-4.5,2,"Simplified Technical English began as AECMA Simplified English in the early 1980s, driven by the European Association of Aerospace Industries (AECMA).",gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-005,openai/gpt-5.4,2,Two parts: writing rules + controlled dictionary.,gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-005,anthropic/claude-opus-4.7,2,The specification is explicit that its scope is procedural and descriptive technical documentation in aerospace and related industries.,gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-005,x-ai/grok-4.5,2,"It has two parts: 1. Writing rules (grammar, syntax, punctuation, procedural/descriptive constraints). 2. Controlled dictionary (~approved words with permitted parts of speech and meanings, plus rules for technical names and technical verbs).",gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-006,openai/gpt-5.4,3,"the current STE skill encodes rules without the approved-word dictionary. That means it is not fully implementing STE, only a rule-based approximation.",gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-006,anthropic/claude-opus-4.7,3,"The STE skill should ship with, or link to, the approved-word dictionary, because STE without the dictionary is just 'short sentences and active voice with a specific ban list' — most of its distinctive value (one-word-one-meaning) requires the dictionary.",gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-006,x-ai/grok-4.5,3,"Skills encode rules without the approved-word dictionary (as the prior investigation noted). That produces a folk-STE: active voice + short sentences + some banned patterns, marketed as full STE.",gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-007,openai/gpt-5.4,2,STE's one-word/one-meaning discipline and syntax restrictions directly support that.,gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-007,anthropic/claude-opus-4.7,3,"Its dictionary discipline (one word, one meaning, one part of speech) is the strongest anti-ambiguity device in any English-writing standard.",gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-007,x-ai/grok-4.5,2,one-word-one-meaning and approved verb lists produce institutional monotone,gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-008,openai/gpt-5.4,2,Better comprehension for readers who may not be expert native speakers. Easier translation or controlled multilingual reuse.,gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-008,anthropic/claude-opus-4.7,3,"Read by maintenance technicians worldwide, mostly with English as a second language. Consulted under time pressure, sometimes under safety-critical conditions... Long, repetitive, and expensive to translate — and mistranslation could kill people.",gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-008,x-ai/grok-4.5,2,"aircraft maintenance documentation written in uncontrolled English was being used by multinational technician workforces, many reading English as a second language, in contexts where misreading a procedure could damage equipment or kill people. Airlines and manufacturers also faced large translation burdens into many languages.",gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-009,openai/gpt-5.4,2,"For technical instructions and descriptive documentation, STE likely improves: local clarity, terminological consistency, disambiguation, scanability, procedural parsing.",gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-009,anthropic/claude-opus-4.7,3,"industrial and academic studies (e.g., work by Shubert, Spyridakis, and Holmback in the late 1990s; Chervak & Drury on aircraft maintenance instructions; subsequent studies summarised in Kuhn's 2014 survey of controlled natural languages, Computational Linguistics 40(1)) find that Simplified English versions of maintenance procedures yield faster reading, higher comprehension scores, and fewer procedural errors among non-native readers than uncontrolled equivalents.",gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-009,x-ai/grok-4.5,2,"Reduces lexical and syntactic ambiguity via one-word-one-meaning and banned constructions... This is the core controlled-language bet; aerospace adoption over decades is industrial validation, not a single RCT.",gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-010,openai/gpt-5.4,2,Direct empirical persuasion evidence in supplied materials: absent.,gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-010,anthropic/claude-opus-4.7,3,There is no persuasion research on STE-100 that I am aware of. There is a large empirical persuasion literature... which identifies devices STE forbids or degrades as load-bearing,gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-010,x-ai/grok-4.5,2,Evidence that STE helps persuasion: absent to negative.,gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-011,openai/gpt-5.4,3,"STE restricts many of those resources: narrow vocabulary, single approved meanings, limited verb forms, no contractions, no semicolons, no phrasal verbs, preference for stripped syntax, avoidance of lexical richness and ambiguity.",gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-011,anthropic/claude-opus-4.7,3,"STE forbids synonymy, phrasal verbs, semicolons, complex tenses, contractions, and figurative use of approved words. Every one of these bans removes a persuasive lever.",gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-011,x-ai/grok-4.5,3,"Removes audience-tuned diction, rhythm, and strategic emphasis... One-word-one-meaning and approved verb lists produce institutional monotone... Bans or maims devices that create memorability.",gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-012,openai/gpt-5.4,2,readability formulas are crude proxies... if used carelessly as a universal metric it can still be misapplied in the same spirit: measurable restriction mistaken for communication quality.,gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-012,anthropic/claude-opus-4.7,3,"The formulas correlate sentence length and syllable/word length with a grade level. They were built (Kincaid et al., 1975, for the US Navy) to estimate difficulty of existing text for procurement decisions, not to guide writing. Using them as writing targets produces text that games the formula",gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-012,x-ai/grok-4.5,3,"Formulas correlate modestly with grade-level comprehension in some settings; catastrophically misused as writing targets (gaming scores with choppy prose, destroying cohesion).",gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-013,openai/gpt-5.4,0,,gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-013,anthropic/claude-opus-4.7,3,The `claude-writing-skills` CV > 0.4 sentence-variance threshold flagged in the prior investigation is in this tradition: a plausible-sounding numeric target with no grounding in comprehension research.,gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-013,x-ai/grok-4.5,3,"Prior investigation correctly flagged this as ungrounded folklore/heuristic, not readability science.",gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-014,openai/gpt-5.4,3,"The current enthusiasm appears driven less by: safety-critical documentation, translation control, maintenance manuals, and more by: desire for crisp AI output, need for lintable writing standards, frustration with bloated prose, preference for deterministic formatting guidance.",gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-014,anthropic/claude-opus-4.7,3,"STE-100 is thirty-plus years old and was, until recently, of interest mostly to aerospace tech writers and controlled-language researchers. Its current surge in writing-tool and AI communities is worth explaining, because the reasons are largely not connected to what STE was built for.",gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-014,x-ai/grok-4.5,3,"Adoption is only partly connected to what STE was built for (procedures, safety, translation). A large share is spec-shaped clarity cosplay in the AI writing ecosystem.",gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-015,openai/gpt-5.4,3,Add a context router before any style skill is applied.,gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-015,anthropic/claude-opus-4.7,3,"Add a context router skill (the gap the prior investigation identified). The router takes purpose + audience + context and selects among: STE, plain-language, Williams/Gopen sentence craft, Toulmin argument structure, rhetorical craft for persuasion, narrative structure.",gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-015,x-ai/grok-4.5,3,"Build a context router, not a steeper STE monoculture. Purpose × audience × context should select and sequence techniques.",gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-016,openai/gpt-5.4,2,"Gopen & Swan reader-expectation theory: Sentence/paragraph flow, emphasis, reader processing ease. Reader forms expectations about stress position, topic position, cohesion.",gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-016,anthropic/claude-opus-4.7,3,"Gopen, G. & Swan, J. 'The Science of Scientific Writing,' American Scientist 78(6), Nov–Dec 1990. Gopen, The Sense of Structure, 2004... sentence-level revision (Gopen–Swan topic/stress; Williams' cohesion) applies to all prose above the procedural level. It is the highest-leverage skill for clarity in expert-to-expert writing.",gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-016,x-ai/grok-4.5,2,"Gopen, G. D., & Swan, J. A. (1990). 'The Science of Scientific Writing.' American Scientist, 78(6), 550–558... Optimises: Information flow relative to reader expectations—subject–verb proximity, topic/stress positions, old→new, logical context before new complexity.",gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-017,openai/gpt-5.4,2,"Williams' clarity-and-grace: Clear, elegant prose with strong style and emphasis. Reader needs both clarity and readable cadence.",gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-017,anthropic/claude-opus-4.7,2,"Williams & Bizup, Style: Lessons in Clarity and Grace (12th ed. 2016)... Clarity, cohesion, coherence, then grace/emphasis.",gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-017,x-ai/grok-4.5,2,"Williams, J. M. Style: Lessons in Clarity and Grace (multiple editions; with Joseph Bizup in later eds.)... Optimises: Readable expository prose—characters as subjects, actions as verbs, cohesion, emphasis, concision, elegance without controlled English.",gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-018,openai/gpt-5.4,1,"plain-language standards (ISO 24495-1, Cutts) for the large middle of technical writing that is not procedure.",gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-018,anthropic/claude-opus-4.7,2,"ISO 24495-1:2023, Plain language — Part 1: Governing principles and guidelines... principles are general (readers find, understand, and use info the first time)",gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-018,x-ai/grok-4.5,2,"ISO 24495-1:2023 Plain language — Part 1: Governing principles and guidelines... principles-based (readers find, understand, use information); not a controlled vocabulary. Emphasizes audience research, structure, design, evaluation.",gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-019,openai/gpt-5.4,2,"For decision memos, use a hybrid: Argumentation theory for claims, evidence, alternatives, tradeoffs.",gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-019,anthropic/claude-opus-4.7,2,"Toulmin's The Uses of Argument, 1958... Structure of real arguments (claim, data, warrant, backing, qualifier, rebuttal)... Williams + Toulmin for decision docs/memos",gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-019,x-ai/grok-4.5,2,"Argumentation: Toulmin, S. The Uses of Argument; pragma-dialectics (van Eemeren & Grootendorst)... Optimises: Normative quality of arguments; dispute resolution; transparent reasoning.",gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-020,openai/gpt-5.4,0,,gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-020,anthropic/claude-opus-4.7,3,"Rhetorical figures (parallelism, antithesis, tricolon, chiasmus) — measurably increase memorability and agreement (see Sopory & Dillard's 2002 meta-analysis on metaphor).",gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-020,x-ai/grok-4.5,0,,gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-021,openai/gpt-5.4,0,,gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-021,anthropic/claude-opus-4.7,3,"the strongest persuasion effects in the literature involve narrative transportation (Green & Brock, 2000, JPSP), which requires devices STE bans.",gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-021,x-ai/grok-4.5,1,narrative persuasion / framing literatures,gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-022,openai/gpt-5.4,0,,gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-022,anthropic/claude-opus-4.7,3,"Strunk & White, The Elements of Style — Practitioner folklore; actively criticised by linguists (Pullum, '50 Years of Stupid Grammar Advice,' Chronicle of Higher Education, 2009) for factual errors about grammar",gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-022,x-ai/grok-4.5,0,,gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-023,openai/gpt-5.4,0,,gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-023,anthropic/claude-opus-4.7,2,"The one-word-one-meaning rule, the approved-verb list of roughly 80 verbs, the ban on synonyms, the ban on phrasal verbs, the sentence-length caps, and the imperative-first procedure structure all serve those goals.",gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-023,x-ai/grok-4.5,0,,gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-024,openai/gpt-5.4,1,"one instruction per sentence, one topic per sentence, sentence length caps",gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-024,anthropic/claude-opus-4.7,0,,gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-024,x-ai/grok-4.5,2,"word limits: e.g. ~20 words/sentence procedures, ~25 description—per the skill's compression of Issue 9",gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-025,openai/gpt-5.4,1,"STE is best treated as one component of safety communication, not a complete safety solution.",gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-025,anthropic/claude-opus-4.7,0,,gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-025,x-ai/grok-4.5,2,"STE-compliant text can still be operationally wrong (bad procedure content). STE controls expression, not correctness of the task analysis.",gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-026,openai/gpt-5.4,3,"Rename or qualify the skill if the dictionary is not enforced, e.g. 'STE-inspired technical clarity' rather than full STE.",gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-026,anthropic/claude-opus-4.7,3,"The existing `ste` skill should be scoped to procedural and reference technical writing, not to 'docs, procedures, READMEs, reports' as one bucket.",gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-026,x-ai/grok-4.5,3,Relabel the `ste` skill to prevent scope creep; fix the missing dictionary or explicitly call it 'STE-inspired procedural constraints.',gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-027,openai/gpt-5.4,2,"Extract the transferable parts into a separate cross-context clarity layer: avoid ambiguous pronouns, keep terminology consistent, make instructions explicit, use active voice where agency matters, chunk long procedures, mark warnings clearly.",gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-027,anthropic/claude-opus-4.7,2,"STE's general rules (active voice, one topic per sentence, imperatives for instructions, consistent terminology, no needless synonymy of technical terms) are cheap wins across most technical writing. Adopt them.",gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-027,x-ai/grok-4.5,2,Borrowing STE rules without the full dictionary can still cut error rates.,gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-028,openai/gpt-5.4,2,"STE can also reduce comprehension when it forces awkward paraphrase... These replacements are often longer, less idiomatic, and cognitively less fluent than ordinary English.",gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-028,anthropic/claude-opus-4.7,2,"For native English readers of ordinary technical documents, STE-restricted prose is comprehended about as well as well-edited uncontrolled prose, and better than poorly-edited prose. It is not clearly superior to skilled plain-language editing for this audience.",gen-1786649139-ogt7CdSCFijjO82ywnTF
-c-028,x-ai/grok-4.5,2,"Expert readers often pay a fluency/naturalness tax: repetitive diction, forbidden cohesive devices, and awkward approved substitutes ('make sure that,' 'do a check') can slow highly literate L1 readers and feel childish or bureaucratic.",gen-1786649139-ogt7CdSCFijjO82ywnTF
+c-001,openai/gpt-5.4,3,STE's documented origin is with AECMA; AECMA later became part of ASD.,gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-001,anthropic/claude-opus-4.7,3,"AECMA (European Association of Aerospace Industries), developed the AECMA Simplified English standard during the late 1970s and early 1980s",gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-001,x-ai/grok-4.5,3,Originating body: AECMA (European Association of Aerospace Industries) | Official STEMG about page; home page | Settled,gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-002,openai/gpt-5.4,3,"the project formally started on 30 June 1983 with the founding of the AECMA Simplified English Working Group in Amsterdam, at the Fokker plant near Schiphol Airport",gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-002,anthropic/claude-opus-4.7,3,The AECMA Simplified English project started. Originally formed in 1983 as a working group (SEWG) to develop AECMA Simplified English,gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-002,x-ai/grok-4.5,3,"30 Jun 1983 | First ratification meeting, Fokker Amsterdam; SEWG under Fokker lead; AIA joins",gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-003,openai/gpt-5.4,3,"the first release was in 1986 as AECMA Simplified English Guide, PSC-85-16598. Issue 9 gives the exact release date as 1986-02-15.",gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-003,anthropic/claude-opus-4.7,3,"STE was first released in 1986 as AECMA Document, PSC-85-16598.",gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-003,x-ai/grok-4.5,3,1986 | Issue 1 / AECMA Simplified English Guide public; ATA 100 requirement,gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-004,openai/gpt-5.4,0,,gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-004,anthropic/claude-opus-4.7,0,,gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-004,x-ai/grok-4.5,3,Pre-release Issue 0 in 1985; first public Issue 1 / Guide in 1986 | CEUR-WS paper citing Issue 0 (1985) and Issue 1 (1986); official site says first released 1986 as PSC-85-16598,gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-005,openai/gpt-5.4,3,"organizational/name change in 2004, first released under the ASD-STE100 title in January 2005",gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-005,anthropic/claude-opus-4.7,3,"changed its name to become ASD Simplified Technical English, Specification ASD-STE100 in 2004, but In 2005, it became an international specification. Best read: the merger and rename were 2004; the formal republication as specification ASD-STE100 was 2005.",gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-005,x-ai/grok-4.5,3,"Rename 'around 2004–05': Prior recall was right enough. Precision: organizational rename 2004 (ASD, STEMG); specification rename/status 2005 (ASD-STE100).",gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-006,openai/gpt-5.4,3,"Current issue: Issue 9, dated 2025-01-15",gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-006,anthropic/claude-opus-4.7,3,"The current issue is 9, released in January 2025.",gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-006,x-ai/grok-4.5,3,2025-01-15 | Issue 9 — international standard,gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-007,openai/gpt-5.4,0,,gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-007,anthropic/claude-opus-4.7,3,"The current edition of the STE Standard, which was published in January 2025, consists of 53 writing rules and a dictionary of approximately 900 approved words.",gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-007,x-ai/grok-4.5,0,,gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-008,openai/gpt-5.4,3,Maintainer: the ASD Simplified Technical English Maintenance Group (STEMG).,gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-008,anthropic/claude-opus-4.7,3,"The STE standard is maintained by the ASD Simplified Technical English Maintenance Group (STEMG), a working group of ASD.",gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-008,x-ai/grok-4.5,3,Maintained by ASD Simplified Technical English Maintenance Group (STEMG); reports to ASD Services Commission (SVC),gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-009,openai/gpt-5.4,3,"ASD says STE is fully owned by ASD; it is distributed free of charge through official channels, in PDF only, and unauthorized redistribution is prohibited without written permission. That is free distribution, but not an open license.",gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-009,anthropic/claude-opus-4.7,3,ASD-STE100 is free. You request an official copy from the ASD-STE100 website. You do not need a paid licence to read the rules. The document is trademarked (EUTM No. 017966390) and copyright ASD.,gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-009,x-ai/grok-4.5,3,Copyright: Fully owned by ASD. Default rule: no reproduction or publication in whole or in part without written authority of an ASD officer.,gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-010,openai/gpt-5.4,3,collaboration with the Aerospace Industries Association of America (AIA) is documented.,gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-010,anthropic/claude-opus-4.7,3,AECMA asked the Aerospace Industries Association (AIA) of America to assist in this project.,gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-010,x-ai/grok-4.5,3,AIA (US) invited and participated | Official home page; Wikipedia; Chiarello 2013 | Settled,gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-011,openai/gpt-5.4,2,the goal was to make aircraft maintenance documentation easier to understand for readers with only a basic command of English,gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-011,anthropic/claude-opus-4.7,3,The key driver for the creation of a controlled and simplified form of English was a request from the airlines (80% of which were not from English-speaking countries) to ensure accurate maintenance practices and guarantee aircraft availability and safety.,gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-011,x-ai/grok-4.5,3,The key driver for the creation of a controlled and simplified form of English was a request from the airlines (80% of which were not from English-speaking countries) to ensure accurate maintenance practices and guarantee aircraft availability and safety.,gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-012,openai/gpt-5.4,3,"Fokker is directly evidenced, because the founding working group was established at the Fokker plant.",gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-012,anthropic/claude-opus-4.7,2,"I could find no authoritative primary source (ASD, STEMG, or the standard's own front matter as reflected in secondary sources) that names individual companies for the founding period.",gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-012,x-ai/grok-4.5,2,"SEWG under Fokker lead; 30 June 1983 meeting | Settled for 1983 formation and Fokker lead; meeting date rests on Chiarello (STEMG chair affiliation), not a scanned minute",gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-013,openai/gpt-5.4,3,"I cannot source Douglas/McDonnell Douglas as a participating manufacturer in the founding project. That earlier claim should therefore be treated as unsupported here, not repeated.",gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-013,anthropic/claude-opus-4.7,3,Any specific company name is unverified from the sources examined here.,gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-013,x-ai/grok-4.5,3,'Douglas involvement' as a founding manufacturer role: Prior recall named Douglas. Sources establish a documentation landscape that included Douglas… not a named Douglas seat on SEWG in the materials examined. Treat 'Douglas helped found STE' as folklore/oversimplification,gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-014,openai/gpt-5.4,3,The official FAQ says exactly that it is 'not intended for general-purpose writing.',gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-014,anthropic/claude-opus-4.7,3,STE is not a simplified version of English for the writers.,gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-014,x-ai/grok-4.5,3,STE is a safety instrument for technical documentation,gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-015,openai/gpt-5.4,3,"much of STE's current appeal in AI/tooling circles comes from machine-operability: it is unusually easy to compress into checklists, constraints, and lint-like rules.",gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-015,anthropic/claude-opus-4.7,3,"its current traction in AI-writing circles comes from its machine-operability, not from anything intrinsic to its origin",gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-015,x-ai/grok-4.5,3,"Machine-operability selects for rule-list form — which is the prior run's popularity thesis, confirmed. That selection pressure is not evidence that the rules define quality.",gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-016,openai/gpt-5.4,3,"it becomes costly or damaging when the goal is persuasion, voice, nuance, or field-specific rhetorical judgment",gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-016,anthropic/claude-opus-4.7,3,"it is actively harmful for persuasion because the devices persuasion depends on (metaphor, cadence variation, rhetorical questions, unhedged voice) are exactly what STE removes by design",gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-016,x-ai/grok-4.5,3,"Kills persuasion, voice, nuance, calibrated hedges; noun-cluster and tense bans produce stilted prose outside procedures",gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-017,openai/gpt-5.4,3,"Official help explains it uses the Automated Readability Index and flags dense sentences, adverbs, passive voice",gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-017,anthropic/claude-opus-4.7,3,Grade level is the Automated Readability Index: your score is 4.71 average word length + 0.5 average sentence length -21.43. That is a 1960s Navy formula reading only character counts and sentence lengths.,gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-017,x-ai/grok-4.5,2,grade scoring sits in the ARI / Flesch–Kincaid family (product articles mention both; third-party tests have treated Hemingway's grade as ARI in at least one methods comparison),gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-018,openai/gpt-5.4,0,,gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-018,anthropic/claude-opus-4.7,3,Hemingway's own pages admit A common mistake is thinking that grade level defines your target audience. This couldn't be more wrong. — yet the whole UI trains users to chase the number.,gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-018,x-ai/grok-4.5,0,,gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-019,openai/gpt-5.4,3,"Published disciplinary essay with examples and references, but mainly craft guidance / practitioner consensus, not controlled causal evidence.",gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-019,anthropic/claude-opus-4.7,3,"Hotaling himself warns against overshooting: It is important not to go too far in your pursuit of conciseness. Over-condensing can lead to ambiguity, unclarity, and the loss of key information.",gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-019,x-ai/grok-4.5,3,"No new empirical study. Medium: honest practitioner essay, discipline-specific, cites stronger theory",gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-020,openai/gpt-5.4,3,Hotaling explicitly frames concision as part of effective science writing and cites Gopen & Swan and Williams.,gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-020,anthropic/claude-opus-4.7,3,Hotaling builds on Gopen & Swan 1990 and Williams & Bizup 2016 (which he cites) and on Schimel 2012.,gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-020,x-ai/grok-4.5,3,"craft consensus + pointers to Schimel, Gopen & Swan, Williams & Bizup, Strunk, King",gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-021,openai/gpt-5.4,0,,gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-021,anthropic/claude-opus-4.7,3,"The paper-specific overrides (keep calibrated hedges, keep passive when the agent is irrelevant, don't chase cadence CV) cite Gopen & Swan for stress/topic position.",gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-021,x-ai/grok-4.5,3,"humanize Pass 1 + 4 + audit.py; voice-profile if byline matters… explicit academic overrides that protect hedges, passive-as-tool, IMRaD, and Gopen & Swan stress/topic positions",gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-022,openai/gpt-5.4,0,,gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-022,anthropic/claude-opus-4.7,3,"Cadence CV > 0.4 is a F threshold — it is not evidence-based, it is a heuristic.",gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-022,x-ai/grok-4.5,3,"cadence CV > 0.4 threshold, which is a heuristic and should be either grounded or dropped",gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-023,openai/gpt-5.4,3,"It cites Wikipedia-derived AI-tell lore inside tells.md, which is at best folklore + practitioner consensus, not robust scientific grounding.",gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-023,anthropic/claude-opus-4.7,3,"The specific tell list draws on Wikipedia's community-maintained 'Signs of AI writing' page — practitioner consensus assembled from thousands of edits, not experiment.",gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-023,x-ai/grok-4.5,3,"tells catalog rests on community consensus (the Wikipedia list) and practitioner observation, not experiments",gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-024,openai/gpt-5.4,3,"Their common assumption is: Writing quality can be improved by optimizing observable textual features that are simple enough to specify, count, or flag… The assumption becomes weak when it pretends that those features are the thing itself rather than proxies.",gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-024,anthropic/claude-opus-4.7,3,"Surface features (sentence length, common vs rare vocabulary, active voice ratio) do correlate with reader comprehension on the corpora where they were measured. That is real. The correlation does not imply the reverse: minimising sentence length or maximising active-voice ratio does not maximise quality",gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-024,x-ai/grok-4.5,3,"Shared assumption: writing quality has surface features that a non-reader (a checker, a script, a rubric) can detect… Partly, for a narrow job… Weakly or not at all, as a general theory of good writing",gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-025,openai/gpt-5.4,3,"Goodhart's law: optimize the score, worsen the prose; blind to argument, precision, genre, tone",gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-025,anthropic/claude-opus-4.7,3,Optimising a formula rewards nonsense that scans as simple.,gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-025,x-ai/grok-4.5,3,Optimizing the score games the metric; technical accuracy collapses; style homogenizes,gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-026,openai/gpt-5.4,0,,gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-026,anthropic/claude-opus-4.7,0,,gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-026,x-ai/grok-4.5,3,"Special usage rights (irrevocable, free of charge) granted to eight categories, including: ASD national associations and their member companies; AIA and AIAC members; other ICCAIA members not already covered; customers of those companies; MoDs of ASD/AIA/AIAC member countries; Airlines for America (A4A); airworthiness authorities; universities and research institutes for educational purposes.",gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-027,openai/gpt-5.4,0,,gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-027,anthropic/claude-opus-4.7,3,"In 2006, and again in 2018, ASD-STE100 was granted the European Union Trade Mark.",gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-027,x-ai/grok-4.5,0,,gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-028,openai/gpt-5.4,3,"1987: ATA includes a requirement to write in STE in ATA100, per Issue 9.",gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-028,anthropic/claude-opus-4.7,0,,gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-028,x-ai/grok-4.5,2,1986 | Issue 1 / AECMA Simplified English Guide public; ATA 100 requirement,gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-029,openai/gpt-5.4,0,,gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-029,anthropic/claude-opus-4.7,3,"The skill itself says it applies to 'docs, procedures, READMEs, reports, UI text' — a much broader scope than aircraft maintenance manuals, without justification for the transfer.",gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-029,x-ai/grok-4.5,3,"skill is a lossy compression (rules yes; full dictionary no — correctly, given copyright)",gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-030,openai/gpt-5.4,3,the rule-list is not enough… the repo's own humanize skill tacitly admits this by requiring human judgment after the mechanical audit and by using a user-specific voice profile to override generic rules,gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-030,anthropic/claude-opus-4.7,3,"voice profile is a blank template until the user fills it, so out of the box it de-slops toward 'generic human,' not the specific author",gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-030,x-ai/grok-4.5,3,blank voice-profile → generic 'human',gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-031,openai/gpt-5.4,0,,gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-031,anthropic/claude-opus-4.7,3,STE is not a simplified version of English for the writers.,gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-031,x-ai/grok-4.5,0,,gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-032,openai/gpt-5.4,3,"The supplied sources establish intent, governance, and adoption, but not a strong causal outcome literature.",gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-032,anthropic/claude-opus-4.7,3,"Empirical comprehension studies on STE-compliant text vs. matched non-STE text, with non-native readers. These may exist inside aviation-industry human-factors research; I could not locate them in open sources.",gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-032,x-ai/grok-4.5,3,RCTs or strong quasi-experiments showing STE rules improve outcomes outside maintenance/tech pubs would challenge the 'niche only' conclusion — none were found in this pass.,gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-033,openai/gpt-5.4,0,,gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-033,anthropic/claude-opus-4.7,3,The next issue 10 is scheduled for January 2028.,gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-033,x-ai/grok-4.5,0,,gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-034,openai/gpt-5.4,3,Gopen & Swan: Reader comprehension depends on matching sentence structure to reader expectations… Highly influential practitioner theory with cognitive claims,gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-034,anthropic/claude-opus-4.7,3,A reader whose working memory decides what registers as 'clear' | E (drawn from reading-comprehension research) + C,gen-1786650905-zDrGlljHai6rpUVyQwHS
+c-034,x-ai/grok-4.5,3,Gopen & Swan structure + Williams clarity + Hotaling concision; humanize academic overrides if LLM-drafted,gen-1786650905-zDrGlljHai6rpUVyQwHS
