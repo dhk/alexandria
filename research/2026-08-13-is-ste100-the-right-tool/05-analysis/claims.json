@@ -1,0 +1,206 @@
+[
+  {
+    "claim_id": "c-001",
+    "text": "ASD-STE100 was developed by AECMA (European Association of Aerospace Industries), which later became part of ASD.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-002",
+    "text": "The AECMA Simplified English Working Group was formally established on 30 June 1983 in Amsterdam.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-003",
+    "text": "The first public release of the AECMA Simplified English Guide was in 1986, with document number PSC-85-16598.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-004",
+    "text": "There was a pre-release Issue 0 in 1985 before the first public Issue 1 in 1986.",
+    "group": "novel",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-005",
+    "text": "The organizational rename from AECMA to ASD occurred in 2004, and the first issue released under the ASD-STE100 title appeared in 2005.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-006",
+    "text": "The current issue of ASD-STE100 is Issue 9, dated 15 January 2025, and it is now designated an international standard.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-007",
+    "text": "Issue 9 consists of 53 writing rules and a dictionary of approximately 900 approved words.",
+    "group": "novel",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-008",
+    "text": "ASD-STE100 is maintained by the ASD Simplified Technical English Maintenance Group (STEMG).",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-009",
+    "text": "ASD-STE100 is distributed free of charge but is not open-licensed; unauthorized redistribution is prohibited without written permission.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-010",
+    "text": "The Aerospace Industries Association of America (AIA) collaborated with AECMA in developing STE.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-011",
+    "text": "The key driver for creating STE was a request from airlines (approximately 80% of which were not from English-speaking countries) to ensure accurate maintenance practices and aircraft safety.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-012",
+    "text": "Fokker's involvement in STE's founding is documented because the first working group meeting was held at the Fokker plant near Schiphol Airport.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-013",
+    "text": "Douglas/McDonnell Douglas involvement in founding STE cannot be sourced from authoritative primary materials.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-014",
+    "text": "ASD-STE100 is explicitly not intended for general-purpose writing.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-015",
+    "text": "STE's current popularity in AI and tooling circles derives from its machine-operability—its rules are easy to encode as checklists, constraints, and linters—rather than from fitness for general prose.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-016",
+    "text": "STE is actively harmful for persuasion because it removes by design the devices persuasion depends on, such as metaphor, cadence variation, rhetorical questions, and unhedged voice.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-017",
+    "text": "The Hemingway Editor uses the Automated Readability Index (ARI) to compute its grade-level score.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-018",
+    "text": "Hemingway Editor's own materials acknowledge that grade level does not define the target audience, yet the product UI trains users to lower the number anyway.",
+    "group": "novel",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-019",
+    "text": "Hotaling (2020) is a craft-consensus essay for scientific writers, not an empirical study; it explicitly warns against over-condensing into unclarity.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-020",
+    "text": "Hotaling (2020) cites Gopen & Swan (1990) and Williams & Bizup as foundational references.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-021",
+    "text": "The claude-writing-skills repository's `humanize` skill includes explicit academic overrides that protect calibrated hedges, passive voice when the agent is irrelevant, and Gopen & Swan stress/topic positions.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-022",
+    "text": "The `humanize` skill's cadence CV threshold of greater than 0.4 is a heuristic with no empirical grounding.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-023",
+    "text": "The AI-tell catalog in the `humanize` skill rests on community-maintained practitioner consensus (e.g., Wikipedia's 'Signs of AI writing' page) rather than validated experimental studies.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-024",
+    "text": "Rule-list and readability-formula tools share the assumption that writing quality has surface features detectable without a full model of the reader's goal, but this assumption is only partially supported—valid as a diagnostic, not as an optimization target.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-025",
+    "text": "Optimizing a readability formula score can produce prose that scores well but says nothing meaningful—a Goodhart's Law problem.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-026",
+    "text": "ASD-STE100 Issue 9 grants irrevocable, free-of-charge special usage rights to specific categories including ASD member companies, AIA members, universities, and airworthiness authorities.",
+    "group": "novel",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-027",
+    "text": "ASD-STE100 was granted the European Union Trade Mark in 2006 and again in 2018.",
+    "group": "novel",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-028",
+    "text": "In 1987, ATA included a requirement to write in STE in ATA100.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-029",
+    "text": "The `claude-writing-skills` STE skill is a lossy compression of the official standard because it encodes rules but not the full controlled dictionary, which is restricted by copyright.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-030",
+    "text": "A blank voice-profile in the `humanize` skill produces generic de-slopped prose rather than the specific author's voice.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-031",
+    "text": "STEMG's own training material states that STE is not a simplified version of English for the writers, only for the readers.",
+    "group": "novel",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-032",
+    "text": "No strong empirical outcome studies (e.g., RCTs showing STE improves comprehension, error reduction, or safety outcomes) were found in open sources.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-033",
+    "text": "Issue 10 of ASD-STE100 is scheduled for January 2028.",
+    "group": "novel",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-034",
+    "text": "Gopen & Swan (1990) is drawn from reading-comprehension research and focuses on topic position, stress position, old-to-new flow, and subject-verb proximity.",
+    "group": "consensus",
+    "responding_model_count": 3
+  }
+]
