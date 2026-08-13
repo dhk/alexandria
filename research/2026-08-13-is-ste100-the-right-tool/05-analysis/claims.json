@@ -1,0 +1,170 @@
+[
+  {
+    "claim_id": "c-001",
+    "text": "ASD-STE100 is not the right general-purpose standard for persuasive writing.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-002",
+    "text": "ASD-STE100 is well-suited to safety-critical procedural and instructional technical writing.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-003",
+    "text": "ASD-STE100 Issue 9 was published on 15 January 2025 and is maintained by ASD.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-004",
+    "text": "ASD-STE100 descends from AECMA Simplified English, which originated in the 1980s in the aerospace industry.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-005",
+    "text": "STE consists of two parts: writing rules and a controlled dictionary.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-006",
+    "text": "The claude-writing-skills repository's STE skill encodes STE rules without the approved-word dictionary, making it an incomplete implementation of STE.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-007",
+    "text": "STE's one-word-one-meaning rule is its most distinctive anti-ambiguity device and requires the dictionary to function.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-008",
+    "text": "STE was motivated by the need to serve multilingual (L2) technician readers and reduce translation cost.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-009",
+    "text": "STE's comprehension benefits for L2 readers on procedural text are supported by convergent industrial and research evidence.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-010",
+    "text": "There is no persuasion research on STE-100, and the persuasion literature identifies devices STE forbids as load-bearing for attitude change.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-011",
+    "text": "STE forbids or degrades rhetorical figures, varied sentence rhythm, synonymy for tone, strategic passive voice, metaphor, and narrative voice—all of which are instruments of persuasion.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-012",
+    "text": "Readability formulas were designed to estimate text difficulty, not to guide writing, and using them as writing targets is a documented misuse.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-013",
+    "text": "A sentence-length variance threshold of CV > 0.4 used in the repository is an ungrounded heuristic with no basis in comprehension research.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-014",
+    "text": "The current enthusiasm for STE in AI and writing-tool communities is driven by its machine-operability and rule-based structure rather than its original aerospace safety rationale.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-015",
+    "text": "A context router that selects writing techniques based on purpose, audience, and context is the missing architectural piece in the repository.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-016",
+    "text": "Gopen and Swan's reader-expectation theory, grounded in sentence-level information placement (topic position, stress position, old-to-new flow), is a high-leverage technique for expository and scientific prose.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-017",
+    "text": "Williams' Style: Lessons in Clarity and Grace provides a clarity-and-grace framework for expository prose that preserves voice while improving readability.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-018",
+    "text": "ISO 24495-1:2023 is a principles-based plain-language standard focused on readers being able to find, understand, and use information.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-019",
+    "text": "Toulmin's argumentation structure (claim, data, warrant, backing, qualifier, rebuttal) is the appropriate primary framework for decision documents and memos.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-020",
+    "text": "Rhetorical figures such as metaphor measurably increase memorability and agreement, as shown in Sopory and Dillard's 2002 meta-analysis.",
+    "group": "novel",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-021",
+    "text": "Narrative transportation is among the strongest persuasion effects in the literature and requires devices STE bans.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-022",
+    "text": "Strunk and White's The Elements of Style contains factual grammatical errors and has been actively criticized by linguists.",
+    "group": "novel",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-023",
+    "text": "STE's approved-verb list contains approximately 80 verbs.",
+    "group": "novel",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-024",
+    "text": "STE's sentence-length caps differ between procedural and descriptive text types.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-025",
+    "text": "STE controls expression but cannot ensure the correctness of the underlying task analysis or procedure content.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-026",
+    "text": "The STE skill in the repository should be relabeled to reflect its actual scope as a procedural/technical controlled-language tool rather than a general clear-writing standard.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-027",
+    "text": "STE's general syntactic rules (active voice, one topic per sentence, consistent terminology, imperatives for instructions) are transferable as low-cost clarity improvements across most technical writing even without the full dictionary.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-028",
+    "text": "Expert native-speaker readers may experience a fluency and naturalness cost when reading STE-restricted prose.",
+    "group": "consensus",
+    "responding_model_count": 3
+  }
+]
