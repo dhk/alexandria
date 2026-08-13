@@ -1,0 +1,73 @@
+# Alexandria investigation metadata.
+# Drafted by `publish` from run r-2026-0812-04. The fields below the marker are
+# editorial and were left for the operator: a tool cannot know why this
+# question was asked or what was deliberately out of scope.
+
+title: "Written-communication best practices, and claude-writing-skills measured against them"
+status: "graded-multi-model"
+assurance_level: "silver"
+
+slug: 2026-08-12-writing-communication-best-practices
+opened: 2026-08-12
+
+commissioned_run: r-2026-0812-04
+dispatched_models:
+  - openai/gpt-5.4
+  - anthropic/claude-opus-4.7
+  - x-ai/grok-4.5
+grading_model: anthropic/claude-sonnet-4.6
+
+# Both runs answer the identical brief -- same brief_sha256, 2f4b3fc840ed85b1 --
+# and differ only in whether the models could read the live web. That makes them
+# a comparison rather than a retry: 26 claims without search, 37 with it.
+runs:
+  - id: r-2026-0812-04
+    outcome: completed
+    web_search: false
+    note: >-
+      The canonical run. Reproducible from its inputs alone; its claim
+      landscape is 05-analysis/.
+  - id: r-2026-0812-03
+    outcome: partial-recovered
+    web_search: true
+    note: >-
+      Grading returned complete but unparseable JSON and the pipeline discarded
+      it; recovered by hand. Kept because live sources produced citations the
+      offline run could not. See 03-runs/r-2026-0812-03-salvaged/recovery.md.
+  - id: r-2026-0812-02
+    outcome: failed
+    web_search: true
+    note: >-
+      Two calls returned HTTP 402 against the OpenRouter key's weekly limit.
+      No claims, no report; nothing of it is published here.
+
+# ---- editorial: nothing below here was written by a tool ----
+origin: >
+  DHK builds Claude skills and writes publicly using a git-native skills
+  workflow, and found nonatofabio/claude-writing-skills -- three skills (ste,
+  plainspoken, humanize) encoding writing advice. He wanted to approach its
+  maintainer with proposed extensions, and wanted the proposal to rest on the
+  literature rather than on his own taste in prose. Hence the brief's ordering
+  constraint: establish the external evidence first, and only then look at the
+  tool.
+claim_under_test: >
+  That the three skills implement recognised written-communication best
+  practice; that where they diverge from it the divergence is specific enough
+  to name; and that the gaps are concrete enough to propose as extensions tied
+  to cited findings rather than to opinion. The models were asked to establish
+  the standard before applying it, so that the critique could not be
+  reverse-engineered from the artifact being critiqued.
+why_now: >
+  The proposal is meant as a collaboration with the repo's maintainer, and an
+  unsupported critique of someone's published work is not a collaboration. The
+  AI-text strand is also moving fast enough that a synthesis has a short shelf
+  life -- the detectability and reader-trust literature is actively contested,
+  which is part of why the web-search run is kept alongside the offline one.
+scope: >
+  Deliberately excluded: any source audit. The scores record what each model
+  stated and quote the span it was stated in; nobody has checked that the cited
+  sources say what the models say they say, which is the difference between
+  Silver and Gold here. Also out of scope: implementing any proposed extension,
+  forking the repo, evaluating its code or packaging as software, and
+  non-English writing practice -- the brief asks about English
+  controlled-language and plain-language standards specifically.
