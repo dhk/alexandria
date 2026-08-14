@@ -1,0 +1,78 @@
+# Alexandria investigation metadata.
+# Drafted by `publish` from run r-2026-0813-03. The fields below the marker are
+# editorial and were left for the operator: a tool cannot know why this
+# question was asked or what was deliberately out of scope.
+
+title: "Which writing technique for which organizational genre"
+status: "graded-multi-model"
+assurance_level: "silver"
+
+slug: 2026-08-13-organizational-writing-by-genre
+opened: 2026-08-13
+
+commissioned_run: r-2026-0813-03
+dispatched_models:
+  - openai/gpt-5.4
+  - anthropic/claude-opus-4.7
+  - x-ai/grok-4.5
+grading_model: anthropic/claude-sonnet-4.6
+
+# ---- editorial: nothing below here was written by a tool ----
+origin: >
+  The first two investigations in this series examined writing standards
+  against the literature and against each other. Neither covered the setting
+  where most professional writing actually happens: inside an organization,
+  where every genre is a decision genre and the reader has a stake, often
+  power, and sometimes a grievance. DHK named six genres he writes; three more
+  were added on analysis (splitting incident notification from postmortem,
+  adding decision records, dissent and reference documentation) and status
+  updates were added at his insistence after being wrongly cut.
+claim_under_test: >
+  That clear writing is clear writing -- that one set of principles serves
+  organizational communication whatever its purpose. Rejected. The replacement
+  is a demand profile per genre and a supply profile per technique, matched
+  rather than asserted.
+why_now: >
+  The prior run found that the tools in this space share an assumption --
+  surface features proxy quality -- valid as a diagnostic and invalid as a
+  target. Organizational writing is where that failure has consequences: a
+  status update optimised for confidence is how a project stays green until
+  the week it ships. The output feeds a proposal to the claude-writing-skills
+  maintainer and DHK's own practice.
+scope: >
+  Deliberately excluded: externally-facing communication -- customer notices,
+  status pages, regulatory filings -- where legal and disclosure constraints
+  need their own brief rather than a row in a table. Also excluded:
+  performance and promotion writing, where norms are too institution-specific
+  to transfer, and any source audit. Web search was on, so citations are model
+  retrieval, unverified by a human.
+
+runs:
+  - id: r-2026-0813-03
+    outcome: completed
+    role: canonical
+    note: >-
+      The commissioned run. Its brief named three tensions, which the grader
+      flagged as possibly constraining the conclusions.
+  - id: r-2026-0814-01
+    outcome: completed
+    role: ablation
+    controls: r-2026-0813-03
+    note: >-
+      Same question, same genres, same considerations, same matrix structure,
+      with the three tensions and the prior runs' conclusions removed. Run to
+      test whether the findings were handed over or found. $0.85.
+
+# Two limitations that matter more than usual here.
+#
+# The grader observed, unprompted, that "the degree of agreement on individual
+# claims is unusually high, suggesting the source materials strongly constrain
+# the conclusions". The ablation r-2026-0814-01 settled it, and the answer is
+# split: the commitment-versus-calibration defect survived removal of the
+# framing, found independently by all three models from the skill's own text,
+# while the SEVERITY did not -- three confidence-calibration cells swung by up
+# to three points. The defect is in the material; the scores were the brief's.
+#
+# The claim landscape records zero disagreements while the synthesised matrices
+# show ten contested cells. Claim extraction cannot represent a disagreement
+# about degree, only about direction.

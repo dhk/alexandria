@@ -1,0 +1,158 @@
+[
+  {
+    "claim_id": "c-001",
+    "text": "No single set of writing principles serves all organizational writing genres.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-002",
+    "text": "The plainspoken repository skill is scoped to chat/conversational register and is not a general-purpose document-writing technique.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-003",
+    "text": "Readability-formula optimization (Hemingway Editor) is the weakest technique on evidence grounds because grade-level scoring measures surface features that can mislead in organizational and scientific writing.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-004",
+    "text": "Blameless postmortem convention deliberately suppresses individual-level accountability language, which is a feature for postmortems but a defect in decision records and other genres requiring visible agency.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-005",
+    "text": "ASD-STE100 and the ste repository skill damage persuasive force and are poorly suited to dissent, argumentation, and nuanced decision writing.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-006",
+    "text": "The humanize skill's default Pass 1 instruction to 'take a position' strips calibrated hedges and damages confidence calibration, though science/paper overrides restore it.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-007",
+    "text": "Incident notification while facts are still moving is the genre most underserved by the available techniques, because no single technique simultaneously handles brevity, real-time confidence calibration, empathy, and accessibility.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-008",
+    "text": "Decision records for future readers not present at the time of the decision are underserved because no available technique mandates capturing alternatives considered, decision criteria, trade-offs, dissent, reversibility, and expiring assumptions.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-009",
+    "text": "Toulmin argumentation and the Minto Pyramid Principle are complementary rather than competing: Pyramid places the claim on top while Toulmin describes the grounds, warrant, backing, qualifier, and rebuttal beneath it.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-010",
+    "text": "STE and plain language ISO 24495-1 do not combine well within a single document because STE's controlled vocabulary is stricter than plain language requires.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-011",
+    "text": "The Amazon six-page narrative memo damages brevity by design, trading it for depth, shared context, and durability.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-012",
+    "text": "BLUF and Pyramid structures can suppress confidence calibration by forcing a stable top-line claim when the honest answer is still uncertain.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-013",
+    "text": "Most organizational writing techniques rest primarily on institutional adoption and practitioner consensus rather than experimental evidence; plain language and Toulmin argumentation have the strongest experimental support.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-014",
+    "text": "The humanize skill helps accountability by flagging agentless constructions such as 'studies show' without citation.",
+    "group": "novel",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-015",
+    "text": "Dissent writing that must be both maximally persuasive and durable for a later reader inside a hierarchical organization is underserved because no available technique handles the interpersonal/empathy load alongside the argumentative requirements.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-016",
+    "text": "Techniques should be applied sequentially by level—structural method first, then sentence-level constraints, then word-level passes—rather than blended simultaneously.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-017",
+    "text": "ASD-STE100 and the ste skill damage accountability by favoring agentless passives and imperative-only constructions that obscure who acts.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-018",
+    "text": "The postmortem genre has a negative demand for individual accountability because blameless convention deliberately hides individual agency to make honest reporting safe.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-019",
+    "text": "The Hemingway Editor penalizes qualifying clauses and subordinate structures that carry calibrated uncertainty, making it actively harmful for scientific and precision-dependent writing.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-020",
+    "text": "Reference and onboarding documentation is the genre best served by ASD-STE100 or the ste repository skill because it was the genre STE was originally designed for.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-021",
+    "text": "Hotaling's rules for concise scientific writing rest on practitioner consensus and alignment with broader scientific writing advice rather than direct experimental validation of the specific rule set.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-022",
+    "text": "The humanize repository skill's AI-tells catalog is a practitioner heuristic derived from community-assembled lists and has not been validated as a reliable detector of AI authorship.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-023",
+    "text": "A genre-first selection procedure—diagnosing demand profile before choosing technique—is the correct organizing principle for matching writing methods to organizational documents.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-024",
+    "text": "The Amazon PR-FAQ format improves customer focus by forcing a working-backwards framing from user value.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-025",
+    "text": "Brevity and durability are in direct tension because a skim-friendly document that omits context becomes harder for later readers to interpret.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-026",
+    "text": "Classical argumentation and Toulmin-style argument structures damage accessibility for non-specialist readers.",
+    "group": "consensus",
+    "responding_model_count": 3
+  }
+]
