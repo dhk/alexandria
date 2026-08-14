@@ -1,0 +1,158 @@
+[
+  {
+    "claim_id": "c-001",
+    "text": "No single set of writing principles serves all organizational genres.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-002",
+    "text": "The humanize skill's Pass 1 instruction to force claims that commit is a defect in genres where the honest epistemic state is uncertainty.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-003",
+    "text": "The humanize skill's scientific-papers override scopes the calibration fix too narrowly, because the same problem occurs in organizational decision genres beyond academic writing.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-004",
+    "text": "ASD-STE100 actively damages persuasive force because it removes the rhetorical devices persuasion depends on.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-005",
+    "text": "Incident notification and postmortem are the same event written in incompatible registers, and no single technique in the available set handles both.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-006",
+    "text": "Optimizing writing against readability-formula scores is a Goodhart failure: the scores are valid diagnostics but invalid optimization targets.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-007",
+    "text": "Amazon's narrative memo format and its ban on bullets constitutes a rival theory of clarity to compression-based approaches, not merely a stylistic preference.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-008",
+    "text": "Amazon's claim that full prose exposes muddled thinking better than bullets lacks controlled experimental evidence and rests on institutional adoption and practitioner testimony.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-009",
+    "text": "Status update honesty degrades at each hierarchical summarization hop, and writing craft can address only part of this problem because incentive structures are outside craft's reach.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-010",
+    "text": "A mechanical surface audit cannot reliably distinguish a weasel word from a genuine confidence interval or calibrated qualifier.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-011",
+    "text": "The 'more committed is generally better' heuristic is the same Goodhart shape as 'shorter is generally better', valid for personal-voice publishing and invalid as a universal target for organizational decision writing.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-012",
+    "text": "Incident notification while facts are still moving is the genre most underserved by all available techniques, requiring a dedicated uncertainty-preserving schema with mandatory known/unknown/next-update fields.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-013",
+    "text": "ISO 24495-1 plain language is the only technique in the set that scores non-negative across all ten considerations, making it a safe substrate for other techniques.",
+    "group": "novel",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-014",
+    "text": "The blameless postmortem convention handles postmortem register well but damages incident notification by encouraging premature causation.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-015",
+    "text": "The three Claude writing skills (ste, plainspoken, humanize) are not a coherent toolkit but three tools for three different problems with conflicting assumptions.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-016",
+    "text": "Brevity and durability are in structural tension: genres requiring extreme brevity (incident notification, status update) and genres requiring durability (decision record, postmortem) demand opposite structural choices.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-017",
+    "text": "ASD-STE100 damages confidence calibration because its controlled vocabulary and tense restrictions remove hedges and complex tense forms needed to express uncertainty.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-018",
+    "text": "STE's accessibility benefits for second-language readers rest on institutional adoption and design intent rather than controlled comprehension studies against alternatives.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-019",
+    "text": "Toulmin argumentation is the technique best suited to dissent because it is the only one that scores well on both persuasive force and confidence calibration simultaneously.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-020",
+    "text": "Reference and onboarding documentation is the genre best served by STE-style controlled language because its reader model (consulted, not read through; L2-accessible; lookup-oriented) most closely matches STE's design assumptions.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-021",
+    "text": "The Amazon six-page memo format actively damages scannability and brevity because its design requires continuous prose and prohibits bullets.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-022",
+    "text": "Decision records require durability and reasoning legibility for absent future readers, making raw brevity the wrong optimization target for that genre.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-023",
+    "text": "The Minto Pyramid Principle's answer-first structure can force false closure in uncertainty-heavy genres where the honest answer is still provisional.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-024",
+    "text": "The controlled experimental evidence base for most organizational writing techniques is sparse; institutional adoption and practitioner consensus dominate, and direct links to decision outcomes are largely absent.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-025",
+    "text": "The humanize skill's coefficient-of-variation sentence-rhythm target (CV > 0.4) is a number chosen empirically rather than derived from evidence.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-026",
+    "text": "Scannability and durability are in structural tension because bullet-and-heading structures that aid lookup actively damage the connective reasoning that makes a document legible to future readers.",
+    "group": "consensus",
+    "responding_model_count": 3
+  }
+]
