@@ -15,7 +15,9 @@ Hotaling's rules for concise scientific writing, and the repo's three skills.
 **Answered by** `openai/gpt-5.4` · `anthropic/claude-opus-4.7` ·
 `x-ai/grok-4.5`. **Graded by** `anthropic/claude-sonnet-4.6`.
 **Web search** on — not reproducible from its inputs.
-**Run** `r-2026-0813-03`, 2026-08-13, $0.97, 26 claims.
+**Run** `r-2026-0813-03`, 2026-08-13, $0.97, 26 claims — with a control run,
+`r-2026-0814-01` (ablation, $0.85), that asked the same question with the
+brief's framing removed. See *How far to trust it*.
 
 ## The verdict
 
@@ -36,8 +38,7 @@ twin:
 All three models independently identified the `humanize` skill's instruction to
 *force claims that commit* as a **defect** in every genre whose honest state is
 uncertainty — investigation summary, research proposal, incident notification,
-status update — and as dangerous in one. One scored it −2 on confidence
-calibration. All three noted the skill's scientific-papers override already
+status update — and as dangerous in one. All three noted the skill's scientific-papers override already
 concedes the problem and scopes the fix far too narrowly.
 
 A surface-feature audit cannot distinguish a weasel word from a confidence
@@ -66,19 +67,33 @@ the same place.
    divergence, and what the run does not establish.
 4. [`05-analysis/scores.csv`](05-analysis/scores.csv) — 26 claims scored
    against every model, with quotes.
+5. [`03-runs/r-2026-0814-01-ablation/`](03-runs/r-2026-0814-01-ablation/) — the
+   control run in full: its own brief, analysis, claims and matrices.
 
 ## How far to trust it
 
 **Silver, with two caveats sharper than usual.**
 
-**The brief may have led the models.** The grading model observed, unprompted,
-that *"the degree of agreement on individual claims is unusually high,
-suggesting the source materials strongly constrain the conclusions"*. The brief
-named three tensions — commitment versus calibration, notification versus
-postmortem, aggregation decay — and those three came back as findings. That is
-what a well-aimed brief looks like and also what a leading question looks like,
-and this run cannot tell them apart. A control run with the tensions removed
-would.
+**The brief did lead the models, and now we know by how much.** The grading
+model observed, unprompted, that *"the degree of agreement on individual claims
+is unusually high, suggesting the source materials strongly constrain the
+conclusions"*. So the question was put to a control: run `r-2026-0814-01` asked
+the same thing with the three tensions and the prior conclusions stripped out.
+
+The answer is split, and the split is the most useful thing here. **The defect
+survived**: all three models independently identified `humanize`'s Pass 1
+instruction as damaging to calibrated writing, reading it off the skill's own
+text without being pointed at it. **The severity did not**: three
+confidence-calibration cells swung by up to three points once the framing was
+removed — ASD-STE100 from −2 to +1, and the same direction for BLUF and the
+repo's skills.
+
+Of 200 matrix cells, 66% were identical, 28% moved by one, and 5% moved by two
+or more. Three of those ten are the row the brief argued about hardest.
+
+Cite the defect. Do not cite a calibration score without citing both readings —
+they are published side by side in
+[`05-analysis/matrices.md`](05-analysis/matrices.md).
 
 **Zero disagreements does not mean agreement.** The claim landscape records 25
 consensus claims and none disputed; the synthesised matrices show ten contested

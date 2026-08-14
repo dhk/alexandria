@@ -47,13 +47,31 @@ scope: >
   to transfer, and any source audit. Web search was on, so citations are model
   retrieval, unverified by a human.
 
+runs:
+  - id: r-2026-0813-03
+    outcome: completed
+    role: canonical
+    note: >-
+      The commissioned run. Its brief named three tensions, which the grader
+      flagged as possibly constraining the conclusions.
+  - id: r-2026-0814-01
+    outcome: completed
+    role: ablation
+    controls: r-2026-0813-03
+    note: >-
+      Same question, same genres, same considerations, same matrix structure,
+      with the three tensions and the prior runs' conclusions removed. Run to
+      test whether the findings were handed over or found. $0.85.
+
 # Two limitations that matter more than usual here.
 #
 # The grader observed, unprompted, that "the degree of agreement on individual
 # claims is unusually high, suggesting the source materials strongly constrain
-# the conclusions". The brief named three tensions and those three came back as
-# findings. Whether the models found them or were handed them is untested; a
-# control run with the tensions removed would settle it.
+# the conclusions". The ablation r-2026-0814-01 settled it, and the answer is
+# split: the commitment-versus-calibration defect survived removal of the
+# framing, found independently by all three models from the skill's own text,
+# while the SEVERITY did not -- three confidence-calibration cells swung by up
+# to three points. The defect is in the material; the scores were the brief's.
 #
 # The claim landscape records zero disagreements while the synthesised matrices
 # show ten contested cells. Claim extraction cannot represent a disagreement

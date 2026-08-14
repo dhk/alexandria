@@ -101,3 +101,79 @@ decision quality, trust calibration, incident recurrence, or the durability of
 reasoning. Every score is a judgement about mechanism, and the strongest
 claims in Matrix B — Amazon's prose-over-bullets in particular — remain
 unproven outside the institution that practises them.
+
+---
+
+## The control run, and what it moved
+
+Run `r-2026-0814-01` asked the same question with the framing removed: same ten
+genres, same ten considerations, same matrix structure, but no mention of the
+three tensions this brief had named, and no statement of what the earlier runs
+in the series concluded. Its matrices are in
+[`../03-runs/r-2026-0814-01-ablation/matrices.md`](../03-runs/r-2026-0814-01-ablation/matrices.md).
+
+Comparing the two runs cell by cell, across 200 cells:
+
+| | |
+|---|---|
+| identical | 133 (66%) |
+| differ by one point | 57 (28%) |
+| differ by two or more | **10 (5%)** |
+
+The structure held. Ten cells moved, and **three of them are the same row** —
+the row the brief had argued about at length.
+
+### Confidence calibration, both readings
+
+| Technique | Brief named the tension | Framing removed |
+|---|---|---|
+| ASD-STE100 | **−2** | **+1** |
+| BLUF / Army | −1 | +1 |
+| The repo's skills | −1 | +1 |
+
+Both readings are published because the gap is the finding. Told that
+commitment versus calibration was a live tension, three models scored these
+techniques as *damaging* calibration. Not told, the same three models scored
+them as *helping* it. A three-point swing on the single axis the brief pressed
+hardest.
+
+Read the `−2` as this brief's answer and the `+1` as the material's answer, and
+treat the truth as unsettled between them. Anyone citing a calibration score
+from this investigation should cite the pair.
+
+### What did not move
+
+The substantive finding survived the ablation. Without being handed it, all
+three models independently identified the `humanize` skill's Pass 1 instruction
+as damaging to calibrated writing, reading it off the skill's own text:
+
+> **`anthropic/claude-opus-4.7`** — "humanize damages confidence calibration
+> outside its paper-override mode — Pass 1's *take a position where the draft
+> hedges* is direct instruction to strip qualifiers." And: "Disqualify
+> plainspoken and humanize — actively dangerous when facts are still moving."
+>
+> **`openai/gpt-5.4`** — "Recommendation, proposal, and dissent writing need
+> commitment; incident and postmortem writing need disciplined uncertainty."
+>
+> **`x-ai/grok-4.5`** — "humanize's default Pass 1 can over-commit."
+
+The control run also reproduced, unprompted, the observation that the skill's
+own scientific-paper override already contains the distinction it needs and
+scopes it too narrowly — and reached the same conclusion that incident
+notification is the genre no technique serves.
+
+So the defect is in the material and the severity was in the brief. Those are
+different claims and this investigation now supports only the first.
+
+### Two other cells worth a second look
+
+**Accountability × blameless postmortem** swung `+2` to `−1`. Blameless
+practice deliberately trades individual accountability for systemic learning,
+and the two runs appear to be scoring different senses of the word rather than
+disagreeing about the practice. The consideration needs splitting before that
+cell means anything.
+
+**Actionability, empathy and persuasive force × Hotaling** each moved `0` to
+`+2`, which is a three-cell swing on one technique — consistent with the
+earlier runs' difficulty in scoring a short discipline-specific rules list
+against general-purpose standards.
