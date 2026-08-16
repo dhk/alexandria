@@ -1,12 +1,13 @@
 {
   "run_id": "r-2026-0813-03",
+  "responding_model_count": 3,
   "derivation": "median",
   "coverage": "contested-cells-only",
-  "coverage_note": "The published analysis lists per-model votes only for the cells where the three outputs differ by two points or more. The remaining votes exist in the per-model raw responses preserved on the host and have not been promoted into the corpus, so they cannot be recorded here without them. Completing this to coverage 'complete' is host-side work; until then the demand matrix carries no recorded votes at all.",
+  "coverage_note": "The published analysis lists per-model votes only for the cells where the three outputs differ by two points or more. The remaining votes exist in the per-model raw responses preserved on the host and have not been promoted into the corpus, so they cannot be recorded here without them. Completing this to coverage 'complete' is host-side work; until then the demand matrix carries no recorded votes at all. Separately, three of the ten contested cells list only two votes while carrying no declined marker in the source table, so whether the third model declined or the analysis simply did not publish its vote cannot be told from the corpus alone; those are recorded as unrecorded_reason 'not-published' rather than inferred to be declines.",
   "matrices": [
     {
       "matrix_id": "demand",
-      "title": "Matrix A — the demand",
+      "title": "Matrix A \u2014 the demand",
       "axis_rows": "consideration",
       "axis_columns": "organizational genre",
       "scale": {
@@ -19,14 +20,14 @@
         {
           "model_count": 3,
           "scale": "integer 0..3",
-          "mapping": "identity — all three models answered on the requested scale"
+          "mapping": "identity \u2014 all three models answered on the requested scale"
         }
       ],
       "cells": []
     },
     {
       "matrix_id": "supply",
-      "title": "Matrix B — the supply",
+      "title": "Matrix B \u2014 the supply",
       "axis_rows": "consideration",
       "axis_columns": "technique",
       "scale": {
@@ -44,82 +45,122 @@
         {
           "model_count": 1,
           "scale": "five-letter S/s/N/d/D",
-          "mapping": "S=+2, s=+1, N=0, d=-1, D=-2 — the same five points"
+          "mapping": "S=+2, s=+1, N=0, d=-1, D=-2 \u2014 the same five points"
         }
       ],
       "cells": [
         {
           "row": "Precision",
           "column": "Blameless PM",
-          "votes": [1, 0, 2],
+          "votes": [
+            1,
+            0,
+            2
+          ],
           "votes_attributed": false,
           "published_value": "+1"
         },
         {
           "row": "Precision",
           "column": "Hemingway",
-          "votes": [-1, 0, 1],
+          "votes": [
+            -1,
+            0,
+            1
+          ],
           "votes_attributed": false,
           "published_value": "0"
         },
         {
           "row": "Scannability",
           "column": "Hemingway",
-          "votes": [0, 2, 1],
+          "votes": [
+            0,
+            2,
+            1
+          ],
           "votes_attributed": false,
           "published_value": "+1"
         },
         {
           "row": "Confidence calibration",
           "column": "Amazon memo",
-          "votes": [2, 0, 1],
+          "votes": [
+            2,
+            0,
+            1
+          ],
           "votes_attributed": false,
           "published_value": "+1"
         },
         {
           "row": "Empathy",
           "column": "repo skills",
-          "votes": [-1, 1],
+          "votes": [
+            -1,
+            1
+          ],
           "votes_attributed": false,
-          "declined_model_count": 1,
-          "published_value": "0"
+          "published_value": "0",
+          "unrecorded_model_count": 1,
+          "unrecorded_reason": "not-published"
         },
         {
           "row": "Persuasive force",
           "column": "repo skills",
-          "votes": [-2, 1],
+          "votes": [
+            -2,
+            1
+          ],
           "votes_attributed": false,
-          "declined_model_count": 1,
-          "published_value": "-0"
+          "published_value": "-0",
+          "unrecorded_model_count": 1,
+          "unrecorded_reason": "not-published"
         },
         {
           "row": "Accountability",
           "column": "Hemingway",
-          "votes": [0, -1, 2],
+          "votes": [
+            0,
+            -1,
+            2
+          ],
           "votes_attributed": false,
           "published_value": "0"
         },
         {
           "row": "Accountability",
           "column": "Hotaling",
-          "votes": [0, 0, 2],
+          "votes": [
+            0,
+            0,
+            2
+          ],
           "votes_attributed": false,
           "published_value": "0"
         },
         {
           "row": "Durability",
           "column": "Hemingway",
-          "votes": [0, -2, -1],
+          "votes": [
+            0,
+            -2,
+            -1
+          ],
           "votes_attributed": false,
           "published_value": "-1"
         },
         {
           "row": "Durability",
           "column": "repo skills",
-          "votes": [1, -1],
+          "votes": [
+            1,
+            -1
+          ],
           "votes_attributed": false,
-          "declined_model_count": 1,
-          "published_value": "0"
+          "published_value": "0",
+          "unrecorded_model_count": 1,
+          "unrecorded_reason": "not-published"
         }
       ]
     }

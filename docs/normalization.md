@@ -81,3 +81,22 @@ votes are known to be on mixed scales, so promoting them would land a set that
 fails validation by design. Re-deriving it is
 [#62](https://github.com/dhk/alexandria/issues/62), and needs the same host
 access.
+
+## 6. Every responding model must be accounted for
+
+A cell records a vote per model that scored it. It must also record, as
+`unrecorded_model_count`, every responding model whose vote is *not* in that
+list — and say why, because "the model declined to score" and "the analysis did
+not publish the vote" are different facts with different repairs.
+
+Without that accounting a two-model interpolation is indistinguishable from a
+three-model median once it reaches the page. Both print as a single number in
+the same column, and the reader has no way to tell that one of them rests on
+two thirds of the panel.
+
+This is not hypothetical in the current corpus. Of the ten contested cells in
+`r-2026-0813-03`, three list only two votes — and none of those three carries
+the declined marker the table uses elsewhere. So the corpus alone cannot say
+whether the third model declined or the analysis simply omitted its vote. They
+are recorded as `not-published` rather than inferred to be declines; the raw
+responses on the host would settle it.

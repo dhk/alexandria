@@ -241,6 +241,7 @@ def check_normalized_matrices(errors: list[str]) -> None:
             continue
 
         complete = data["coverage"] == "complete"
+        responding = data["responding_model_count"]
         for matrix in data["matrices"]:
             label = f"{_rel(path)}: {matrix['matrix_id']}"
             low, high = matrix["scale"]["min"], matrix["scale"]["max"]
@@ -263,6 +264,20 @@ def check_normalized_matrices(errors: list[str]) -> None:
 
                 if cell["votes_attributed"] and len(cell.get("models") or []) != len(cell["votes"]):
                     errors.append(f"{where}: votes_attributed but models do not match votes 1:1")
+
+                unrecorded = cell.get("unrecorded_model_count", 0)
+                accounted = len(cell["votes"]) + unrecorded
+                if accounted != responding:
+                    errors.append(
+                        f"{where}: {len(cell['votes'])} vote(s) + {unrecorded} unrecorded "
+                        f"accounts for {accounted} of {responding} responding models — an "
+                        "unaccounted model is how a partial sample passes as a full one"
+                    )
+                if unrecorded and not cell.get("unrecorded_reason"):
+                    errors.append(
+                        f"{where}: {unrecorded} unrecorded vote(s) with no reason — "
+                        "'model declined' and 'not published' are different facts"
+                    )
 
                 if rows and cell["row"] not in rows:
                     errors.append(f"{where}: row is not in the declared row vocabulary")
