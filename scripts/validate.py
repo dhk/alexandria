@@ -108,8 +108,11 @@ def check_parse(errors: list[str]) -> None:
     print(f"==> parse {len(artifacts)} tracked data/configuration artifacts")
 
     for path in artifacts:
-        raw = path.read_bytes()
         try:
+            # Inside the try: git lists what is tracked, which is not the same
+            # as what is on disk. A tracked file deleted in the working tree is
+            # a real state, and reporting it beats crashing on it.
+            raw = path.read_bytes()
             match path.suffix:
                 case ".json":
                     json.loads(raw)
@@ -117,6 +120,8 @@ def check_parse(errors: list[str]) -> None:
                     tomllib.loads(raw.decode())
                 case ".yaml" | ".yml":
                     yaml.safe_load(raw)
+        except OSError as exc:
+            errors.append(f"{_rel(path)}: tracked but unreadable — {exc}")
         except (ValueError, yaml.YAMLError) as exc:
             errors.append(f"{_rel(path)}: does not parse — {exc}")
 
@@ -342,6 +347,104 @@ def check_normalized_matrices(errors: list[str]) -> None:
                     )
 
 
+SUBSTANTIVE_SUPPORT = {"supports", "partially-supports", "contradicts", "absent"}
+
+
+def check_source_audits(errors: list[str]) -> None:
+    """A source audit may only claim what opening the source can establish.
+
+    The rule worth enforcing is the one that is easy to break by accident: a
+    substantive verdict about what a work argues requires that the work was
+    read. A catalogue record or a search result establishes that a source
+    exists, never what it says, and letting the second pass as the first would
+    rebuild the Silver gap inside the artifact meant to close it.
+    """
+    audits = sorted(RESEARCH.glob("*/05-analysis/source-audit.json"))
+    print(f"==> sources {len(audits)} source audits")
+    validator = _schema("source-audit.schema.json")
+
+    for path in audits:
+        data = _load(path, errors)
+        if data is None:
+            continue
+        problems = sorted(validator.iter_errors(data), key=lambda e: list(e.path))
+        for problem in problems:
+            location = "/".join(str(part) for part in problem.path) or "(root)"
+            errors.append(f"{_rel(path)}: {location}: {problem.message}")
+        if problems:
+            continue
+
+        investigation = path.parent.parent
+        if data["investigation"] != investigation.name:
+            errors.append(
+                f"{_rel(path)}: investigation {data['investigation']!r} does not match its directory"
+            )
+
+        claims = _load(investigation / "05-analysis" / "claims.json", errors)
+        known = (
+            {c["claim_id"] for c in claims if isinstance(c, dict) and "claim_id" in c}
+            if isinstance(claims, list)
+            else set()
+        )
+
+        for entry in data["entries"]:
+            where = f"{_rel(path)}: {entry['source_id']}"
+
+            for field in ("citation_accuracy", "claim_support"):
+                check = entry[field]
+                verdict, method = check["verdict"], check.get("method")
+                if verdict == "unchecked":
+                    continue
+                substantive = field == "claim_support" and verdict in SUBSTANTIVE_SUPPORT
+                if not method:
+                    errors.append(f"{where}: {field} verdict {verdict!r} records no method")
+                elif substantive and method != "primary-source":
+                    errors.append(
+                        f"{where}: claim_support {verdict!r} rests on method {method!r} — "
+                        "only reading the source itself can settle what it argues"
+                    )
+                if not check.get("checked_on"):
+                    errors.append(f"{where}: {field} verdict {verdict!r} records no date")
+
+            unknown = [c for c in entry["supports_claims"] if known and c not in known]
+            if unknown:
+                errors.append(f"{where}: cites claims not in claims.json: {', '.join(unknown)}")
+
+
+def check_assurance(errors: list[str]) -> None:
+    """Gold requires the audit that earns it, covering every claim that cites a source."""
+    print("==> assurance gold claims require a completed source audit")
+
+    for directory in investigations():
+        topic = (
+            _load(directory / "topic.yaml", errors) if (directory / "topic.yaml").exists() else None
+        )
+        if not isinstance(topic, dict) or topic.get("assurance_level") != "gold":
+            continue
+
+        audit_path = directory / "05-analysis" / "source-audit.json"
+        if not audit_path.exists():
+            errors.append(
+                f"{_rel(directory)}: assurance_level 'gold' with no 05-analysis/source-audit.json — "
+                "Gold is the level at which somebody has opened the sources"
+            )
+            continue
+
+        audit = _load(audit_path, errors)
+        if not isinstance(audit, dict):
+            continue
+        pending = [
+            entry["source_id"]
+            for entry in audit.get("entries", [])
+            if entry.get("claim_support", {}).get("verdict") in (None, "unchecked")
+        ]
+        if pending:
+            errors.append(
+                f"{_rel(directory)}: assurance_level 'gold' with {len(pending)} source(s) "
+                f"whose claim support is unchecked: {', '.join(pending[:5])}"
+            )
+
+
 def check_investigations(errors: list[str]) -> None:
     """Every investigation carries a topic.yaml and README.md that agree with it."""
     directories = investigations()
@@ -416,7 +519,9 @@ def main() -> int:
         check_claim_lists(errors)
         check_score_tables(errors)
         check_normalized_matrices(errors)
+        check_source_audits(errors)
         check_investigations(errors)
+        check_assurance(errors)
     except Exception as exc:  # noqa: BLE001 - a backstop, not a handler
         # Each check guards its own reads, so reaching here means a defect in
         # this script rather than in the corpus. Report what was collected

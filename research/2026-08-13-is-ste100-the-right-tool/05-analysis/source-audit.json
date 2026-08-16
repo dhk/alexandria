@@ -1,0 +1,131 @@
+{
+  "investigation": "2026-08-13-is-ste100-the-right-tool",
+  "note": "Started 2026-08-16. NOT AN AUDIT YET — this is the worklist with two bibliographic checks completed and every substantive verdict still 'unchecked'. The session that opened it had no outbound network beyond server-side search: every external host tested, including the publishers, the ACL Anthology, DOI resolvers and Wikipedia, was unreachable through the environment's egress policy. Bibliographic metadata could therefore be confirmed from search results, and no source could be opened. Since a search summary can establish that a work exists but never what it argues, claim_support stays 'unchecked' throughout and this investigation stays Silver. Anyone completing it needs an environment that can reach the sources.",
+  "entries": [
+    {
+      "source_id": "hotaling-2020",
+      "cited_as": "Hotaling, S. (2020), \"Simple rules for concise scientific writing\", Limnology and Oceanography Letters 5:379-383",
+      "locator": "doi:10.1002/lol2.10165",
+      "supports_claims": ["c-019", "c-020"],
+      "citation_accuracy": {
+        "verdict": "accurate",
+        "method": "search-metadata",
+        "checked_on": "2026-08-16",
+        "note": "Author, title, journal, volume, page range and year all match the citation exactly. DOI 10.1002/lol2.10165 resolves to the same record across Wiley, ADS (2020LimOL...5..379H), NSF PAGES and Semantic Scholar."
+      },
+      "claim_support": {
+        "verdict": "unchecked",
+        "note": "c-019 claims it is a craft-consensus essay rather than an empirical study, and that it says so itself. c-020 claims it cites Gopen & Swan (1990) and Williams & Bizup as foundational. Both are claims about the paper's content and internal citations; neither can be settled from a catalogue record."
+      }
+    },
+    {
+      "source_id": "kuhn-2014",
+      "cited_as": "Kuhn 2014 survey of controlled natural languages, Computational Linguistics 40(1)",
+      "locator": "doi:10.1162/COLI_a_00168",
+      "supports_claims": ["c-032"],
+      "citation_accuracy": {
+        "verdict": "accurate",
+        "method": "search-metadata",
+        "checked_on": "2026-08-16",
+        "note": "Tobias Kuhn, \"A Survey and Classification of Controlled Natural Languages\", Computational Linguistics 40(1):121-170, 2014. Venue, volume and issue match; the corpus does not state a page range, so none was checkable."
+      },
+      "claim_support": {
+        "verdict": "unchecked",
+        "note": "The analysis attributes to this survey a summary of studies finding Simplified English improves maintenance-procedure comprehension. Kuhn 2014 is a classification survey of ~100 controlled natural languages; whether it summarises comprehension outcomes at all, as opposed to cataloguing the languages, is exactly what needs the paper open. Treat as the highest-priority entry: it is the one place a load-bearing empirical claim rests on a survey that may not carry it."
+      }
+    },
+    {
+      "source_id": "stemg-training",
+      "cited_as": "STEMG's own training material — \"STE is not a simplified version of English for the writers, only for the readers\"",
+      "locator": "https://asd-ste100.org/STEMGTraining.pdf",
+      "supports_claims": ["c-031"],
+      "citation_accuracy": {
+        "verdict": "unresolved",
+        "method": "search-metadata",
+        "checked_on": "2026-08-16",
+        "note": "A STEMG training document at this URL exists and is indexed. The host is unreachable from the auditing environment, so neither the document's date nor its issue could be established."
+      },
+      "claim_support": {
+        "verdict": "unchecked",
+        "method": "search-metadata",
+        "checked_on": "2026-08-16",
+        "note": "Search results carry wording close to the claim but not identical: they render it as two sentences — that the primary objective is simplified text for readers, and separately that STE is not a simplified version of English for the writers. The corpus presents a single sentence in quotation marks, with 'only for the readers' appended. The substance may well hold; the quotation as published may not be verbatim, and the corpus leans on it as the standard body's own words. Needs the primary document. Flagged because a compressed quotation presented as verbatim is a different defect from a wrong one, and harder to notice."
+      },
+      "rights": "ASD-STE100 material is distributed free of charge but is not open-licensed (see c-009). Confirm quoting permissions before reproducing more than short extracts."
+    },
+    {
+      "source_id": "gopen-swan-1990",
+      "cited_as": "Gopen & Swan (1990), \"The Science of Scientific Writing\"",
+      "supports_claims": ["c-034", "c-020"],
+      "citation_accuracy": { "verdict": "unchecked" },
+      "claim_support": {
+        "verdict": "unchecked",
+        "note": "c-034 makes a specific structural claim — that it is drawn from reading-comprehension research and concerns topic position and stress position. Checkable against the text in one reading."
+      }
+    },
+    {
+      "source_id": "kincaid-1975",
+      "cited_as": "Kincaid et al., 1975, readability formulas developed for the US Navy",
+      "supports_claims": ["c-024", "c-025"],
+      "citation_accuracy": { "verdict": "unchecked" },
+      "claim_support": {
+        "verdict": "unchecked",
+        "note": "The load-bearing part is purpose, not existence: the claim is that the formulas were built to estimate difficulty of existing text for procurement, not to guide writing. That is the hinge of the Goodhart argument the whole series carries forward."
+      }
+    },
+    {
+      "source_id": "sopory-dillard-2002",
+      "cited_as": "Sopory & Dillard's 2002 metaphor meta-analysis",
+      "supports_claims": ["c-016"],
+      "citation_accuracy": { "verdict": "unchecked" },
+      "claim_support": {
+        "verdict": "unchecked",
+        "note": "Supports the claim that STE removes devices persuasion depends on. Effect direction and size both matter here and neither is stated in the corpus."
+      }
+    },
+    {
+      "source_id": "green-brock-2000",
+      "cited_as": "Green & Brock 2000 on narrative transportation",
+      "supports_claims": ["c-016"],
+      "citation_accuracy": { "verdict": "unchecked" },
+      "claim_support": { "verdict": "unchecked" }
+    },
+    {
+      "source_id": "pullum-2009",
+      "cited_as": "Pullum, \"50 Years of Stupid Grammar Advice\", Chronicle of Higher Education, 2009",
+      "supports_claims": ["c-024"],
+      "citation_accuracy": { "verdict": "unchecked" },
+      "claim_support": {
+        "verdict": "unchecked",
+        "note": "Cited for the position that Strunk & White is practitioner folklore criticised by linguists for factual errors about grammar. Among the easier entries to settle."
+      }
+    },
+    {
+      "source_id": "chiarello-2013",
+      "cited_as": "Chiarello 2013, practitioner history, for the Fokker attribution",
+      "supports_claims": ["c-012"],
+      "citation_accuracy": { "verdict": "unchecked" },
+      "claim_support": {
+        "verdict": "unchecked",
+        "note": "The investigation already records a three-way split on how far to trust this for the Fokker attribution, and one model could not access it at all. Settling it also settles c-002's meeting-venue detail. Deliberately left open by the run rather than decided, so an audit verdict here changes a published position."
+      }
+    },
+    {
+      "source_id": "asd-ste100-issue-9",
+      "cited_as": "ASD-STE100 Issue 9, dated 15 January 2025 — 53 writing rules, ~900 approved words, special usage rights",
+      "locator": "https://www.asd-ste100.org/assets/files/ASD-STE100_ISSUE9.pdf",
+      "supports_claims": ["c-006", "c-007", "c-009", "c-026", "c-033"],
+      "citation_accuracy": {
+        "verdict": "unresolved",
+        "method": "search-metadata",
+        "checked_on": "2026-08-16",
+        "note": "The Issue 9 PDF is indexed at this URL; the host is unreachable from the auditing environment."
+      },
+      "claim_support": {
+        "verdict": "unchecked",
+        "note": "Five claims rest on this one document, including the rule count, the word count, and the irrevocable free-usage grant that c-026 says is material to whether a tool may ship the approved-word dictionary. That last one has practical consequences beyond the corpus, so it should be read from the specification rather than from any summary of it."
+      },
+      "rights": "Free of charge, not open-licensed. Redistribution restricted; see c-009."
+    }
+  ]
+}
