@@ -56,6 +56,26 @@ def _rel(path: Path) -> str:
     return str(path.relative_to(ROOT))
 
 
+def _load(path: Path, errors: list[str]) -> object | None:
+    """Read a JSON or YAML artifact, recording a failure instead of raising.
+
+    check_parse proves every tracked artifact parses, but each later check
+    re-reads the files it cares about. An artifact that fails there is exactly
+    the one a later check would blow up on — and a traceback would discard
+    every problem collected so far, which is the opposite of what this script
+    promises. Unreadable returns None and the caller skips it; the parse
+    failure is already reported once, by whichever check reached it first.
+    """
+    try:
+        raw = path.read_text()
+        return json.loads(raw) if path.suffix == ".json" else yaml.safe_load(raw)
+    except (OSError, ValueError, yaml.YAMLError) as exc:
+        message = f"{_rel(path)}: could not be read — {exc}"
+        if message not in errors:
+            errors.append(message)
+        return None
+
+
 def tracked_artifacts() -> list[Path]:
     """Return tracked data/configuration artifacts with parseable formats."""
     result = subprocess.run(
@@ -108,7 +128,9 @@ def check_run_records(errors: list[str]) -> None:
     validator = _schema("run-record.schema.json")
 
     for path in records:
-        data = json.loads(path.read_text())
+        data = _load(path, errors)
+        if not isinstance(data, dict):
+            continue
         for problem in sorted(validator.iter_errors(data), key=lambda e: list(e.path)):
             location = "/".join(str(part) for part in problem.path) or "(root)"
             errors.append(f"{_rel(path)}: {location}: {problem.message}")
@@ -123,12 +145,21 @@ def check_claim_lists(errors: list[str]) -> None:
     validator = _schema("claims.schema.json")
 
     for path in lists:
-        data = json.loads(path.read_text())
+        data = _load(path, errors)
+        if data is None:
+            continue
         for problem in sorted(validator.iter_errors(data), key=lambda e: list(e.path)):
             location = "/".join(str(part) for part in problem.path) or "(root)"
             errors.append(f"{_rel(path)}: {location}: {problem.message}")
         if isinstance(data, list):
-            ids = [claim.get("claim_id") for claim in data if isinstance(claim, dict)]
+            # Only well-formed ids: a claim missing one is already a schema
+            # failure, and letting None reach the join turns that report into a
+            # crash that swallows every other problem in the run.
+            ids = [
+                claim.get("claim_id")
+                for claim in data
+                if isinstance(claim, dict) and isinstance(claim.get("claim_id"), str)
+            ]
             duplicates = sorted({i for i in ids if ids.count(i) > 1})
             if duplicates:
                 errors.append(f"{_rel(path)}: duplicate claim_id: {', '.join(duplicates)}")
@@ -146,8 +177,12 @@ def check_score_tables(errors: list[str]) -> None:
     score_schema = _schema("claim-score.schema.json")
 
     for path in tables:
-        with path.open(newline="") as handle:
-            rows = list(csv.DictReader(handle))
+        try:
+            with path.open(newline="") as handle:
+                rows = list(csv.DictReader(handle))
+        except (OSError, ValueError) as exc:
+            errors.append(f"{_rel(path)}: could not be read — {exc}")
+            continue
 
         if not rows:
             errors.append(f"{_rel(path)}: no score rows")
@@ -160,14 +195,16 @@ def check_score_tables(errors: list[str]) -> None:
 
         claims_path = path.parent / "claims.json"
         claim_ids: set[str] = set()
-        if claims_path.exists():
-            claim_ids = {
-                claim["claim_id"]
-                for claim in json.loads(claims_path.read_text())
-                if isinstance(claim, dict) and "claim_id" in claim
-            }
-        else:
+        if not claims_path.exists():
             errors.append(f"{_rel(path)}: no claims.json beside it")
+        else:
+            claims = _load(claims_path, errors)
+            if isinstance(claims, list):
+                claim_ids = {
+                    claim["claim_id"]
+                    for claim in claims
+                    if isinstance(claim, dict) and isinstance(claim.get("claim_id"), str)
+                }
 
         scored_ids: set[str] = set()
         for line, row in enumerate(rows, start=2):
@@ -232,7 +269,9 @@ def check_normalized_matrices(errors: list[str]) -> None:
     validator = _schema("normalized-matrix.schema.json")
 
     for path in sets:
-        data = json.loads(path.read_text())
+        data = _load(path, errors)
+        if data is None:
+            continue
         problems = sorted(validator.iter_errors(data), key=lambda e: list(e.path))
         for problem in problems:
             location = "/".join(str(part) for part in problem.path) or "(root)"
@@ -316,7 +355,9 @@ def check_investigations(errors: list[str]) -> None:
             errors.append(f"{_rel(directory)}: no topic.yaml")
             continue
 
-        topic = yaml.safe_load(topic_path.read_text()) or {}
+        topic = _load(topic_path, errors)
+        if not isinstance(topic, dict):
+            continue
         for field in TOPIC_REQUIRED:
             if not topic.get(field):
                 errors.append(f"{_rel(topic_path)}: missing required field {field!r}")
@@ -346,7 +387,12 @@ def report_instruments() -> None:
 
     print(f"\n==> instrument conformance ({len(records)} runs, derived not stored)")
     for path in records:
-        instrument = json.loads(path.read_text()).get("instrument") or {}
+        unreadable: list[str] = []
+        data = _load(path, unreadable)
+        if not isinstance(data, dict):
+            print(f"    {path.stem:<16} unreadable — reported above")
+            continue
+        instrument = data.get("instrument") or {}
         divergences = [
             field
             for field, required in CONFORMING_INSTRUMENT.items()
@@ -354,6 +400,12 @@ def report_instruments() -> None:
         ]
         verdict = "conforming" if not divergences else "diverges: " + ", ".join(divergences)
         print(f"    {path.stem:<16} {verdict}")
+
+
+def _report(errors: list[str]) -> None:
+    print(f"\n{len(errors)} problem(s):", file=sys.stderr)
+    for error in errors:
+        print(f"  {error}", file=sys.stderr)
 
 
 def main() -> int:
@@ -365,16 +417,20 @@ def main() -> int:
         check_score_tables(errors)
         check_normalized_matrices(errors)
         check_investigations(errors)
-    except (OSError, RuntimeError, subprocess.CalledProcessError) as exc:
-        print(f"\nvalidation failed: {exc}", file=sys.stderr)
+    except Exception as exc:  # noqa: BLE001 - a backstop, not a handler
+        # Each check guards its own reads, so reaching here means a defect in
+        # this script rather than in the corpus. Report what was collected
+        # before saying so: a traceback that discards ten real findings to
+        # announce an eleventh problem is worse than useless.
+        if errors:
+            _report(errors)
+        print(f"\nvalidation aborted: {type(exc).__name__}: {exc}", file=sys.stderr)
         return 1
 
     report_instruments()
 
     if errors:
-        print(f"\n{len(errors)} problem(s):", file=sys.stderr)
-        for error in errors:
-            print(f"  {error}", file=sys.stderr)
+        _report(errors)
         return 1
 
     print("\nValidation passed.")
