@@ -1,0 +1,132 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/dhk/alexandria/schemas/run-record.schema.json",
+  "title": "Alexandria run record",
+  "description": "The execution record for one dispatched commission, stored as research/<slug>/03-runs/<run_id>.json. Records what was asked, of whom, at what cost, and — through the instrument block — by what measuring apparatus the resulting claim landscape was produced. Legacy pre-convention runs stored as manifest.json are out of scope.",
+  "type": "object",
+  "required": [
+    "run_id",
+    "brief_sha256",
+    "dispatched_models",
+    "grading_model",
+    "status",
+    "instrument"
+  ],
+  "additionalProperties": true,
+  "properties": {
+    "run_id": {
+      "type": "string",
+      "pattern": "^r-[0-9]{4}-[0-9]{4}-[0-9]{2}$",
+      "description": "Stable run identifier, e.g. r-2026-0813-03."
+    },
+    "brief_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "Checksum of the brief exactly as sent. Pins the question, never the answer."
+    },
+    "dispatched_models": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string" },
+      "description": "Research models dispatched independently and blind to one another."
+    },
+    "grading_model": {
+      "type": "string",
+      "description": "The model that produced the claim landscape from the research outputs."
+    },
+    "status": {
+      "enum": ["completed", "partial", "failed"]
+    },
+    "web_search": {
+      "type": "boolean",
+      "description": "Whether research calls could read live sources. When true the run is not reproducible from its inputs."
+    },
+    "cost_actual": { "type": "number", "minimum": 0 },
+    "cost_estimate": { "type": "number", "minimum": 0 },
+    "created_at": { "type": "string" },
+    "completed_at": { "type": "string" },
+
+    "instrument": {
+      "type": "object",
+      "description": "What apparatus produced this run's claim landscape. Records facts only: whether the run conforms to the confidence-calibration spec is DERIVED from these fields at read time and is deliberately not stored, for the same reason the spec derives a score from (stance, strength) rather than storing a number a model chose. See docs/instrument.md.",
+      "required": [
+        "spec_version",
+        "grader_topology",
+        "score_derivation",
+        "extraction_pass"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "spec_version": {
+          "type": "string",
+          "description": "The confidence-calibration spec revision this run is measured against.",
+          "enum": ["confidence-calibration/draft-v1"]
+        },
+        "grader_topology": {
+          "description": "How grading calls were partitioned across research outputs.",
+          "oneOf": [
+            {
+              "const": "per-model-blind",
+              "description": "Spec §3.2: one grading call per research model, each seeing only that model's output. Preserves the independence the panel is dispatched with."
+            },
+            {
+              "const": "single-call-all-models",
+              "description": "One grading call receiving every research output concatenated. Author-anonymised but not source-isolated: the grader has read every output before scoring any of them."
+            }
+          ]
+        },
+        "score_derivation": {
+          "description": "How the signed integer in scores.csv was produced.",
+          "oneOf": [
+            {
+              "const": "derived-lookup",
+              "description": "Spec §4: the grader emits (stance, strength) and the integer comes from a fixed lookup. Stored categorical labels allow rescoring without re-dispatching."
+            },
+            {
+              "const": "model-assigned",
+              "description": "The grader was asked for the integer directly. No categorical labels stored; scores cannot be recomputed if the mapping changes."
+            }
+          ]
+        },
+        "extraction_pass": {
+          "description": "Whether claim identity was established separately from claim scoring.",
+          "oneOf": [
+            {
+              "const": "separate",
+              "description": "Spec §3.1/§3.2: extraction and grading are distinct passes, so a change in one cannot silently corrupt the other."
+            },
+            {
+              "const": "fused",
+              "description": "Claims, scores and report requested in one response. One call, one payload, one failure domain."
+            }
+          ]
+        },
+        "note": {
+          "type": "string",
+          "description": "Optional free text for anything the enumerations cannot carry."
+        }
+      }
+    },
+
+    "raw_responses": {
+      "type": "object",
+      "required": ["files", "published"],
+      "properties": {
+        "published": { "type": "boolean" },
+        "reason": { "type": "string" },
+        "files": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["file", "bytes", "sha256"],
+            "properties": {
+              "file": { "type": "string" },
+              "bytes": { "type": "integer", "minimum": 0 },
+              "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

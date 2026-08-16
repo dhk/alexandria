@@ -10,6 +10,13 @@
   "x-ai/grok-4.5"
  ],
  "grading_model": "anthropic/claude-sonnet-4.6",
+ "instrument": {
+  "extraction_pass": "fused",
+  "grader_topology": "single-call-all-models",
+  "note": "Grading returned complete but unparseable JSON and was repaired by hand; the repair recovered the payload and did not change the apparatus. See recovery.md.",
+  "score_derivation": "model-assigned",
+  "spec_version": "confidence-calibration/draft-v1"
+ },
  "raw_responses": {
   "files": [
    {

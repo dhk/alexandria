@@ -10,6 +10,12 @@
     "x-ai/grok-4.5"
   ],
   "grading_model": "anthropic/claude-sonnet-4.6",
+  "instrument": {
+    "extraction_pass": "fused",
+    "grader_topology": "single-call-all-models",
+    "score_derivation": "model-assigned",
+    "spec_version": "confidence-calibration/draft-v1"
+  },
   "raw_responses": {
     "files": [
       {

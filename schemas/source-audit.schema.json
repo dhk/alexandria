@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/dhk/alexandria/schemas/source-audit.schema.json",
+  "title": "Alexandria source audit",
+  "description": "The record of a human opening the sources an investigation cites and checking them, stored as research/<slug>/05-analysis/source-audit.json. This is the artifact that separates Silver from Gold: a claim score records that a model stated something and quotes the span it stated it in, which is a fact about the model, not about the world. Nothing in a run establishes that a cited source says what the run says it says.",
+  "type": "object",
+  "required": ["investigation", "entries"],
+  "additionalProperties": false,
+  "properties": {
+    "investigation": {
+      "type": "string",
+      "description": "Slug of the investigation whose citations these are."
+    },
+    "note": {
+      "type": "string",
+      "description": "Scope of the audit, and anything a reader needs before trusting its verdicts."
+    },
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["source_id", "cited_as", "supports_claims", "citation_accuracy", "claim_support"],
+        "additionalProperties": false,
+        "properties": {
+          "source_id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+          "cited_as": {
+            "type": "string",
+            "description": "The citation exactly as the investigation states it, so the audit checks what was published rather than a tidied version of it."
+          },
+          "locator": {
+            "type": "string",
+            "description": "DOI, ISBN, URL or other handle for the work itself."
+          },
+          "supports_claims": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "pattern": "^c-[0-9]{3,}$" },
+            "description": "Claim ids in this investigation's claims.json that rest on this source."
+          },
+
+          "citation_accuracy": {
+            "type": "object",
+            "description": "Does the work exist as cited — title, venue, year, volume, pages?",
+            "required": ["verdict"],
+            "additionalProperties": false,
+            "properties": {
+              "verdict": { "enum": ["accurate", "inaccurate", "unresolved", "unchecked"] },
+              "method": { "$ref": "#/$defs/method" },
+              "checked_on": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+              "note": { "type": "string" }
+            }
+          },
+
+          "claim_support": {
+            "type": "object",
+            "description": "Does the work actually say what the investigation claims from it? This fails independently of citation accuracy: a real paper, cited perfectly, can still not support the claim drawn from it. This is the verdict Gold turns on.",
+            "required": ["verdict"],
+            "additionalProperties": false,
+            "properties": {
+              "verdict": {
+                "oneOf": [
+                  { "const": "supports", "description": "The source states or evidences the claim." },
+                  { "const": "partially-supports", "description": "The source bears on the claim but more weakly or more narrowly than the claim states." },
+                  { "const": "contradicts", "description": "The source says something incompatible with the claim." },
+                  { "const": "absent", "description": "The source does not address the claim at all." },
+                  { "const": "unresolved", "description": "Opened, and still could not be settled." },
+                  { "const": "unchecked", "description": "Not yet examined. The honest default, and never a pass." }
+                ]
+              },
+              "method": { "$ref": "#/$defs/method" },
+              "checked_on": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+              "quote": {
+                "type": "string",
+                "description": "The passage the verdict rests on, transcribed from the source itself. Required for any substantive verdict: showing the passage is what lets a reader disagree with the verdict, which is the whole value of recording one."
+              },
+              "wording": {
+                "description": "How the source's words relate to the investigation's rendering of them. Support is a question about meaning, not string equality — a source that says the same thing in different words supports the claim, and recording that is not a concession.",
+                "oneOf": [
+                  {
+                    "const": "verbatim",
+                    "description": "The investigation's rendering matches the source word for word."
+                  },
+                  {
+                    "const": "equivalent",
+                    "description": "Different words, same proposition, no ambiguity — for instance the source splitting across two sentences what the investigation states in one. Sufficient for support. The quote field carries the source's actual wording so the reader can judge the equivalence rather than take it on trust."
+                  }
+                ]
+              },
+              "note": { "type": "string" }
+            }
+          },
+
+          "rights": {
+            "type": "string",
+            "description": "Licence or usage constraints on quoting the source, per the public-data-handling policy."
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "method": {
+      "description": "How the check was made. Only primary-source may justify a substantive support verdict — a database record or a search summary establishes that a work exists, never what it argues. Treating the second as the first is the exact substitution this artifact exists to prevent.",
+      "oneOf": [
+        {
+          "const": "primary-source",
+          "description": "The work itself was opened and read."
+        },
+        {
+          "const": "search-metadata",
+          "description": "Bibliographic metadata from a catalogue, index or search result. Sufficient for citation accuracy; never sufficient for claim support."
+        },
+        {
+          "const": "secondary",
+          "description": "Another work's description of this one."
+        }
+      ]
+    }
+  }
+}

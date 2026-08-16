@@ -1,0 +1,153 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/dhk/alexandria/schemas/normalized-matrix.schema.json",
+  "title": "Alexandria normalized matrix set",
+  "description": "Stage 04-normalized: derived, non-destructive normalization of per-model tables onto one declared scale, stored as research/<slug>/04-normalized/matrices.json. Models answer a matrix brief on whatever scale they choose; collapsing those onto a common scale and taking a median is a derivation, and a derivation belongs in an artifact with a contract rather than inside hand-written analysis prose. Cell values are NOT stored: the median is computed from the votes at read time, so a value that disagrees with its votes cannot exist.",
+  "type": "object",
+  "required": ["run_id", "responding_model_count", "derivation", "coverage", "matrices"],
+  "additionalProperties": false,
+  "properties": {
+    "run_id": {
+      "type": "string",
+      "pattern": "^r-[0-9]{4}-[0-9]{4}-[0-9]{2}$",
+      "description": "The run whose outputs were normalized."
+    },
+    "responding_model_count": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Models that returned research output and could therefore have scored any cell. Every cell must account for all of them, as votes plus unrecorded ones."
+    },
+    "derivation": {
+      "const": "median",
+      "description": "How votes collapse to a cell value. Median, so a single out-of-family vote cannot drag a cell — and so a median across a genuine disagreement stays visible as a spread rather than being smoothed into consensus."
+    },
+    "coverage": {
+      "description": "Which cells carry recorded votes. Partial coverage is legitimate and must be stated; silently publishing a matrix whose votes were never recorded is what this stage exists to prevent.",
+      "oneOf": [
+        {
+          "const": "complete",
+          "description": "Every cell of every matrix carries its per-model votes."
+        },
+        {
+          "const": "contested-cells-only",
+          "description": "Votes recorded only where the published analysis listed them. The remaining cells' votes exist in the raw responses on the host and have not been promoted."
+        }
+      ]
+    },
+    "coverage_note": {
+      "type": "string",
+      "description": "Why coverage is what it is, and what would complete it."
+    },
+    "matrices": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["matrix_id", "title", "axis_rows", "axis_columns", "scale", "cells"],
+        "additionalProperties": false,
+        "properties": {
+          "matrix_id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+          "title": { "type": "string", "minLength": 1 },
+          "axis_rows": {
+            "type": "string",
+            "description": "What a row is — the quality being scored."
+          },
+          "axis_columns": {
+            "type": "string",
+            "description": "What a column is — the genre or technique being scored."
+          },
+          "rows": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 },
+            "description": "The full row vocabulary, in published order. Required under coverage 'complete', where it is what makes completeness checkable rather than asserted."
+          },
+          "columns": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 },
+            "description": "The full column vocabulary, in published order. Required under coverage 'complete'."
+          },
+          "scale": {
+            "type": "object",
+            "required": ["min", "max", "kind"],
+            "additionalProperties": false,
+            "description": "The common scale every vote is normalized onto. A vote outside it is a validation failure, not a curiosity.",
+            "properties": {
+              "min": { "type": "integer" },
+              "max": { "type": "integer" },
+              "kind": {
+                "enum": ["sequential", "diverging"],
+                "description": "sequential: magnitude from a floor. diverging: signed, with a meaningful zero."
+              },
+              "meaning": { "type": "string" }
+            }
+          },
+          "native_scales": {
+            "type": "array",
+            "description": "The scales the models actually answered on, before normalization. Recorded because the mapping is the step that can go wrong.",
+            "items": {
+              "type": "object",
+              "required": ["model_count", "scale"],
+              "additionalProperties": false,
+              "properties": {
+                "model_count": { "type": "integer", "minimum": 1 },
+                "scale": { "type": "string" },
+                "mapping": { "type": "string" }
+              }
+            }
+          },
+          "cells": {
+            "type": "array",
+            "description": "Cells with recorded votes. Under coverage 'complete' this is every row x column pair.",
+            "items": {
+              "type": "object",
+              "required": ["row", "column", "votes", "votes_attributed"],
+              "additionalProperties": false,
+              "properties": {
+                "row": { "type": "string", "minLength": 1 },
+                "column": { "type": "string", "minLength": 1 },
+                "votes": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": { "type": "integer" },
+                  "description": "One vote per model that scored this cell, normalized onto the matrix scale. Models that declined are absent rather than zero — a declined cell is a missing observation, never silence."
+                },
+                "votes_attributed": {
+                  "type": "boolean",
+                  "description": "Whether votes are recorded in a known model order. False where the source analysis published an unattributed list; the multiset is then all that can be claimed."
+                },
+                "models": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "description": "Model ids positionally matching votes. Required in practice whenever votes_attributed is true."
+                },
+                "unrecorded_model_count": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "Models that responded to the run but whose vote is absent from this list, for any reason. Every responding model must be accounted for as either a vote or an unrecorded one — a cell that quietly holds fewer votes than the panel is how a two-model interpolation comes to look like a three-model median."
+                },
+                "unrecorded_reason": {
+                  "description": "Why those votes are absent. Required whenever unrecorded_model_count is above zero, because 'the model declined to score' and 'the analysis did not publish it' are different facts with different repairs.",
+                  "oneOf": [
+                    {
+                      "const": "model-declined",
+                      "description": "The model returned output but did not score this cell. A missing observation, never silence, and never zero."
+                    },
+                    {
+                      "const": "not-published",
+                      "description": "The source analysis did not publish the vote and did not mark a decline. Whether the model scored it is unknown from the corpus alone; the raw responses on the host would settle it."
+                    }
+                  ]
+                },
+                "published_value": {
+                  "type": "string",
+                  "pattern": "^([+-]?[0-9]+)$",
+                  "description": "The value this cell carries in the published analysis, recorded so validation can confirm the derivation still reproduces it. Not a duplicate of derived data — a cross-reference to a separate artifact, checked like a checksum. A signed zero denotes a half-step: -0 is -0.5, +0 is +0.5."
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
