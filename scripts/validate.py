@@ -405,6 +405,11 @@ def check_source_audits(errors: list[str]) -> None:
                     )
                 if not check.get("checked_on"):
                     errors.append(f"{where}: {field} verdict {verdict!r} records no date")
+                if substantive and not (check.get("quote") or "").strip():
+                    errors.append(
+                        f"{where}: claim_support {verdict!r} shows no passage from the source — "
+                        "a verdict a reader cannot check against the words is an assertion"
+                    )
 
             unknown = [c for c in entry["supports_claims"] if known and c not in known]
             if unknown:

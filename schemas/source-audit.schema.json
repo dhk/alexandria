@@ -71,7 +71,20 @@
               "checked_on": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
               "quote": {
                 "type": "string",
-                "description": "The passage the verdict rests on, verbatim from the source itself."
+                "description": "The passage the verdict rests on, transcribed from the source itself. Required for any substantive verdict: showing the passage is what lets a reader disagree with the verdict, which is the whole value of recording one."
+              },
+              "wording": {
+                "description": "How the source's words relate to the investigation's rendering of them. Support is a question about meaning, not string equality — a source that says the same thing in different words supports the claim, and recording that is not a concession.",
+                "oneOf": [
+                  {
+                    "const": "verbatim",
+                    "description": "The investigation's rendering matches the source word for word."
+                  },
+                  {
+                    "const": "equivalent",
+                    "description": "Different words, same proposition, no ambiguity — for instance the source splitting across two sentences what the investigation states in one. Sufficient for support. The quote field carries the source's actual wording so the reader can judge the equivalence rather than take it on trust."
+                  }
+                ]
               },
               "note": { "type": "string" }
             }

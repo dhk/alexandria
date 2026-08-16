@@ -46,6 +46,27 @@ substituting one unread layer for another and calling it verification.
 `search-metadata` remains fully sufficient for `citation_accuracy`, which is
 exactly the kind of question a catalogue answers.
 
+## 3a. Same meaning is the test, not same words
+
+Support is a question about meaning. A source that states the claim in
+different words supports it, and the audit records that as
+`wording: equivalent` rather than treating it as a shortfall. The bar is that
+the propositions are the same and nothing in the difference is ambiguous — a
+source splitting across two sentences what the investigation states in one is
+the ordinary case, not a finding.
+
+What is required instead is the **passage itself**. Any substantive
+claim-support verdict must carry a `quote` transcribed from the source, and
+validation rejects one that does not. Showing the words is what lets a reader
+disagree with the verdict, which is the entire value of recording a verdict;
+insisting on string equality would only have moved the judgement somewhere less
+visible.
+
+`wording: verbatim` still matters in one narrow place. Where an investigation
+prints something inside quotation marks, the punctuation itself asserts *these
+are the exact words* — a separate claim from the one the source supports, and
+one worth correcting in the prose rather than loosening here.
+
 ## 4. Gold is checkable now
 
 `scripts/validate.py` fails any investigation marked `gold` that has no
