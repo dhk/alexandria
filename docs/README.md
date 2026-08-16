@@ -10,6 +10,9 @@ interfaces and historical design. A document's category is part of its status.
   evidence requirements used by stored claim artifacts.
 - [Instrument record](instrument.md) — what apparatus produced a run's claim
   landscape, and why conformance is derived rather than stored.
+- [Normalization](normalization.md) — stage `04-normalized`, why a matrix cell
+  is derived from stored votes rather than stored itself, and the signed-zero
+  rendering convention.
 - [`schemas/`](../schemas) — normative machine-readable corpus contracts,
   applied to the artifacts they govern by `scripts/validate.py`.
 - [Contributing](../CONTRIBUTING.md) and [agent rules](../AGENTS.md) — review,

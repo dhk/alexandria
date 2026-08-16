@@ -27,6 +27,7 @@ import subprocess
 import sys
 import tomllib
 from pathlib import Path
+from statistics import median
 
 import yaml
 from jsonschema import Draft202012Validator
@@ -202,6 +203,91 @@ def check_score_tables(errors: list[str]) -> None:
             errors.append(f"{_rel(path)}: claims present but never scored: {', '.join(unscored)}")
 
 
+def _render_median(value: float) -> str:
+    """Render a derived median the way the published matrices print it.
+
+    Sign-preserving truncation toward zero, so a half-step between two votes
+    stays visible as a signed zero rather than being rounded into a real
+    value: -0 is -0.5, +0 is +0.5, and a true zero is unsigned.
+    """
+    if value == 0:
+        return "0"
+    truncated = int(value) if value > 0 else -int(-value)
+    if truncated == 0:
+        return "+0" if value > 0 else "-0"
+    return f"{truncated:+d}"
+
+
+def check_normalized_matrices(errors: list[str]) -> None:
+    """Stage 04-normalized: votes stay on their declared scale and still derive the published value.
+
+    This is the check whose absence let a control run publish a supply matrix
+    holding votes from a different scale — see dhk/alexandria#62. Cell values
+    are never stored, so the only way a matrix can disagree with its votes is
+    for the published cross-reference to have drifted, which is exactly what
+    published_value is here to catch.
+    """
+    sets = sorted(RESEARCH.glob("*/04-normalized/matrices.json"))
+    print(f"==> matrices {len(sets)} normalized matrix sets")
+    validator = _schema("normalized-matrix.schema.json")
+
+    for path in sets:
+        data = json.loads(path.read_text())
+        problems = sorted(validator.iter_errors(data), key=lambda e: list(e.path))
+        for problem in problems:
+            location = "/".join(str(part) for part in problem.path) or "(root)"
+            errors.append(f"{_rel(path)}: {location}: {problem.message}")
+        if problems:
+            continue
+
+        complete = data["coverage"] == "complete"
+        for matrix in data["matrices"]:
+            label = f"{_rel(path)}: {matrix['matrix_id']}"
+            low, high = matrix["scale"]["min"], matrix["scale"]["max"]
+            rows, columns = matrix.get("rows"), matrix.get("columns")
+
+            if complete and not (rows and columns):
+                errors.append(f"{label}: coverage 'complete' requires rows and columns declared")
+
+            seen: set[tuple[str, str]] = set()
+            for cell in matrix["cells"]:
+                where = f"{label}: {cell['row']} x {cell['column']}"
+                seen.add((cell["row"], cell["column"]))
+
+                stray = [v for v in cell["votes"] if not low <= v <= high]
+                if stray:
+                    errors.append(
+                        f"{where}: vote(s) {stray} outside the declared scale "
+                        f"{low}..{high} — a vote on another scale is not a datum"
+                    )
+
+                if cell["votes_attributed"] and len(cell.get("models") or []) != len(cell["votes"]):
+                    errors.append(f"{where}: votes_attributed but models do not match votes 1:1")
+
+                if rows and cell["row"] not in rows:
+                    errors.append(f"{where}: row is not in the declared row vocabulary")
+                if columns and cell["column"] not in columns:
+                    errors.append(f"{where}: column is not in the declared column vocabulary")
+
+                published = cell.get("published_value")
+                if published is not None:
+                    derived = _render_median(median(cell["votes"]))
+                    if derived != published:
+                        errors.append(
+                            f"{where}: votes {cell['votes']} derive {derived}, "
+                            f"but the published analysis carries {published}"
+                        )
+
+            if complete and rows and columns:
+                missing = [(r, c) for r in rows for c in columns if (r, c) not in seen]
+                if missing:
+                    shown = ", ".join(f"{r} x {c}" for r, c in missing[:5])
+                    errors.append(
+                        f"{label}: coverage 'complete' but {len(missing)} cell(s) "
+                        f"carry no votes: {shown}{' …' if len(missing) > 5 else ''}"
+                    )
+
+
 def check_investigations(errors: list[str]) -> None:
     """Every investigation carries a topic.yaml and README.md that agree with it."""
     directories = investigations()
@@ -262,6 +348,7 @@ def main() -> int:
         check_run_records(errors)
         check_claim_lists(errors)
         check_score_tables(errors)
+        check_normalized_matrices(errors)
         check_investigations(errors)
     except (OSError, RuntimeError, subprocess.CalledProcessError) as exc:
         print(f"\nvalidation failed: {exc}", file=sys.stderr)
