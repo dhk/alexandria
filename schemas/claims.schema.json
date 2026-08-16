@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/dhk/alexandria/schemas/claims.schema.json",
+  "title": "Alexandria claim list",
+  "description": "The deduplicated canonical claim list for one run, stored as claims.json beside the scores.csv that scores it. Claim identity is deliberately permissive: if even one model treats something as a distinct claim it gets its own claim_id, because novelty is signal, not noise to be merged away.",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["claim_id", "text"],
+    "additionalProperties": true,
+    "properties": {
+      "claim_id": {
+        "type": "string",
+        "pattern": "^c-[0-9]{3,}$",
+        "description": "Stable within a run, e.g. c-001."
+      },
+      "text": {
+        "type": "string",
+        "minLength": 1,
+        "description": "One declarative proposition."
+      },
+      "group": {
+        "description": "How the scored stances fall across responding models. Note that these groups register disagreement about DIRECTION only — two models can differ sharply about degree and still land in 'consensus'.",
+        "enum": ["consensus", "disagreement", "novel", "thin", "silent"]
+      },
+      "responding_model_count": {
+        "type": "integer",
+        "minimum": 0,
+        "description": "Models that returned output and were graded. A failed research call is not counted here and must never be coerced to a score of 0."
+      }
+    }
+  }
+}

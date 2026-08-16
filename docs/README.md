@@ -8,7 +8,10 @@ interfaces and historical design. A document's category is part of its status.
 - [Corpus design](DESIGN.md) — ownership, lifecycle, integrity, and governance.
 - [Confidence calibration](confidence-calibration.md) — score semantics and
   evidence requirements used by stored claim artifacts.
-- [`schemas/`](../schemas) — normative machine-readable corpus contracts.
+- [Instrument record](instrument.md) — what apparatus produced a run's claim
+  landscape, and why conformance is derived rather than stored.
+- [`schemas/`](../schemas) — normative machine-readable corpus contracts,
+  applied to the artifacts they govern by `scripts/validate.py`.
 - [Contributing](../CONTRIBUTING.md) and [agent rules](../AGENTS.md) — review,
   correction, public-data, and cross-repository coordination rules.
 
