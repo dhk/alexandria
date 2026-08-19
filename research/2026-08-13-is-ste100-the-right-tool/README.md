@@ -84,14 +84,27 @@ to whether a tool may ship the approved-word dictionary.
    against every model, with the quote each score rests on.
 4. [`03-runs/r-2026-0813-01/`](03-runs/r-2026-0813-01/) — the superseded run,
    kept in full. The correction is only legible next to what it corrected.
+5. [`05-analysis/source-audit.json`](05-analysis/source-audit.json) — the ten
+   sources this investigation rests on, mapped to the claims each carries, and
+   what checking them has established so far.
+6. [`05-analysis/corrections.md`](05-analysis/corrections.md) — published
+   claims the audit has found wrong. One so far.
 
 ## How far to trust it
 
-**Silver: three lineages, claims scored, quotes attached, no source audit.**
-The citations here are far better than the earlier run's — specific editions,
-dates, and documents — but *no human has opened them*. That check is what
-would make this Gold, and it is now cheap: the claims are specific enough to
-verify one by one.
+**Silver: three lineages, claims scored, quotes attached, source audit
+started and incomplete.** The citations here are far better than the earlier
+run's — specific editions, dates, and documents — but with one exception below
+*no human has opened them*. Finishing that check is what would make this Gold,
+and it is now cheap: the claims are specific enough to verify one by one.
+
+**One source has been opened, and it corrected a published claim.** Kuhn 2014
+was read on 2026-08-18. Its §5.5 reports two studies finding that Simplified
+English significantly improves text comprehension — which contradicts **c-032**,
+the consensus claim that no such studies were found in open sources. The
+correction, and the narrower statement that replaces it, are in
+[`05-analysis/corrections.md`](05-analysis/corrections.md). This is what a
+source audit is for: three models agreed, and agreement was not verification.
 
 **The landscape records zero disagreements** (27 consensus, 7 novel) while the
 analysis prose describes several real divergences — 1985 vs 1986, the ATA
