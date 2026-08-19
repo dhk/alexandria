@@ -3,11 +3,11 @@
   "responding_model_count": 3,
   "derivation": "median",
   "coverage": "contested-cells-only",
-  "coverage_note": "The published analysis lists per-model votes only for the cells where the three outputs differ by two points or more. The remaining votes exist in the per-model raw responses preserved on the host and have not been promoted into the corpus, so they cannot be recorded here without them. Completing this to coverage 'complete' is host-side work; until then the demand matrix carries no recorded votes at all. Separately, three of the ten contested cells list only two votes while carrying no declined marker in the source table, so whether the third model declined or the analysis simply did not publish its vote cannot be told from the corpus alone; those are recorded as unrecorded_reason 'not-published' rather than inferred to be declines.",
+  "coverage_note": "The published analysis lists per-model votes only for the cells where the three outputs differ by two points or more. The remaining votes exist in the per-model raw responses preserved on the host and have not been promoted into the corpus. Separately, three of the ten contested cells list only two votes while carrying no declined marker in the source table, so whether the third model declined or the analysis simply did not publish its vote cannot be told from the corpus alone; those are recorded as unrecorded_reason 'not-published' rather than inferred to be declines. Reading the raw responses on 2026-08-19 did not settle that, and showed why it cannot be settled mechanically: the published supply matrix has ten technique columns, but two of the three models answered on twelve, splitting the repo skills into `ste`, `plainspoken` and `humanize` and scoring each separately, while the third returned a single bundled column. Collapsing twelve columns into one `repo skills` column is a normalization step that no artifact records, and it is the step the three two-vote cells sit in. For Empathy x repo skills the published pair {-1, +1} is reproducible either as one model's compound answer or as two models' sub-column values; nothing in the corpus distinguishes them. See 04-normalized/corrections.md.",
   "matrices": [
     {
       "matrix_id": "demand",
-      "title": "Matrix A \u2014 the demand",
+      "title": "Matrix A — the demand",
       "axis_rows": "consideration",
       "axis_columns": "organizational genre",
       "scale": {
@@ -18,16 +18,21 @@
       },
       "native_scales": [
         {
-          "model_count": 3,
+          "model_count": 2,
           "scale": "integer 0..3",
-          "mapping": "identity \u2014 all three models answered on the requested scale"
+          "mapping": "identity - answered on the requested scale"
+        },
+        {
+          "model_count": 1,
+          "scale": "integer 0..3 with range-valued cells",
+          "mapping": "identity where a single integer was given; five cells of this model's demand matrix carry ranges (0-1, 1-2, 0-1, 0-1, 2-3*) rather than a point value, and the published integer for those cells was chosen by the analysis, not stated by the model"
         }
       ],
       "cells": []
     },
     {
       "matrix_id": "supply",
-      "title": "Matrix B \u2014 the supply",
+      "title": "Matrix B — the supply",
       "axis_rows": "consideration",
       "axis_columns": "technique",
       "scale": {
@@ -38,14 +43,19 @@
       },
       "native_scales": [
         {
-          "model_count": 2,
+          "model_count": 1,
           "scale": "integer -2..2",
-          "mapping": "identity"
+          "mapping": "identity - the requested scale; a double-dagger marks an effect the model judged asserted by proponents but unsupported by evidence"
         },
         {
           "model_count": 1,
           "scale": "five-letter S/s/N/d/D",
-          "mapping": "S=+2, s=+1, N=0, d=-1, D=-2 \u2014 the same five points"
+          "mapping": "S=+2, s=+1, N=0, d=-1, D=-2 - the same five points; an asterisk marks the same unsupported-effect caveat"
+        },
+        {
+          "model_count": 1,
+          "scale": "symbolic ++/+/0/-/--",
+          "mapping": "++=+2, +=+1, 0=0, -=-1, --=-2, declared by the responding model itself; '?' marks a technique the model declined to score, and several cells carry compound answers (for instance '0 / -', 'mixed / often -', or one value per named skill) that are not points on the scale"
         }
       ],
       "cells": [
