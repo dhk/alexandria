@@ -74,10 +74,14 @@ the same place.
    derived rather than asserted. Coverage is `contested-cells-only`: the
    remaining cells' votes were never published and stay in the raw responses on
    the host. See [normalization](../../docs/normalization.md).
+7. [`03-runs/r-2026-0813-03-regrade/`](03-runs/r-2026-0813-03-regrade/) — this
+   run re-graded twice from the same raw responses, once by the current
+   implementation and once as the calibration spec requires. What the apparatus
+   did to the claim count.
 
 ## How far to trust it
 
-**Silver, with two caveats sharper than usual.**
+**Silver, with caveats sharper than usual.**
 
 **The brief did lead the models, and now we know by how much.** The grading
 model observed, unprompted, that *"the degree of agreement on individual claims
@@ -104,6 +108,16 @@ they are published side by side in
 consensus claims and none disputed; the synthesised matrices show ten contested
 cells across the same three outputs. Claim extraction represents disagreements
 about *direction*, not about *degree*.
+
+**The claim count is a property of the grader, and now we know by how much.**
+This run was graded by a single call that read all three outputs before scoring
+any of them — a divergence from
+[`docs/confidence-calibration.md`](../../docs/confidence-calibration.md)
+recorded in the run's own `instrument` block. Re-grading the same preserved
+responses the way the spec requires produced **100 claims where this landscape
+has 26**. Read the 26 as what one particular apparatus extracted, not as the
+number of things the models said:
+[`03-runs/r-2026-0813-03-regrade/`](03-runs/r-2026-0813-03-regrade/).
 
 **No outcome evidence exists.** Every score is a judgement about mechanism. No
 technique in the set has been shown to improve decision quality, trust
