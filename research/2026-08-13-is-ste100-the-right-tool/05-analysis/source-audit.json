@@ -1,6 +1,6 @@
 {
   "investigation": "2026-08-13-is-ste100-the-right-tool",
-  "note": "Started 2026-08-16. NOT AN AUDIT YET \u2014 this is the worklist, with two bibliographic checks completed and every substantive verdict still 'unchecked'. The session that opened it had no outbound network beyond server-side search: requests to the publishers, indexes, DOI resolvers and reference hosts were refused by the environment's egress policy, returning 403 from the proxy. Bibliographic metadata could therefore be confirmed from search results, and no source could be opened. Since a search summary can establish that a work exists but never what it argues, claim_support stays 'unchecked' throughout and this investigation stays Silver. Support is judged by meaning rather than by string equality (docs/source-audit.md \u00a73a): equivalent wording supports a claim, and every substantive verdict must carry the source passage it rests on. Anyone completing it needs an environment that can reach the sources.",
+  "note": "Started 2026-08-16, first substantive verdict recorded 2026-08-19. Still a worklist: one of ten entries has had its source opened. The session that opened this file had no outbound network beyond server-side search, so every claim_support verdict was left 'unchecked'; egress from the host this was continued on reaches aclanthology.org, doi.org, asd-ste100.org and en.wikipedia.org, while aslopubs.onlinelibrary.wiley.com, direct.mit.edu and chronicle.com refuse automated requests with 403. Bibliographic metadata alone remains insufficient for a claim_support verdict: a catalogue record establishes that a work exists, never what it argues.",
   "entries": [
     {
       "source_id": "hotaling-2020",
@@ -35,13 +35,16 @@
         "note": "Tobias Kuhn, \"A Survey and Classification of Controlled Natural Languages\", Computational Linguistics 40(1):121-170, 2014. Venue, volume and issue match; the corpus does not state a page range, so none was checkable."
       },
       "claim_support": {
-        "verdict": "unchecked",
-        "note": "The analysis attributes to this survey a summary of studies finding Simplified English improves maintenance-procedure comprehension. Kuhn 2014 is a classification survey of ~100 controlled natural languages; whether it summarises comprehension outcomes at all, as opposed to cataloguing the languages, is exactly what needs the paper open. Treat as the highest-priority entry: it is the one place a load-bearing empirical claim rests on a survey that may not carry it."
+        "verdict": "contradicts",
+        "method": "primary-source",
+        "checked_on": "2026-08-19",
+        "quote": "For type C, two studies on AECMA-SE showed that the use of controlled English significantly improves text comprehension, with a particularly large effect for complex texts and non-native speakers (Shubert et al. 1995; Chervak, Drury, and Ouellette 1996). The results of other studies were similar but not significant (Stewart 1998).",
+        "note": "Opened at aclanthology.org/J14-1005.pdf (sha256 befc7ebb73c5bfb9de26f66b7a836465de7e6ae8de0fd4e527051165dbd44855); the quoted passage is section 5.5 'Evaluations', page 145. Two things follow, and they point opposite ways to what this entry previously supposed. First, the doubt recorded here on 2026-08-16 - whether a classification survey summarises comprehension outcomes at all - is settled: it does, and the three works it names are aircraft-documentation studies (Shubert et al. 1995, Journal of Technical Writing and Communication 25(4):347-369; Chervak, Drury and Ouellette 1996, Proceedings of the Tenth Meeting on Human Factors Issues in Aircraft Maintenance and Inspection, 123-136; Stewart 1998, master's thesis, University of British Columbia, on comprehension of aircraft maintenance procedures by non-native English speakers). Second, that makes this source cut against c-032 rather than support it: c-032 states that no empirical outcome studies were found in open sources, and this survey - already on the investigation's own source list - names three. What the survey does not establish is whether any of them meets c-032's stated bar of an RCT or strong quasi-experiment; Chervak is described as a field evaluation, and settling that requires opening the three studies themselves, which this audit has not done. Recorded as 'contradicts' on the existence question with that limit stated, rather than 'partially-supports', which would read as the claim surviving narrowed. Separately: the earlier note said the analysis attributes this summary to the survey. It does not - 'kuhn' appears nowhere in analysis.md, and the investigation's prose asserts the absence of such studies rather than their presence. See 05-analysis/corrections.md."
       }
     },
     {
       "source_id": "stemg-training",
-      "cited_as": "STEMG's own training material \u2014 \"STE is not a simplified version of English for the writers, only for the readers\"",
+      "cited_as": "STEMG's own training material — \"STE is not a simplified version of English for the writers, only for the readers\"",
       "locator": "https://asd-ste100.org/STEMGTraining.pdf",
       "supports_claims": [
         "c-031"
@@ -72,7 +75,7 @@
       },
       "claim_support": {
         "verdict": "unchecked",
-        "note": "c-034 makes a specific structural claim \u2014 that it is drawn from reading-comprehension research and concerns topic position and stress position. Checkable against the text in one reading."
+        "note": "c-034 makes a specific structural claim — that it is drawn from reading-comprehension research and concerns topic position and stress position. Checkable against the text in one reading."
       }
     },
     {
@@ -147,7 +150,7 @@
     },
     {
       "source_id": "asd-ste100-issue-9",
-      "cited_as": "ASD-STE100 Issue 9, dated 15 January 2025 \u2014 53 writing rules, ~900 approved words, special usage rights",
+      "cited_as": "ASD-STE100 Issue 9, dated 15 January 2025 — 53 writing rules, ~900 approved words, special usage rights",
       "locator": "https://www.asd-ste100.org/assets/files/ASD-STE100_ISSUE9.pdf",
       "supports_claims": [
         "c-006",
