@@ -15,5 +15,14 @@ mcp-http-token
 installations-token
 mcp-http.pid
 
+# Host deploy artifacts. deploy/install.py unpacks releases into the install
+# root and points `current` at the live one, and on this host the install root
+# is a checkout of this repository — so 20MB of release bundles land beside the
+# corpus, untracked and one `git add -A` away from being committed.
+/current
+/releases/
+/support/
+/.tool-pack-root.json
+
 # Editors / OS
 .DS_Store
