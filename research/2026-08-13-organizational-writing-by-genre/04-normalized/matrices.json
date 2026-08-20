@@ -3,7 +3,7 @@
   "responding_model_count": 3,
   "derivation": "median",
   "coverage": "contested-cells-only",
-  "coverage_note": "The published analysis lists per-model votes only for the cells where the three outputs differ by two points or more. The remaining votes exist in the per-model raw responses preserved on the host and have not been promoted into the corpus, so they cannot be recorded here without them. Completing this to coverage 'complete' is host-side work; until then the demand matrix carries no recorded votes at all. Separately, three of the ten contested cells list only two votes while carrying no declined marker in the source table, so whether the third model declined or the analysis simply did not publish its vote cannot be told from the corpus alone; those are recorded as unrecorded_reason 'not-published' rather than inferred to be declines.",
+  "coverage_note": "The published analysis lists per-model votes only for the cells where the three outputs differ by two points or more. The remaining votes exist in the per-model raw responses preserved on the host and have not been promoted into the corpus, so they cannot be recorded here without them. Completing this to coverage 'complete' is host-side work; until then the demand matrix carries no recorded votes at all. Separately, three of the ten contested cells list only two votes while carrying no declined marker in the source table, so whether the third model declined or the analysis simply did not publish its vote cannot be told from the corpus alone; those are recorded as unrecorded_reason 'not-published' rather than inferred to be declines. CORRECTED 2026-08-19, native_scales on both matrices. The previous record stated that two models answered the supply matrix on the integer -2..+2 scale and one on letters. Reading the three preserved raw responses shows three distinct scales, one per model: signed integers (opus-4.7), symbols ++/+/0/-/-- with a sixth non-scalar token (gpt-5.4), and letters S/s/N/d/D (grok-4.5). The demand matrix record was also wrong in the same direction: it stated all three answered on the requested integer scale, and grok-4.5 answered 5 of 100 cells with a range. See the entries above for counts. Separately and not yet repaired: the three models did not answer the supply matrix on the same column vocabulary. opus-4.7 and grok-4.5 each supplied 12 technique columns, listing the three claude-writing-skills skills separately; gpt-5.4 supplied 10, having collapsed those three into a single bundled column. The published matrix has 10 columns, the tenth being 'repo skills' - that is gpt-5.4's collapsed shape. Two models' per-skill votes were therefore merged into one published cell by a rule no artifact states. Every 'repo skills' cell in this file inherits that unrecorded step, so its votes should be read as reconstructed, not as recorded.",
   "matrices": [
     {
       "matrix_id": "demand",
@@ -18,9 +18,14 @@
       },
       "native_scales": [
         {
-          "model_count": 3,
+          "model_count": 2,
           "scale": "integer 0..3",
-          "mapping": "identity \u2014 all three models answered on the requested scale"
+          "mapping": "identity. anthropic/claude-opus-4.7 and openai/gpt-5.4: 100 cells each, every value a single integer in range."
+        },
+        {
+          "model_count": 1,
+          "scale": "integer 0..3, with ranges",
+          "mapping": "x-ai/grok-4.5 answered 95 of 100 cells with a single integer and 5 with a range spanning two adjacent points (0-1 x3, 1-2, 2-3). A range is not a point on the scale; the published value for those cells was chosen by a collapse this artifact does not record."
         }
       ],
       "cells": []
@@ -38,14 +43,19 @@
       },
       "native_scales": [
         {
-          "model_count": 2,
-          "scale": "integer -2..2",
-          "mapping": "identity"
+          "model_count": 1,
+          "scale": "signed integer -2..+2",
+          "mapping": "identity. anthropic/claude-opus-4.7, 12 columns x 10 rows = 120 cells, every value a single signed integer. Four cells, all in the Hemingway Editor column, carry a footnote marker character; it qualifies the cell in prose and does not change the number."
+        },
+        {
+          "model_count": 1,
+          "scale": "five-symbol ++ / + / 0 / - / --, plus a sixth token '?'",
+          "mapping": "openai/gpt-5.4, 10 columns x 10 rows = 100 cells. ++=+2, +=+1, 0=0, -=-1, --=-2. The model's own legend defines a sixth token, '?' = 'proponents assert benefit, but support is unsupported in supplied materials', which is an evidence state and not a point on the -2..+2 scale; it has no image under the mapping. 17 of 100 cells are compound rather than single-valued: 10 slashed pairs (e.g. '0 / -'), and 7 carrying 'mixed' or a per-skill breakdown (e.g. 'humanize + ; ste -'). Collapsing a compound cell to one integer is a decision, and which decision was taken is not recorded anywhere in the corpus."
         },
         {
           "model_count": 1,
           "scale": "five-letter S/s/N/d/D",
-          "mapping": "S=+2, s=+1, N=0, d=-1, D=-2 \u2014 the same five points"
+          "mapping": "x-ai/grok-4.5, 12 columns x 10 rows = 120 cells. S=+2, s=+1, N=0, d=-1, D=-2 \u2014 the same five points. 12 of 120 cells are compound ('N/d', 'N/s', 'd/S*'), and many carry a parenthetical gloss that the letter alone does not express."
         }
       ],
       "cells": [
@@ -162,6 +172,18 @@
           "unrecorded_model_count": 1,
           "unrecorded_reason": "not-published"
         }
+      ],
+      "columns": [
+        "ASD-STE100",
+        "BLUF/Army",
+        "Minto",
+        "Amazon memo",
+        "ISO 24495-1",
+        "Blameless PM",
+        "Toulmin",
+        "Hemingway",
+        "Hotaling",
+        "repo skills"
       ]
     }
   ]
