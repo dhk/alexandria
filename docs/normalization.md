@@ -82,6 +82,33 @@ fails validation by design. Re-deriving it is
 [#62](https://github.com/dhk/alexandria/issues/62), and needs the same host
 access.
 
+## 5a. The published table has a producer now
+
+`05-analysis/matrices.md` is hand-written, and its digits were connected to
+nothing: `published_value` in this stage is a hand-copied claim *about* a
+hand-written table, so the two could drift together and neither would notice.
+Two things close that.
+
+`scripts/generate_matrices.py` derives a table from recorded votes and prints
+it. Where a cell has no votes it prints `·`, reports how many cells that was,
+and exits non-zero — a partial emission is never something to paste over a
+published table. At `complete` coverage the same command emits the table in
+full and exits zero, which is the point at which the digits stop being typed.
+
+`scripts/validate.py` checks the direction that matters today: every cell whose
+votes are recorded must print in `matrices.md` as the value those votes derive.
+That is ten of two hundred cells for the run described in §5, and the validator
+prints the count rather than leaving it to be assumed. Both use
+`scripts/matrices.py`, so the rendering rule in §4 has one implementation
+rather than one per caller.
+
+What blocks full generation is not the tooling. It is that most cells' votes
+were never promoted, and — as `04-normalized/corrections.md` records for the
+2026-08-13 genre run — the published columns are a collapse of the columns the
+models actually answered on, a step no artifact describes. A generator cannot
+invent that rule; it can only stop it being applied silently once it is written
+down.
+
 ## 6. Every responding model must be accounted for
 
 A cell records a vote per model that scored it. It must also record, as

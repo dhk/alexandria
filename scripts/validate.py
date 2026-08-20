@@ -32,6 +32,11 @@ from statistics import median
 import yaml
 from jsonschema import Draft202012Validator
 
+try:  # run as `python scripts/validate.py`, which is how CI invokes it
+    from matrices import derive, parse_tables, render_median, strip_markers
+except ImportError:  # pragma: no cover - imported as a package instead
+    from scripts.matrices import derive, parse_tables, render_median, strip_markers
+
 ROOT = Path(__file__).resolve().parents[1]
 RESEARCH = ROOT / "research"
 SCHEMAS = ROOT / "schemas"
@@ -245,21 +250,6 @@ def check_score_tables(errors: list[str]) -> None:
             errors.append(f"{_rel(path)}: claims present but never scored: {', '.join(unscored)}")
 
 
-def _render_median(value: float) -> str:
-    """Render a derived median the way the published matrices print it.
-
-    Sign-preserving truncation toward zero, so a half-step between two votes
-    stays visible as a signed zero rather than being rounded into a real
-    value: -0 is -0.5, +0 is +0.5, and a true zero is unsigned.
-    """
-    if value == 0:
-        return "0"
-    truncated = int(value) if value > 0 else -int(-value)
-    if truncated == 0:
-        return "+0" if value > 0 else "-0"
-    return f"{truncated:+d}"
-
-
 def check_normalized_matrices(errors: list[str]) -> None:
     """Stage 04-normalized: votes stay on their declared scale and still derive the published value.
 
@@ -330,7 +320,7 @@ def check_normalized_matrices(errors: list[str]) -> None:
 
                 published = cell.get("published_value")
                 if published is not None:
-                    derived = _render_median(median(cell["votes"]))
+                    derived = render_median(median(cell["votes"]))
                     if derived != published:
                         errors.append(
                             f"{where}: votes {cell['votes']} derive {derived}, "
@@ -345,6 +335,62 @@ def check_normalized_matrices(errors: list[str]) -> None:
                         f"{label}: coverage 'complete' but {len(missing)} cell(s) "
                         f"carry no votes: {shown}{' …' if len(missing) > 5 else ''}"
                     )
+
+
+
+def check_published_tables(errors: list[str]) -> None:
+    """The digits printed in an analysis must be the ones its votes derive.
+
+    check_normalized_matrices closes half of the cross-reference: the votes
+    derive published_value. This closes the other half — that the number in
+    05-analysis/matrices.md is that same number. Without it published_value is
+    a hand-copied claim about a hand-written table and the two can drift
+    together, which is the shape dhk/alexandria#62 took.
+
+    Only cells whose votes are recorded can be checked. At coverage
+    'contested-cells-only' that is ten of two hundred, and the count is printed
+    rather than left to be assumed.
+    """
+    sets = sorted(RESEARCH.glob("*/04-normalized/matrices.json"))
+    checked = 0
+
+    for path in sets:
+        data = _load(path, errors)
+        if not isinstance(data, dict):
+            continue
+        document = path.parent.parent / "05-analysis" / "matrices.md"
+        if not document.exists():
+            errors.append(f"{_rel(path)}: no 05-analysis/matrices.md to cross-check against")
+            continue
+        try:
+            tables = parse_tables(document.read_text())
+        except OSError as exc:
+            errors.append(f"{_rel(document)}: unreadable — {exc}")
+            continue
+
+        for matrix in data.get("matrices", []):
+            for cell in matrix.get("cells", []):
+                if not isinstance(cell, dict) or cell.get("published_value") is None:
+                    continue
+                key = (cell["row"], cell["column"])
+                printed = [table[key] for table in tables if key in table]
+                where = f"{_rel(document)}: {cell['row']} x {cell['column']}"
+                if not printed:
+                    errors.append(
+                        f"{where}: 04-normalized records a published value for this cell, "
+                        "but no table in the analysis carries that row and column"
+                    )
+                    continue
+                expected = derive(cell["votes"])
+                for raw in printed:
+                    if strip_markers(raw) != expected:
+                        errors.append(
+                            f"{where}: votes {cell['votes']} derive {expected}, "
+                            f"but the analysis prints {raw!r}"
+                        )
+                checked += 1
+
+    print(f"==> published {checked} matrix cell(s) cross-checked against their votes")
 
 
 SUBSTANTIVE_SUPPORT = {"supports", "partially-supports", "contradicts", "absent"}
@@ -524,6 +570,7 @@ def main() -> int:
         check_claim_lists(errors)
         check_score_tables(errors)
         check_normalized_matrices(errors)
+        check_published_tables(errors)
         check_source_audits(errors)
         check_investigations(errors)
         check_assurance(errors)
