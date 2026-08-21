@@ -3,11 +3,11 @@
   "responding_model_count": 3,
   "derivation": "median",
   "coverage": "contested-cells-only",
-  "coverage_note": "The published analysis lists per-model votes only for the cells where the three outputs differ by two points or more. The remaining votes exist in the per-model raw responses preserved on the host and have not been promoted into the corpus, so they cannot be recorded here without them. Completing this to coverage 'complete' is host-side work; until then the demand matrix carries no recorded votes at all. Separately, three of the ten contested cells list only two votes while carrying no declined marker in the source table, so whether the third model declined or the analysis simply did not publish its vote cannot be told from the corpus alone; those are recorded as unrecorded_reason 'not-published' rather than inferred to be declines. CORRECTED 2026-08-19, native_scales on both matrices. The previous record stated that two models answered the supply matrix on the integer -2..+2 scale and one on letters. Reading the three preserved raw responses shows three distinct scales, one per model: signed integers (opus-4.7), symbols ++/+/0/-/-- with a sixth non-scalar token (gpt-5.4), and letters S/s/N/d/D (grok-4.5). The demand matrix record was also wrong in the same direction: it stated all three answered on the requested integer scale, and grok-4.5 answered 5 of 100 cells with a range. See the entries above for counts. Separately and not yet repaired: the three models did not answer the supply matrix on the same column vocabulary. opus-4.7 and grok-4.5 each supplied 12 technique columns, listing the three claude-writing-skills skills separately; gpt-5.4 supplied 10, having collapsed those three into a single bundled column. The published matrix has 10 columns, the tenth being 'repo skills' - that is gpt-5.4's collapsed shape. Two models' per-skill votes were therefore merged into one published cell by a rule no artifact states. Every 'repo skills' cell in this file inherits that unrecorded step, so its votes should be read as reconstructed, not as recorded.",
+  "coverage_note": "The published analysis lists per-model votes only for the cells where the three outputs differ by two points or more. The remaining votes exist in the per-model raw responses preserved on the host and have not been promoted into the corpus, so they cannot be recorded here without them. Completing this to coverage 'complete' is host-side work; the demand matrix carries one recorded cell, Persuasive force x Status update, promoted on 2026-08-21 because it published a half-step that a three-vote median cannot produce. Two models scored it 0 and 1; the third answered '0-1', a range, recorded as unrecorded_reason 'off-scale'. The matrix is described elsewhere as carrying three votes on every cell with none contested, and that cell is neither. Separately, three of the ten contested cells list only two votes while carrying no declined marker in the source table, so whether the third model declined or the analysis simply did not publish its vote cannot be told from the corpus alone; those are recorded as unrecorded_reason 'not-published' rather than inferred to be declines. CORRECTED 2026-08-19, native_scales on both matrices. The previous record stated that two models answered the supply matrix on the integer -2..+2 scale and one on letters. Reading the three preserved raw responses shows three distinct scales, one per model: signed integers (opus-4.7), symbols ++/+/0/-/-- with a sixth non-scalar token (gpt-5.4), and letters S/s/N/d/D (grok-4.5). The demand matrix record was also wrong in the same direction: it stated all three answered on the requested integer scale, and grok-4.5 answered 5 of 100 cells with a range. See the entries above for counts. Separately and not yet repaired: the three models did not answer the supply matrix on the same column vocabulary. opus-4.7 and grok-4.5 each supplied 12 technique columns, listing the three claude-writing-skills skills separately; gpt-5.4 supplied 10, having collapsed those three into a single bundled column. The published matrix has 10 columns, the tenth being 'repo skills' - that is gpt-5.4's collapsed shape. Two models' per-skill votes were therefore merged into one published cell by a rule no artifact states. Every 'repo skills' cell in this file inherits that unrecorded step, so its votes should be read as reconstructed, not as recorded.",
   "matrices": [
     {
       "matrix_id": "demand",
-      "title": "Matrix A \u2014 the demand",
+      "title": "Matrix A — the demand",
       "axis_rows": "consideration",
       "axis_columns": "organizational genre",
       "scale": {
@@ -28,11 +28,28 @@
           "mapping": "x-ai/grok-4.5 answered 95 of 100 cells with a single integer and 5 with a range spanning two adjacent points (0-1 x3, 1-2, 2-3). A range is not a point on the scale; the published value for those cells was chosen by a collapse this artifact does not record."
         }
       ],
-      "cells": []
+      "cells": [
+        {
+          "row": "Persuasive force",
+          "column": "Status update",
+          "votes": [
+            0,
+            1
+          ],
+          "votes_attributed": true,
+          "models": [
+            "anthropic/claude-opus-4.7",
+            "openai/gpt-5.4"
+          ],
+          "unrecorded_model_count": 1,
+          "unrecorded_reason": "off-scale",
+          "published_value": "+0"
+        }
+      ]
     },
     {
       "matrix_id": "supply",
-      "title": "Matrix B \u2014 the supply",
+      "title": "Matrix B — the supply",
       "axis_rows": "consideration",
       "axis_columns": "technique",
       "scale": {
@@ -55,7 +72,7 @@
         {
           "model_count": 1,
           "scale": "five-letter S/s/N/d/D",
-          "mapping": "x-ai/grok-4.5, 12 columns x 10 rows = 120 cells. S=+2, s=+1, N=0, d=-1, D=-2 \u2014 the same five points. 12 of 120 cells are compound ('N/d', 'N/s', 'd/S*'), and many carry a parenthetical gloss that the letter alone does not express."
+          "mapping": "x-ai/grok-4.5, 12 columns x 10 rows = 120 cells. S=+2, s=+1, N=0, d=-1, D=-2 — the same five points. 12 of 120 cells are compound ('N/d', 'N/s', 'd/S*'), and many carry a parenthetical gloss that the letter alone does not express."
         }
       ],
       "cells": [

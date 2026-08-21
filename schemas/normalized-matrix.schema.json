@@ -4,7 +4,13 @@
   "title": "Alexandria normalized matrix set",
   "description": "Stage 04-normalized: derived, non-destructive normalization of per-model tables onto one declared scale, stored as research/<slug>/04-normalized/matrices.json. Models answer a matrix brief on whatever scale they choose; collapsing those onto a common scale and taking a median is a derivation, and a derivation belongs in an artifact with a contract rather than inside hand-written analysis prose. Cell values are NOT stored: the median is computed from the votes at read time, so a value that disagrees with its votes cannot exist.",
   "type": "object",
-  "required": ["run_id", "responding_model_count", "derivation", "coverage", "matrices"],
+  "required": [
+    "run_id",
+    "responding_model_count",
+    "derivation",
+    "coverage",
+    "matrices"
+  ],
   "additionalProperties": false,
   "properties": {
     "run_id": {
@@ -43,11 +49,24 @@
       "minItems": 1,
       "items": {
         "type": "object",
-        "required": ["matrix_id", "title", "axis_rows", "axis_columns", "scale", "cells"],
+        "required": [
+          "matrix_id",
+          "title",
+          "axis_rows",
+          "axis_columns",
+          "scale",
+          "cells"
+        ],
         "additionalProperties": false,
         "properties": {
-          "matrix_id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
-          "title": { "type": "string", "minLength": 1 },
+          "matrix_id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]*$"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
           "axis_rows": {
             "type": "string",
             "description": "What a row is — the quality being scored."
@@ -58,27 +77,46 @@
           },
           "rows": {
             "type": "array",
-            "items": { "type": "string", "minLength": 1 },
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
             "description": "The full row vocabulary, in published order. Required under coverage 'complete', where it is what makes completeness checkable rather than asserted."
           },
           "columns": {
             "type": "array",
-            "items": { "type": "string", "minLength": 1 },
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
             "description": "The full column vocabulary, in published order. Required under coverage 'complete'."
           },
           "scale": {
             "type": "object",
-            "required": ["min", "max", "kind"],
+            "required": [
+              "min",
+              "max",
+              "kind"
+            ],
             "additionalProperties": false,
             "description": "The common scale every vote is normalized onto. A vote outside it is a validation failure, not a curiosity.",
             "properties": {
-              "min": { "type": "integer" },
-              "max": { "type": "integer" },
+              "min": {
+                "type": "integer"
+              },
+              "max": {
+                "type": "integer"
+              },
               "kind": {
-                "enum": ["sequential", "diverging"],
+                "enum": [
+                  "sequential",
+                  "diverging"
+                ],
                 "description": "sequential: magnitude from a floor. diverging: signed, with a meaningful zero."
               },
-              "meaning": { "type": "string" }
+              "meaning": {
+                "type": "string"
+              }
             }
           },
           "native_scales": {
@@ -86,12 +124,22 @@
             "description": "The scales the models actually answered on, before normalization. Recorded because the mapping is the step that can go wrong.",
             "items": {
               "type": "object",
-              "required": ["model_count", "scale"],
+              "required": [
+                "model_count",
+                "scale"
+              ],
               "additionalProperties": false,
               "properties": {
-                "model_count": { "type": "integer", "minimum": 1 },
-                "scale": { "type": "string" },
-                "mapping": { "type": "string" }
+                "model_count": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "scale": {
+                  "type": "string"
+                },
+                "mapping": {
+                  "type": "string"
+                }
               }
             }
           },
@@ -100,15 +148,28 @@
             "description": "Cells with recorded votes. Under coverage 'complete' this is every row x column pair.",
             "items": {
               "type": "object",
-              "required": ["row", "column", "votes", "votes_attributed"],
+              "required": [
+                "row",
+                "column",
+                "votes",
+                "votes_attributed"
+              ],
               "additionalProperties": false,
               "properties": {
-                "row": { "type": "string", "minLength": 1 },
-                "column": { "type": "string", "minLength": 1 },
+                "row": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "column": {
+                  "type": "string",
+                  "minLength": 1
+                },
                 "votes": {
                   "type": "array",
                   "minItems": 1,
-                  "items": { "type": "integer" },
+                  "items": {
+                    "type": "integer"
+                  },
                   "description": "One vote per model that scored this cell, normalized onto the matrix scale. Models that declined are absent rather than zero — a declined cell is a missing observation, never silence."
                 },
                 "votes_attributed": {
@@ -117,7 +178,9 @@
                 },
                 "models": {
                   "type": "array",
-                  "items": { "type": "string" },
+                  "items": {
+                    "type": "string"
+                  },
                   "description": "Model ids positionally matching votes. Required in practice whenever votes_attributed is true."
                 },
                 "unrecorded_model_count": {
@@ -135,6 +198,10 @@
                     {
                       "const": "not-published",
                       "description": "The source analysis did not publish the vote and did not mark a decline. Whether the model scored it is unknown from the corpus alone; the raw responses on the host would settle it."
+                    },
+                    {
+                      "const": "off-scale",
+                      "description": "The model scored this cell, but not with a value on the declared scale — a range such as '0-1', or a compound answer naming several sub-columns. Distinct from a decline, which is a missing observation, and from not-published, which is a missing record: here the observation exists and is not a scale value. Resolving it to a point requires a stated rule, and a cell carrying this reason is evidence that no such rule was recorded."
                     }
                   ]
                 },
