@@ -94,9 +94,29 @@ three-model median once it reaches the page. Both print as a single number in
 the same column, and the reader has no way to tell that one of them rests on
 two thirds of the panel.
 
+A third reason, `off-scale`, was added on 2026-08-21. It covers a model that
+scored the cell but not with a value on the declared scale — a range like `0–1`,
+or a compound answer naming several sub-columns. That is neither a decline (a
+missing observation) nor `not-published` (a missing record): the observation
+exists and is not a scale value. Resolving it to a point needs a stated rule,
+and a cell carrying this reason is evidence that no such rule was written down.
+
 This is not hypothetical in the current corpus. Of the ten contested cells in
 `r-2026-0813-03`, three list only two votes — and none of those three carries
 the declined marker the table uses elsewhere. So the corpus alone cannot say
 whether the third model declined or the analysis simply omitted its vote. They
 are recorded as `not-published` rather than inferred to be declines; the raw
 responses on the host would settle it.
+
+### 6a. The cell that needed the third reason
+
+`Persuasive force × Status update` in the demand matrix of `r-2026-0813-03`
+publishes `+0`. A median of three votes is always one of those votes, so a
+half-step in a matrix documented as three-votes-everywhere-none-contested is
+arithmetically impossible. The raw responses say why: `opus-4.7` scored `0`,
+`gpt-5.4` scored `1`, and `grok-4.5` answered `0–1`. Two usable votes, median
+0.5, printed as a signed zero.
+
+It is recorded as a cell now — `votes: [0, 1]`, one model `off-scale` — so the
+matrix states its own exception instead of the exception hiding inside a
+rendering convention. Under §7 the cell loses its point value.
