@@ -182,24 +182,40 @@ is worse than that: `{−1, +1}` published as `0` asserts the named category
 *neutral*, when one model said mildly damages and the other said mildly helps.
 The cell reports agreement where there was a two-way split.
 
-**What this changes.** Four cells certainly, and up to twenty-three.
+**What this changes.** Six cells, and up to twenty-three.
 
-- Three supply cells print a signed zero today: `Confidence calibration × Minto`,
-  `Persuasive force × ISO 24495-1`, `Persuasive force × repo skills`.
-- One demand cell prints one: `Persuasive force × Status update`. That matrix is
-  described as carrying three votes on every cell with none contested, which
-  makes a half-step impossible — see §5a and the correction recorded in
-  `04-normalized`. The raw responses show two usable votes, `0` and `1`, with the
-  third model answering `0–1`.
+- Four cells print a signed zero, which is a half-step wearing a scale value's
+  clothes: `Confidence calibration × Minto`, `Persuasive force × ISO 24495-1`,
+  `Persuasive force × repo skills` in the supply matrix, and
+  `Persuasive force × Status update` in the demand matrix. That last one sits in
+  a matrix described as carrying three votes on every cell with none contested,
+  which makes a half-step impossible — see §6a.
+- **Two more print a plain `0`**, and these are the ones worth the rule.
+  `Empathy × repo skills` and `Durability × repo skills` each hold `{−1, +1}`.
+  Zero is a legal scale value, so nothing looks wrong; but no model said zero.
+  One said mildly damages, the other mildly helps, and the cell reports neutral
+  agreement where there was a two-way split. The signed zeros advertise
+  themselves. These do not, which is why an eye count of the published table
+  finds four and running the rule finds six.
 - The upper bound is the 22 daggered supply cells: each rests on two votes, and
   any whose votes differ loses its number. Which ones cannot be told from the
   corpus, so the range stays open until coverage does.
 
-**Still open: what a withheld cell prints.** The rule says what may not be
-published; it does not say what appears instead. The commissioned panel proposed
-`×`, `-!-`/`-?-`, and `·`/`S`/`?` — agreeing only that it must be a distinct
-non-numeric token. That choice is a readability question about a dense scannable
-grid, and it is not settled here. Until it is, `scripts/validate.py` cannot
-enforce this section: the rule would fail three cells whose replacement
-rendering does not yet exist.
+**What a withheld cell prints: `·`.** The token the published tables already
+use for a cell nobody scored, and `scripts/generate_matrices.py` already emits
+for a cell it cannot derive. Reusing it is deliberate — to a reader scanning the
+grid, "no number here" is the same fact whichever reason produced it, and a
+third glyph would buy a distinction the markers already carry. The reason stays
+visible in the annotation: `·†` is a declined vote, `**·!**` a split, bare `·`
+a cell no model scored.
+
+**This section is enforced.** `scripts/validate.py` checks it two ways. Where
+votes are recorded it derives what §7 permits and compares; where they are not
+— which is most cells — it refuses any signed zero outright, since a signed zero
+is by construction the midpoint of two differing votes. That second check is
+what reaches `Confidence calibration × Minto` and `Persuasive force × ISO
+24495-1`, whose votes were never promoted.
+
+§4 describes the signed-zero convention this supersedes. It is kept as the
+record of what the corpus did, not as instruction.
 
