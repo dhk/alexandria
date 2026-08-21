@@ -33,9 +33,9 @@ import yaml
 from jsonschema import Draft202012Validator
 
 try:  # run as `python scripts/validate.py`, which is how CI invokes it
-    from matrices import derive, parse_tables, render_median, strip_markers
+    from matrices import derive, parse_tables, publishable, render_median, strip_markers
 except ImportError:  # pragma: no cover - imported as a package instead
-    from scripts.matrices import derive, parse_tables, render_median, strip_markers
+    from scripts.matrices import derive, parse_tables, publishable, render_median, strip_markers
 
 ROOT = Path(__file__).resolve().parents[1]
 RESEARCH = ROOT / "research"
@@ -320,11 +320,22 @@ def check_normalized_matrices(errors: list[str]) -> None:
 
                 published = cell.get("published_value")
                 if published is not None:
-                    derived = render_median(median(cell["votes"]))
-                    if derived != published:
+                    # docs/normalization.md §7: the median is publishable only
+                    # when it returns a category some model chose. Where it does
+                    # not, the cell carries no value rather than a number nobody
+                    # assigned.
+                    permitted = publishable(cell["votes"])
+                    if permitted != published:
+                        derived = render_median(median(cell["votes"]))
+                        reason = (
+                            f"derive {derived}, which no model assigned, so §7 permits only "
+                            f"{permitted!r}"
+                            if permitted != derived
+                            else f"derive {derived}"
+                        )
                         errors.append(
-                            f"{where}: votes {cell['votes']} derive {derived}, "
-                            f"but the published analysis carries {published}"
+                            f"{where}: votes {cell['votes']} {reason}, "
+                            f"but the published analysis carries {published!r}"
                         )
 
             if complete and rows and columns:
@@ -381,7 +392,7 @@ def check_published_tables(errors: list[str]) -> None:
                         "but no table in the analysis carries that row and column"
                     )
                     continue
-                expected = derive(cell["votes"])
+                expected = publishable(cell["votes"])
                 for raw in printed:
                     if strip_markers(raw) != expected:
                         errors.append(
@@ -389,6 +400,19 @@ def check_published_tables(errors: list[str]) -> None:
                             f"but the analysis prints {raw!r}"
                         )
                 checked += 1
+
+        # A signed zero is never a value a model assigned: it is the midpoint of
+        # two differing votes, which is what §7 forbids. Unlike the check above
+        # this needs no recorded votes, so it reaches the cells whose votes were
+        # never promoted — which is most of them.
+        for table in tables:
+            for (row, column), raw in table.items():
+                if strip_markers(raw) in {"+0", "-0"}:
+                    errors.append(
+                        f"{_rel(document)}: {row} x {column}: prints {raw!r}. A signed zero is "
+                        "the midpoint of two differing votes and is not a value on the scale; "
+                        "§7 permits no value here"
+                    )
 
     print(f"==> published {checked} matrix cell(s) cross-checked against their votes")
 

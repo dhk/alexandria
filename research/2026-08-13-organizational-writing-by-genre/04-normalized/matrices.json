@@ -43,7 +43,7 @@
           ],
           "unrecorded_model_count": 1,
           "unrecorded_reason": "off-scale",
-          "published_value": "+0"
+          "published_value": "·"
         }
       ]
     },
@@ -128,7 +128,7 @@
             1
           ],
           "votes_attributed": false,
-          "published_value": "0",
+          "published_value": "·",
           "unrecorded_model_count": 1,
           "unrecorded_reason": "not-published"
         },
@@ -140,7 +140,7 @@
             1
           ],
           "votes_attributed": false,
-          "published_value": "-0",
+          "published_value": "·",
           "unrecorded_model_count": 1,
           "unrecorded_reason": "not-published"
         },
@@ -185,7 +185,7 @@
             -1
           ],
           "votes_attributed": false,
-          "published_value": "0",
+          "published_value": "·",
           "unrecorded_model_count": 1,
           "unrecorded_reason": "not-published"
         }

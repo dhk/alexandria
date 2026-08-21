@@ -33,9 +33,30 @@ def render_median(value: float) -> str:
     return f"{truncated:+d}"
 
 
+#: docs/normalization.md §7. What a cell prints when no value may be published.
+#: The same token generate_matrices.py already uses for a cell with no votes:
+#: "no number here" reads the same to a scanner whichever reason produced it.
+WITHHELD = "·"
+
+
 def derive(votes: list[int]) -> str:
-    """The published value a cell's votes produce, with no cell value stored."""
+    """The median a cell's votes produce, with no cell value stored."""
     return render_median(median(votes))
+
+
+def publishable(votes: list[int]) -> str:
+    """What §7 permits this cell to print.
+
+    The scales are ordinal, so the median is admissible exactly when it returns
+    a category some model chose. With an even number of differing votes it does
+    not: the midpoint is arithmetic on labels and lands outside the measurement
+    system, visibly as a signed zero and invisibly as a plain 0 for a {-1, +1}
+    split. Those cells publish no value.
+    """
+    if not votes:
+        return WITHHELD
+    value = derive(votes)
+    return value if value in {render_median(vote) for vote in votes} else WITHHELD
 
 
 def strip_markers(cell: str) -> str:

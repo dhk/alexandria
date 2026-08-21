@@ -207,8 +207,8 @@
                 },
                 "published_value": {
                   "type": "string",
-                  "pattern": "^([+-]?[0-9]+)$",
-                  "description": "The value this cell carries in the published analysis, recorded so validation can confirm the derivation still reproduces it. Not a duplicate of derived data — a cross-reference to a separate artifact, checked like a checksum. A signed zero denotes a half-step: -0 is -0.5, +0 is +0.5."
+                  "pattern": "^([+-]?[0-9]+|·)$",
+                  "description": "The value this cell carries in the published analysis, recorded so validation can confirm the published table still agrees with the votes beneath it. '·' where docs/normalization.md §7 permits no value: an even number of differing votes has no observed middle, so any number printed there is one no model assigned."
                 }
               }
             }

@@ -30,12 +30,13 @@ What each genre requires, independent of any tool. Scale 0–3: 0 irrelevant, 1 
 | Actionability | 0 | +2 | +2 | +3 | +3 | +2 | +2 | +1 | +2 | +2 |
 | Confidence calibration | +2 | +3 | +3 | +2 | +3 | +2 | +3 | +2 | +2 | +1 |
 | Empathy | +1 | +1 | +2 | +2 | +3 | +3 | +1 | +1 | +3 | +2 |
-| Persuasive force | 0 | +1 | +3 | +3 | +1 | +1 | +0 | +1 | +3 | 0 |
+| Persuasive force | 0 | +1 | +3 | +3 | +1 | +1 | · | +1 | +3 | 0 |
 | Accountability | +1 | +2 | +2 | +2 | +2 | +3 | +2 | +3 | +2 | +1 |
 | Accessibility | +2 | +2 | +2 | +2 | +3 | +2 | +2 | +2 | +2 | +3 |
 | Durability | +1 | +2 | +2 | +2 | +1 | +3 | +1 | +3 | +2 | +3 |
 
-`†` = one model declined to score this cell. `·` = no model scored it.
+`†` = one model declined to score this cell. `·` = no value is published here — either no model scored it, or the recorded votes permit none (see
+[normalization §7](../../../docs/normalization.md); a cell whose votes split evenly has no observed middle, so any number printed would be one no model assigned). Existing markers still apply: `·†` is a declined vote, `**·!**` a split.
 
 ### Matrix B — the supply
 
@@ -47,27 +48,28 @@ What each technique does to that quality. Scale −2 to +2: +2 serves it strongl
 | Brevity | +2 | +2 | +1 | -1 | +1† | 0 | -1† | +2 | +2 | +2 |
 | Scannability | +1 | +2 | +2 | -2† | +2† | +1 | 0 | **+1!** | +1 | +2† |
 | Actionability | +2 | +2 | +1 | +1 | +2† | +1 | +1 | 0 | 0 | +2 |
-| Confidence calibration | -2 | -1 | -0† | **+1!** | +1† | +2 | +2 | -2 | 0 | -1† |
-| Empathy | -1† | 0 | 0 | +1 | +2† | +2 | +1 | 0 | 0 | **0!** |
-| Persuasive force | -2 | +1 | +2 | +2 | +0† | 0 | +2 | -1 | 0 | **-0!** |
+| Confidence calibration | -2 | -1 | ·† | **+1!** | +1† | +2 | +2 | -2 | 0 | -1† |
+| Empathy | -1† | 0 | 0 | +1 | +2† | +2 | +1 | 0 | 0 | **·!** |
+| Persuasive force | -2 | +1 | +2 | +2 | ·† | 0 | +2 | -1 | 0 | **·!** |
 | Accountability | +1 | +1 | 0 | +1 | +1† | +2† | +1 | **0!** | **0!** | +2† |
 | Accessibility | +2 | +1 | +1 | 0† | +2† | +1 | 0 | +2† | +1 | +2† |
-| Durability | +1 | 0 | +1 | +2 | +1† | +2 | +2 | **-1!** | 0 | **0!** |
+| Durability | +1 | 0 | +1 | +2 | +1† | +2 | +2 | **-1!** | 0 | **·!** |
 
 **Contested cells** — the three models differ  by two points or more, so the median is not a consensus and should not be read as one:
 
-- **Precision × Blameless PM** — +1, +0, +2
-- **Precision × Hemingway** — -1, +0, +1
-- **Scannability × Hemingway** — +0, +2, +1
-- **Confidence calibration × Amazon memo** — +2, +0, +1
+- **Precision × Blameless PM** — +1, 0, +2
+- **Precision × Hemingway** — -1, 0, +1
+- **Scannability × Hemingway** — 0, +2, +1
+- **Confidence calibration × Amazon memo** — +2, 0, +1
 - **Empathy × repo skills** — -1, +1
 - **Persuasive force × repo skills** — -2, +1
-- **Accountability × Hemingway** — +0, -1, +2
-- **Accountability × Hotaling** — +0, +0, +2
-- **Durability × Hemingway** — +0, -2, -1
+- **Accountability × Hemingway** — 0, -1, +2
+- **Accountability × Hotaling** — 0, 0, +2
+- **Durability × Hemingway** — 0, -2, -1
 - **Durability × repo skills** — +1, -1
 
-`†` = one model declined to score this cell. `·` = no model scored it.
+`†` = one model declined to score this cell. `·` = no value is published here — either no model scored it, or the recorded votes permit none (see
+[normalization §7](../../../docs/normalization.md); a cell whose votes split evenly has no observed middle, so any number printed would be one no model assigned). Existing markers still apply: `·†` is a declined vote, `**·!**` a split.
 
 ---
 

@@ -147,3 +147,75 @@ arithmetically impossible. The raw responses say why: `opus-4.7` scored `0`,
 It is recorded as a cell now — `votes: [0, 1]`, one model `off-scale` — so the
 matrix states its own exception instead of the exception hiding inside a
 rendering convention. Under §7 the cell loses its point value.
+## 7. The quorum rule (adopted 2026-08-20)
+
+A published cell value must be a value some model actually assigned.
+
+The scales are ordinal. `+2 serves strongly / 0 neutral / −2 damages` fixes an
+order, not equal intervals, and the median is admissible precisely because it is
+a rank statistic: it returns an observed category. The even-*n* convention of
+averaging the two middle votes is not a rank statistic. It is arithmetic on
+category labels, and it produces values outside the measurement system — which
+is what the signed zero of §4 has been all along.
+
+**The rule, by case.**
+
+| Votes | Publish |
+|---|---|
+| n = 3 | the median, at any range — flagged strongly when the votes are contested |
+| n = 2, agreeing | that value |
+| n = 2, differing | **no point value** |
+| n = 1 | no point value |
+
+The n = 3 line is a decision rather than a derivation, and the panel commissioned
+on this question (`r-2026-0818-01`) split three ways on it: withhold at range ≥ 3,
+withhold at range ≥ 3 but publish range 2 with a flag, or publish at any range
+with a strong flag. The third was adopted. At n = 3 the median is always a value
+a model assigned, so the rule above is already satisfied; what a wide spread
+calls for is a louder flag, not a withheld number. Refusing to print a legitimate
+observed value costs the reader a cell they can act on and buys no honesty the
+flag does not already supply.
+
+**Why n = 2 differs.** With two differing votes there is no observed middle. Any
+number printed there is one no model chose, and on the diverging supply scale it
+is worse than that: `{−1, +1}` published as `0` asserts the named category
+*neutral*, when one model said mildly damages and the other said mildly helps.
+The cell reports agreement where there was a two-way split.
+
+**What this changes.** Six cells, and up to twenty-three.
+
+- Four cells print a signed zero, which is a half-step wearing a scale value's
+  clothes: `Confidence calibration × Minto`, `Persuasive force × ISO 24495-1`,
+  `Persuasive force × repo skills` in the supply matrix, and
+  `Persuasive force × Status update` in the demand matrix. That last one sits in
+  a matrix described as carrying three votes on every cell with none contested,
+  which makes a half-step impossible — see §6a.
+- **Two more print a plain `0`**, and these are the ones worth the rule.
+  `Empathy × repo skills` and `Durability × repo skills` each hold `{−1, +1}`.
+  Zero is a legal scale value, so nothing looks wrong; but no model said zero.
+  One said mildly damages, the other mildly helps, and the cell reports neutral
+  agreement where there was a two-way split. The signed zeros advertise
+  themselves. These do not, which is why an eye count of the published table
+  finds four and running the rule finds six.
+- The upper bound is the 22 daggered supply cells: each rests on two votes, and
+  any whose votes differ loses its number. Which ones cannot be told from the
+  corpus, so the range stays open until coverage does.
+
+**What a withheld cell prints: `·`.** The token the published tables already
+use for a cell nobody scored, and `scripts/generate_matrices.py` already emits
+for a cell it cannot derive. Reusing it is deliberate — to a reader scanning the
+grid, "no number here" is the same fact whichever reason produced it, and a
+third glyph would buy a distinction the markers already carry. The reason stays
+visible in the annotation: `·†` is a declined vote, `**·!**` a split, bare `·`
+a cell no model scored.
+
+**This section is enforced.** `scripts/validate.py` checks it two ways. Where
+votes are recorded it derives what §7 permits and compares; where they are not
+— which is most cells — it refuses any signed zero outright, since a signed zero
+is by construction the midpoint of two differing votes. That second check is
+what reaches `Confidence calibration × Minto` and `Persuasive force × ISO
+24495-1`, whose votes were never promoted.
+
+§4 describes the signed-zero convention this supersedes. It is kept as the
+record of what the corpus did, not as instruction.
+
