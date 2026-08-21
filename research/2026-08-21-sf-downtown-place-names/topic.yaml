@@ -1,0 +1,56 @@
+# Alexandria investigation metadata.
+# Schema not yet formalized under schemas/ — this follows the lenient
+# best-effort shape (title, status, assurance_level) that the research
+# repo module reads. Nothing here was drafted by `publish`: no run has
+# produced evidence for this investigation, so there is no run to
+# publish from. Every field below was written by hand.
+
+title: "San Francisco downtown/SoMa historical place names"
+status: "brief-only-undispatched"
+assurance_level: "bronze"
+
+slug: 2026-08-21-sf-downtown-place-names
+opened: 2026-08-21
+requested_by: operator (davehk@gmail.com)
+
+topic_kind: historical-gazetteer
+
+# No commissioned_run / dispatched_models / grading_model fields.
+# A dispatch was attempted and did not return evidence — see README.md.
+# Recording it here as though it were a run would misrepresent the
+# corpus state.
+
+notes: >
+  Two briefs, no findings. The operator supplied a multi-phase project
+  brief for a San Francisco historical place-names gazetteer; the
+  research-bearing sections of it were extracted and split into two
+  independent commissions — A for breadth across the pilot name list,
+  B for depth on the five contested cases plus the event chronology.
+  Commission A was dispatched with web search enabled and never
+  returned; its run record orphaned on the host and cannot be recovered
+  from the corpus side. Commission B was drafted and deliberately not
+  dispatched pending diagnosis of the host. Neither brief has been
+  answered by any model. The briefs are committed here because they are
+  the durable artifact of the session and Alexandria is where research
+  artifacts live; the run record is not committed, because local run
+  records belong to Minority Report per CONTRIBUTING.md.
+
+scope: >
+  Deliberately excluded from both briefs: the Phase 0-5 execution plan,
+  GitHub repository structure, JSON record schemas, Git workflow, and
+  definition-of-done checklist from the source brief. Those instruct an
+  execution agent how to build and govern a repository and are not
+  research questions; sending them to research models would have
+  produced project plans rather than findings. Also excluded: the
+  full-city scope (1835-present, all of San Francisco) — both briefs
+  are restricted to the downtown/SoMa pilot from 1847.
+
+limitations: >
+  Web search was to be on for both runs, which would have made neither
+  reproducible: a searching run rests on pages as they read that day.
+  The rationale accepted at commission time was that the deliverable is
+  a source registry whose entire value is whether its citations survive
+  checking, and that offline recall of 1850s cartography and directory
+  citations produces specific, plausible, unverifiable references. That
+  tradeoff was chosen deliberately and should be re-examined rather than
+  inherited if these briefs are dispatched later.
