@@ -1,0 +1,54 @@
+id: market-landscape
+version: 1.0.0
+title: Market and prior-art landscape
+purpose: >-
+  Identify current commercial products, open-source frameworks, standards, and
+  composable infrastructure that solve a proposed problem in whole or in part,
+  then support a build, buy, integrate, partner, defer, or stop decision.
+
+questions:
+  - Which existing solutions address the complete problem?
+  - Which solutions address individual capabilities or adjacent workflows?
+  - What evidence establishes each capability, maturity level, and limitation?
+  - What remains genuinely unsolved after reasonable combinations are considered?
+  - Should the organization build, buy, integrate, partner, defer, or stop?
+
+source_policy:
+  web_discovery_required: true
+  primary_sources_preferred: true
+  official_documentation_required_for_product_capabilities: true
+  repository_or_release_evidence_required_for_open_source_maturity: true
+  current_as_of_date_required: true
+  marketing_claims_require_corroboration: true
+
+evidence_requirements:
+  - Record the searched categories, named candidates, exclusions, and unresolved candidates.
+  - Cite every material product capability to a direct primary-source URL.
+  - Distinguish available, announced, preview, deprecated, and inferred capabilities.
+  - Use the closed capability verdicts solved, partially_solved, adjacent, not_found, and unknown.
+  - Compare complete products and reasonable compositions of existing components.
+  - State confidence and evidence freshness for each conclusion.
+  - Identify switching costs, extensibility limits, lock-in, and operational maturity.
+
+required_outputs:
+  - solution_taxonomy
+  - candidate_inventory
+  - cited_capability_matrix
+  - coverage_and_search_gaps
+  - build_buy_integrate_recommendation
+  - validation_steps
+
+guardrails:
+  - Absence from search results is not evidence that no solution exists.
+  - Model agreement is not factual verification.
+  - Vendor marketing language is not implementation evidence.
+  - A build recommendation is blocked when landscape coverage is materially incomplete.
+  - A solution is not marked solved when a required capability depends on custom assembly not described in the verdict.
+
+human_review:
+  required_when:
+    - high_cost_or_strategic_purchase
+    - material_landscape_gap
+    - disputed_product_capability
+    - recommendation_creates_vendor_lock_in
+
