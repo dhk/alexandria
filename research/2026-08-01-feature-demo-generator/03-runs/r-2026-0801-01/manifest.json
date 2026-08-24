@@ -1,0 +1,22 @@
+{
+  "run_id": "r-2026-0801-01",
+  "brief_revision": "A",
+  "brief_sha256": "6bc3b4de370a3452ffda1102614fb18534c188f7eda735a84a03feb4faf2f873",
+  "grading_model": "anthropic/claude-sonnet-4.6",
+  "resolved_model_ids": {},
+  "generation_ids": [],
+  "extraction_method": {
+    "pasted-content.md": "text-decode"
+  },
+  "redispatched_models": [],
+  "artifacts": [
+    "run.json",
+    "brief.md",
+    "claims.json",
+    "scores.csv",
+    "report.md",
+    "manifest.json",
+    "raw/",
+    "inputs/"
+  ]
+}
