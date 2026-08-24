@@ -175,6 +175,15 @@ def check_claim_lists(errors: list[str]) -> None:
                 errors.append(f"{_rel(path)}: duplicate claim_id: {', '.join(duplicates)}")
 
 
+def _run_status(scores_path: Path) -> str | None:
+    """The `status` recorded in run.json beside a scores.csv, if there is one."""
+    run_json = scores_path.parent / "run.json"
+    try:
+        with run_json.open() as handle:
+            return json.load(handle).get("status")
+    except (OSError, ValueError):
+        return None
+
 def check_score_tables(errors: list[str]) -> None:
     """Enforce the mechanical half of docs/confidence-calibration.md.
 
@@ -195,6 +204,13 @@ def check_score_tables(errors: list[str]) -> None:
             continue
 
         if not rows:
+            # A run that failed produced no scores, and failed runs are retained
+            # deliberately for operational history rather than deleted. Requiring
+            # score rows from one would force a choice between deleting the record
+            # and fabricating data. The header must still be correct, so a
+            # genuinely malformed table is still caught below.
+            if _run_status(path) == "failed":
+                continue
             errors.append(f"{_rel(path)}: no score rows")
             continue
 
