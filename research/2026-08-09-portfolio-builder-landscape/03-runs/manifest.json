@@ -1,0 +1,17 @@
+{
+  "models_dispatched": [
+    "claude-sonnet-5 (single-source interactive, not OpenRouter dispatch)"
+  ],
+  "inputs": [
+    "00-topic/source-material.md (operator requests, verbatim, across three sessions)"
+  ],
+  "failures": [
+    {
+      "attempted": "Alexandria begin_research/run_research commission dispatch (3 research models + grading + live web search)",
+      "outcome": "3 dispatch attempts, all client-side timeout at 60s, no server-side result recoverable",
+      "tracking": "https://github.com/dhk/minority-report/issues/33"
+    }
+  ],
+  "superseded_count": 0,
+  "manifest_excerpt": "Single-source interactive run via Claude Code direct session (not OpenRouter), 2026-08-08T00:00:00Z to 2026-08-09T03:20:00Z, across two passes (first-pass market scan, then a verification pass after the intended multi-model commission dispatch failed three times). Live web search (US-only results); a few WebFetch calls blocked by session network policy.\n\nCaveat, recorded in run-metadata.yaml at the time: single source, not graded or cross-checked against another model. This investigation exists in single-source Bronze form specifically because the multi-model commission path was attempted and failed, not because it wasn't tried."
+}
