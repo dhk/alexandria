@@ -24,5 +24,12 @@ mcp-http.pid
 /support/
 /.tool-pack-root.json
 
+# Exported run bundles. `alexandria-web` writes a ZIP beside the run artifacts
+# when a run is exported, and research/<slug>/08-published/ is where they land —
+# inside the corpus, untracked, and one `git add -A` away from being committed.
+# They are local records rather than authoritative artifacts, and no ZIP has ever
+# been committed here; the manifest already records what a run produced.
+*.zip
+
 # Editors / OS
 .DS_Store
