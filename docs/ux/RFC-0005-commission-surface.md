@@ -195,7 +195,10 @@ Collapsing them fabricates coverage.
 
 ### Group taxonomy
 
-Assigned by the analysis layer, not the UI. Order is fixed.
+Assigned by the analysis layer, not the UI. Order is fixed. The five keys and
+their precedence are normative in
+[`schemas/claim-group.schema.json`](../../schemas/claim-group.schema.json) —
+this table is the design rationale for them, not their definition.
 
 | Key | Label | Meaning |
 |---|---|---|

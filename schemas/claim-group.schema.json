@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/dhk/alexandria/schemas/claim-group.schema.json",
+  "title": "Alexandria claim group",
+  "description": "How one claim's per-model scores classify across the models that responded. Assigned once per claim and stored in claims.json. Precedence is normative and not alphabetical: a claim qualifying for more than one group is labelled disagreement, because a split among models needs operator judgment and coverage does not. The remaining order is silent, then novel, then thin, then consensus. 'silent' means every responding model was graded as having no bearing statement; it never describes a model whose call failed, which carries no score at all -- see claim-score.schema.json.",
+  "type": "string",
+  "oneOf": [
+    {
+      "const": "consensus",
+      "description": "Every responding model took the same side."
+    },
+    {
+      "const": "disagreement",
+      "description": "Models split. Operator judgment is required, so this label wins over any other the claim also qualifies for."
+    },
+    {
+      "const": "novel",
+      "description": "Raised by exactly one model and unreviewed by the others. A lead, not a finding."
+    },
+    {
+      "const": "thin",
+      "description": "Fewer than half the responding models had a bearing statement."
+    },
+    {
+      "const": "silent",
+      "description": "No responding model produced a bearing statement. Absence is not disagreement."
+    }
+  ]
+}
