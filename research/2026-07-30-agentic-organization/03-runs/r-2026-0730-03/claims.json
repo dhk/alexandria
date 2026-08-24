@@ -1,0 +1,122 @@
+[
+  {
+    "claim_id": "c-001",
+    "text": "Linguistic feedback and episodic memory improve later trials without model-weight updates, as supported by Reflexion (Shinn et al.).",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-002",
+    "text": "Experience can be consolidated into reusable, portable skills separate from the core prompt, as demonstrated by Voyager (Wang et al.).",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-003",
+    "text": "Multi-agent peer review improves outcomes, but peer consensus is not a substitute for factual validation.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-004",
+    "text": "Multi-agent systems incur substantial token overhead and are only economically justified for parallel, high-value work.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-005",
+    "text": "Agent organizations can become more effective yet less aligned than individual agents.",
+    "group": "disagreement",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-006",
+    "text": "The onboarding compiler that parses job descriptions into skills, permissions, and qualification tests is feasible with acceptable human effort.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-007",
+    "text": "Evidence-gated learning with held-out evaluation prevents policy and skill drift.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-008",
+    "text": "The HR-shaped organizational lifecycle vocabulary (employment records, promotion, reassignment) adds engineering value beyond standard IAM and config-as-code primitives.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-009",
+    "text": "Credential revocation, least-privilege access, and short-lived tokens are sound and necessary governance controls for agentic systems.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-010",
+    "text": "Evaluator independence is undermined when the operator and evaluator share the same base model lineage.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-011",
+    "text": "A single agent with versioned prompts, trace logging, approval gates, and tool restrictions may capture most of the value of the full organizational OS at lower complexity.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-012",
+    "text": "Offboarding is difficult to make complete because derived credentials, delegated work, and memory embedded in shared skills are hard to fully revoke.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-013",
+    "text": "Human oversight approval queues will degrade to rubber-stamping under production load, undermining governance value.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-014",
+    "text": "Skill libraries may become incoherent at organizational scale due to versioning conflicts, combinatorial interactions, and dead-skill accumulation.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-015",
+    "text": "The 90-day prototype should include a multi-agent manager or control bot class to test coordination early.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-016",
+    "text": "Prompt injection through tool outputs or retrieved content is a high-severity risk for any tool-using agent with external inputs.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-017",
+    "text": "Successful lifecycle drill execution (revocation, rollback, reassignment) should be a hard prerequisite for any go decision, independent of economic results.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-018",
+    "text": "The evidence-gated learning pipeline and content-addressed configuration are the strongest novel contributions of the proposed architecture.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-019",
+    "text": "Bot identity and learned skills should persist across foundational model upgrades without requiring full re-onboarding.",
+    "group": "consensus",
+    "responding_model_count": 3
+  },
+  {
+    "claim_id": "c-020",
+    "text": "Risk tier classification for change-control gating is itself an unsolved open problem that the governance matrix presupposes.",
+    "group": "consensus",
+    "responding_model_count": 3
+  }
+]
