@@ -19,6 +19,11 @@ Hotaling's rules for concise scientific writing, and the repo's three skills.
 `r-2026-0814-01` (ablation, $0.85), that asked the same question with the
 brief's framing removed. See *How far to trust it*.
 
+**Read it in a browser.** [`06-viewer/index.html`](06-viewer/) is this
+investigation as one self-contained page — both matrices, the ranked selection
+rule for a chosen genre, and each technique's reference. It is generated from
+`05-analysis/matrices.md`; see [`06-viewer/README.md`](06-viewer/README.md).
+
 ## The verdict
 
 No. One set of principles does not serve all organizational writing, and the
