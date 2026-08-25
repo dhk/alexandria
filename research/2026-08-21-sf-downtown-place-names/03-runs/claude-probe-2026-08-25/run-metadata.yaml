@@ -13,7 +13,7 @@ brief_sha256:
   brief-a-gazetteer.md: 94ade6f6d748d10109d41f4968c388f963f100f84b54ad88229c7b1a8abf39b7
   brief-b-cases-chronology.md: a661f44ff11f5d9c80c4366594b22184eb7b5f27a29704cf9fad1d0eae80ecef
 execution_started: 2026-08-25T05:00:00Z
-execution_completed: 2026-08-25T05:20:00Z
+execution_completed: 2026-08-25T06:10:00Z
 tool_access:
   - WebSearch (live, US-only results; returns summaries, not page text)
   - WebFetch (governed by an egress domain allowlist — see caveats)
@@ -27,6 +27,13 @@ sources_retrieved:
     url: "https://sfplanning.s3.amazonaws.com/archives/documents/372-SOMA_Historic_Context_Statement_06-30-2009.pdf"
     sha256: c5b3e1c26d315ce1e6c586ca074afa2a19cd19958605425a41521a9177e20268
     marker: FETCHED
+  - title: "Central SoMa Plan Draft EIR, Section IV.C — Cultural and Paleontological Resources"
+    creator: "San Francisco Planning Department"
+    case_no: "2011.1356E"
+    date: 2016-12
+    pages: 70
+    url: "https://sfplanning.s3.amazonaws.com/sfmea/CentralSoMaPlanDEIR_09-iv-c-cultural.pdf"
+    marker: FETCHED
 prompt: >
   Test whether the open web can answer the retrieval-shaped questions in the
   two briefs — chiefly The East Cut's adoption and the first print appearance
@@ -35,8 +42,11 @@ prompt: >
 caveats: >
   Single source, not graded, not cross-checked against another model, and not
   an answer to either brief. Page retrieval is governed by an egress domain
-  allowlist: theeastcut.org, sfist.com, en.wikipedia.org and sfgate.com were
-  all blocked, while sfplanning.s3.amazonaws.com was reachable. The East Cut
+  allowlist by host, not by content class: theeastcut.org, sfist.com,
+  en.wikipedia.org, sfgate.com, www.sfheritage.org and archives.sfplanning.org
+  were all blocked, while sfplanning.s3.amazonaws.com was reachable — SF
+  Planning is both blocked and reachable depending on which host serves the
+  file. The East Cut
   findings therefore rest entirely on search-engine summaries whose underlying
   pages were never read, and are marked SEARCH-SUMMARY rather than FETCHED —
   a marker the briefs do not define, introduced here because conflating it

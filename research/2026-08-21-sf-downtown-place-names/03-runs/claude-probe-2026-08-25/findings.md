@@ -240,3 +240,128 @@ Reading the sources named in the gaps list. In particular, a single
 full-text newspaper search could move Case One from "unanswerable" to
 "answered", and would invalidate this document's central negative claim —
 which is the outcome to hope for.
+
+---
+
+# Second pass — the SF Planning S3 archive
+
+Added after the first pass, same session, same markers.
+
+## Capability finding, corrected
+
+The first pass concluded from five domains that news and reference hosts are
+blocked and agency archives are not. That was half right and the reasoning was
+wrong. **The allowlist is by host, not by content class.** Newly tested:
+
+- `www.sfheritage.org` — BLOCKED (a preservation organisation, not news)
+- `archives.sfplanning.org` — BLOCKED (SF Planning's *own* archive host)
+- `sfplanning.s3.amazonaws.com` — REACHABLE
+
+SF Planning is both blocked and reachable depending on which host serves the
+file. What is reachable is the S3 bucket, and the entire SF Planning document
+archive appears to sit in it — EIRs, area plans, historic context statements,
+Historic Preservation Commission packets. That is a large, citable corpus
+available to this session, and it was found only by testing rather than
+inferring.
+
+## Second source obtained
+
+**Central SoMa Plan Draft EIR**, Section IV.C, Cultural and Paleontological
+Resources. San Francisco Planning Department, Case No. 2011.1356E, December
+2016. 70 pp.
+`https://sfplanning.s3.amazonaws.com/sfmea/CentralSoMaPlanDEIR_09-iv-c-cultural.pdf`
+**FETCHED** — full text extracted and searched in this session.
+
+## New evidence
+
+### The 50 Vara Survey is older than O'Farrell, and has a named author
+
+> "On the north side of Market Street, O'Farrell laid out blocks which measured
+> 50 varas on a side (a vara is a Spanish unit of measurement that
+> approximately corresponds to 33 inches), consistent with Swiss sailor and
+> surveyor Jean Jacques Vioget's original 1839 '50-Vara survey' of the area
+> around Portsmouth Square. South of Market Street, O'Farrell created the
+> '100-Vara Survey,' with blocks that were twice as long and twice as wide as
+> those to the north." — p. IV.C-5 (PDF page 5). **FETCHED**
+
+This dates the 50 Vara name to **Vioget, 1839** — eight years before
+O'Farrell, and attached to a different surveyor and a different part of the
+city. Page & Turnbull do not give this. It matters for Brief A, which listed
+the 50 Vara Survey only "where it bounds the 100 Vara": on this evidence it is
+a separate name event with its own author and date, not a boundary condition.
+
+Also here: O'Farrell's Market Street was laid out **120 feet wide**, on a
+diagonal connecting Yerba Buena Cove to Mission Dolores.
+
+### CONFLICT 2 — Happy Valley's extent
+
+> "During the Gold Rush, the majority of development south of Market Street
+> was concentrated in 'Happy Valley,' located along the shoreline —
+> approximately First Street — between Market and Mission Streets, and
+> 'Pleasant Valley' to the south. Both of these areas were framed on the west
+> by a ridge of sand dunes located east of what is today Second Street."
+> — p. IV.C-5 (PDF page 5). **FETCHED**
+
+Set against Page & Turnbull (2009), printed p.20: Happy Valley was "bounded by
+Market, Howard, 1st, and 2nd streets".
+
+The two official documents give different southern edges — **Mission Street**
+(2016) versus **Howard Street** (2009). Mission lies north of Howard, so the
+2009 extent reaches roughly a block further south. The western framing also
+differs in kind: 2009 gives a street edge (2nd), 2016 gives a landform (a dune
+ridge east of present-day 2nd).
+
+Unadjudicated. Neither is a contemporaneous source; both are modern syntheses,
+so this is a disagreement between two retrospective readings and resolving it
+means going to whatever each rests on. It is exactly the case §3.4 exists for,
+and it is the second such conflict found without any commission having run.
+
+### Rincon Hill's height — a precision difference, not a conflict
+
+Central SoMa DEIR: Rincon Hill rose "to more than 100 feet near the
+intersection of Second and Harrison Streets" (p. IV.C-5). Page & Turnbull:
+"the 150-foot outcropping of Rincon Hill" and "over 150' above San Francisco
+Bay". These are not inconsistent — 150 satisfies "more than 100" — but only
+one gives a figure precise enough to use. Recorded so a later reader does not
+mistake the pair for a contradiction.
+
+### "South of the Slot" — a second absence
+
+The term appears **zero times** in 70 pages of cultural-resources analysis.
+"SoMa" appears 147 times, all as the modern plan label. **FETCHED (by
+absence.)**
+
+Two independent agency documents now use "SoMa" freely as a designation and
+neither treats it as a name with a history. That strengthens the first pass's
+conclusion: the agency record will not date this name, and the question should
+be routed to a newspaper database rather than commissioned.
+
+### A named archaeological source for Tar Flat and Rincon Hill
+
+Cited at note 106: Praetzellis, Mary and Adrian Praetzellis (eds.), *Tar Flat,
+Rincon Hill, and the Shore of Mission Bay: Archaeological Research Design and
+Treatment Plan for SF-480 Terminal Separation Rebuild*, 1992. **FETCHED (as a
+citation; not read.)**
+
+A whole volume named for two of the pilot's places. Highest-value unread lead
+found so far.
+
+## Revised gaps
+
+Unchanged at the top: the first print use of "SoMa" and of "South of the Slot"
+still need a newspaper database, and two agency documents failing to date them
+is now positive evidence that no amount of agency material will.
+
+Added:
+
+- **Praetzellis & Praetzellis 1992** — named for Tar Flat and Rincon Hill; not
+  located or read.
+- **Vioget's 1839 50-Vara survey** — now dated and attributed, but the survey
+  itself is unread; its extent is asserted here only as "the area around
+  Portsmouth Square".
+- **The Happy Valley extent conflict** — needs whatever the 2009 and 2016
+  documents each rest on.
+- **The rest of the S3 archive** — Historic Preservation Commission packets,
+  the Central SoMa historic context statement adopted 16 March 2016, area
+  plans for East SoMa, Rincon Hill and Transbay. Reachable, unexamined, and
+  the cheapest remaining source of evidence for this project.
