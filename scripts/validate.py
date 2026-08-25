@@ -33,8 +33,10 @@ import yaml
 from jsonschema import Draft202012Validator
 
 try:  # run as `python scripts/validate.py`, which is how CI invokes it
+    from build_viewer import ViewerError, build as build_viewer
     from matrices import derive, parse_tables, publishable, render_median, strip_markers
 except ImportError:  # pragma: no cover - imported as a package instead
+    from scripts.build_viewer import ViewerError, build as build_viewer
     from scripts.matrices import derive, parse_tables, publishable, render_median, strip_markers
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -417,6 +419,37 @@ def check_published_tables(errors: list[str]) -> None:
     print(f"==> published {checked} matrix cell(s) cross-checked against their votes")
 
 
+def check_viewers(errors: list[str]) -> None:
+    """A committed viewer must be the page its analysis builds.
+
+    `06-viewer/index.html` renders the same two hundred cells the analysis
+    publishes. Before this it carried its own transcription of them, which made
+    it a copy nothing compared against the original — the shape #62 took, one
+    layer out from where that was found. Rebuilding here means a corrected
+    analysis and a stale page cannot both pass, and that the page a reader
+    opens is derived from the corpus rather than asserted alongside it.
+    """
+    checked = 0
+    for template in sorted(RESEARCH.glob("*/06-viewer/template.html")):
+        slug = template.parent.parent.name
+        try:
+            output, built, _ = build_viewer(slug)
+        except ViewerError as exc:
+            errors.append(f"{_rel(template)}: will not build — {exc}")
+            continue
+        if not output.exists():
+            errors.append(f"{_rel(output)}: missing — run scripts/build_viewer.py {slug}")
+            continue
+        if output.read_text() != built:
+            errors.append(
+                f"{_rel(output)}: not what 05-analysis/matrices.md builds. "
+                f"Run: python scripts/build_viewer.py {slug}"
+            )
+        checked += 1
+
+    print(f"==> {checked} viewer(s) rebuilt and compared against the committed page")
+
+
 SUBSTANTIVE_SUPPORT = {"supports", "partially-supports", "contradicts", "absent"}
 
 
@@ -595,6 +628,7 @@ def main() -> int:
         check_score_tables(errors)
         check_normalized_matrices(errors)
         check_published_tables(errors)
+        check_viewers(errors)
         check_source_audits(errors)
         check_investigations(errors)
         check_assurance(errors)
