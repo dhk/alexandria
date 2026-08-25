@@ -1,0 +1,7 @@
+{
+  "database": "dolt",
+  "backend": "dolt",
+  "dolt_mode": "embedded",
+  "dolt_database": "alexandria",
+  "project_id": "73f1b7f7-dc0f-4fa7-a538-1bd7292629f2"
+}
