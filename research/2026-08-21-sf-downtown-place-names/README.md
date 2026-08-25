@@ -1,8 +1,11 @@
 # San Francisco downtown/SoMa historical place names
 
-**State: two briefs, no findings.** No model has answered either brief.
-Nothing in this directory is evidence, and nothing in it should be cited
-as a research result.
+**State: two briefs, plus one single-source retrieval probe.** No
+commission has answered either brief. The probe under
+`03-runs/claude-probe-2026-08-25/` is one source, ungraded, and is not an
+answer to either brief — but it did obtain a substantive primary
+administrative source and open the conflict register, so it is evidence
+and is citable as such, with its markers respected.
 
 ## Read order
 
@@ -12,6 +15,8 @@ as a research result.
    (§1, §2, §3, §7, §11, §12), which is what the commissions were built on.
 3. `01-brief/brief-a-gazetteer.md` — commission A, breadth.
 4. `01-brief/brief-b-cases-chronology.md` — commission B, depth.
+5. `03-runs/claude-probe-2026-08-25/findings.md` — the retrieval probe,
+   and the only evidence here so far.
 
 ## What the source brief asked for, and what was commissioned
 
@@ -96,6 +101,32 @@ default $1.00 ceiling, which suggests the ceiling is a pre-dispatch
 admission check rather than a runtime cap. That is an inference from the
 committed records, not a reading of the enforcement code.
 
+## What the probe established
+
+Run 2026-08-25, single source, ungraded. In short:
+
+- SF Planning's **Historic Context Statement, South of the Market Area**
+  (Page & Turnbull, 30 June 2009, 118 pp.) was retrieved and read in full.
+  It answers, with quotable passages, the 100 Vara / 50 Vara survey extent,
+  the 1869 Second Street Cut, Happy Valley's street-bounded extent, Pleasant
+  Valley, Steamboat Point (1851), Tar Flat and its supersession of the two
+  valleys, and Rincon Point as distinct from Rincon Hill.
+- **Neither that document nor the open web dates the first print use of
+  "SoMa".** The name appears in it ten times, always as a modern planning
+  label. This question is not answerable by retrieval and should be
+  specified as a gap, not commissioned.
+- **One conflict is already open**: Page & Turnbull put 50 Vara blocks
+  between Yerba Buena Cove and 1st Street with 100 Vara only from 1st to
+  5th, while a 1945 city document is reported to run the 100 Vara District
+  from Market to the Ferry. Unadjudicated.
+- **Brief B's task text says The East Cut was adopted in 2018; reporting
+  points at 2017.** The year must be pinned before either is cited. The
+  briefs are left unedited — the correction belongs in findings, not in a
+  silent rewrite of a brief that a run was already dispatched against.
+- Page retrieval is governed by an **egress domain allowlist**. Every news
+  and reference host attempted was blocked; the agency archive was not.
+  Any plan that depends on hand retrieval has to account for that.
+
 ## What a later session would need to decide
 
 1. Whether the host is stable enough for a long searching run.
@@ -105,3 +136,9 @@ committed records, not a reading of the enforcement code.
    restart exposure that a long run carries.
 3. Whether to dispatch A and B at all, or research the pilot by hand
    against the same briefs.
+4. Whether to re-scope the commission in light of the probe: Case Five is
+   mostly retrieval and does not need three frontier models; Case One
+   cannot be retrieved at any price and should be declared a gap. What is
+   left for a commission is the judgment-heavy work — place-class
+   assignment, extent precision, adjudicating the 100 Vara disagreement,
+   and holding survey meaning apart from social meaning.

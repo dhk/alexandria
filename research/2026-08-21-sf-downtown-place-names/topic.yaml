@@ -6,7 +6,7 @@
 # publish from. Every field below was written by hand.
 
 title: "San Francisco downtown/SoMa historical place names"
-status: "brief-only-undispatched"
+status: "single-source-probe"
 assurance_level: "bronze"
 
 slug: 2026-08-21-sf-downtown-place-names
@@ -16,12 +16,15 @@ requested_by: operator (davehk@gmail.com)
 topic_kind: historical-gazetteer
 
 # No commissioned_run / dispatched_models / grading_model fields.
-# A dispatch was attempted and did not return evidence — see README.md.
-# Recording it here as though it were a run would misrepresent the
-# corpus state.
+# The one OpenRouter dispatch attempted did not return evidence — see
+# README.md. Recording it here as though it were a completed run would
+# misrepresent the corpus state.
+
+probe_run: claude-probe-2026-08-25   # single-source, not graded, not an
+                                     # answer to either brief
 
 notes: >
-  Two briefs, no findings. The operator supplied a multi-phase project
+  Two briefs; one single-source retrieval probe, no commissioned findings. The operator supplied a multi-phase project
   brief for a San Francisco historical place-names gazetteer; the
   research-bearing sections of it were extracted and split into two
   independent commissions — A for breadth across the pilot name list,
@@ -30,7 +33,12 @@ notes: >
   returned; its run record orphaned on the host and cannot be recovered
   from the corpus side. Commission B was drafted and deliberately not
   dispatched pending diagnosis of the host. Neither brief has been
-  answered by any model. The briefs are committed here because they are
+  answered by any model as a commission. A hand-run retrieval probe
+  (03-runs/claude-probe-2026-08-25/) has since established what the open
+  web can and cannot settle, obtained one substantive primary
+  administrative source, and opened the conflict register with a
+  disagreement over the 100 Vara District's extent. It is one source and
+  is not graded. The briefs are committed here because they are
   the durable artifact of the session and Alexandria is where research
   artifacts live; the run record is not committed, because local run
   records belong to Minority Report per CONTRIBUTING.md.

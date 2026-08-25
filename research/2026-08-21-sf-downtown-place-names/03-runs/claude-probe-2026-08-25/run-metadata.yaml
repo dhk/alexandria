@@ -1,0 +1,47 @@
+# Run metadata (AGENTS.md rule 6: provider, model, prompt, brief revision,
+# execution time, tool access, checksums — recorded for every run).
+
+provider: "Anthropic, via Claude Code direct session (not OpenRouter dispatch)"
+model: claude-opus-5
+run_kind: single-source-interactive
+run_role: retrieval-probe
+brief_paths:
+  - 01-brief/brief-a-gazetteer.md
+  - 01-brief/brief-b-cases-chronology.md
+brief_revision: 1
+brief_sha256:
+  brief-a-gazetteer.md: 94ade6f6d748d10109d41f4968c388f963f100f84b54ad88229c7b1a8abf39b7
+  brief-b-cases-chronology.md: a661f44ff11f5d9c80c4366594b22184eb7b5f27a29704cf9fad1d0eae80ecef
+execution_started: 2026-08-25T05:00:00Z
+execution_completed: 2026-08-25T05:20:00Z
+tool_access:
+  - WebSearch (live, US-only results; returns summaries, not page text)
+  - WebFetch (governed by an egress domain allowlist — see caveats)
+  - local PDF text extraction (pypdf, in an isolated environment)
+sources_retrieved:
+  - title: "Historic Context Statement, South of the Market Area"
+    creator: "Page & Turnbull, Inc."
+    prepared_for: "City and County of San Francisco Planning Department"
+    date: 2009-06-30
+    pages: 118
+    url: "https://sfplanning.s3.amazonaws.com/archives/documents/372-SOMA_Historic_Context_Statement_06-30-2009.pdf"
+    sha256: c5b3e1c26d315ce1e6c586ca074afa2a19cd19958605425a41521a9177e20268
+    marker: FETCHED
+prompt: >
+  Test whether the open web can answer the retrieval-shaped questions in the
+  two briefs — chiefly The East Cut's adoption and the first print appearance
+  of "SoMa" and "South of the Slot" — before paying for a multi-model
+  commission. Run as a probe, not as an answer to either brief.
+caveats: >
+  Single source, not graded, not cross-checked against another model, and not
+  an answer to either brief. Page retrieval is governed by an egress domain
+  allowlist: theeastcut.org, sfist.com, en.wikipedia.org and sfgate.com were
+  all blocked, while sfplanning.s3.amazonaws.com was reachable. The East Cut
+  findings therefore rest entirely on search-engine summaries whose underlying
+  pages were never read, and are marked SEARCH-SUMMARY rather than FETCHED —
+  a marker the briefs do not define, introduced here because conflating it
+  with either FETCHED or RECALLED would misrepresent the evidence. The one
+  document actually read is a 2009 synthesis: its claims about the 1850s are
+  retrospective commentary inheriting whatever its footnotes rest on.
+  No Sanborn sheet, block book, city directory or newspaper database was
+  consulted.
