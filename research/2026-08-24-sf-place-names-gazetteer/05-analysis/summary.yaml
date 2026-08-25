@@ -1,0 +1,31 @@
+headline: "Two of three questions moved, and the decisive evidence came from the operator reading primary sources the commissioned models could not reach -- a 1945 municipal record they reported unfindable, and four Assessor's block sheets that settle an extent dispute the literature had left open"
+consensus: "N/A -- single-provider pass, no second model to agree with. Do not read an empty lane here as a gap; see coverage."
+disagreement: "N/A -- single-provider pass, nothing to disagree with."
+novel:
+  - "The 1945 document at the centre of the 100 Vara extent dispute is real, is the SF Board of Supervisors Journal of Proceedings vol. 40 no. 1 (2 Jan 1945) p. 46 in the Assessor's Office report, and says materially less than its secondhand version claims: it lists that year's land-revaluation study areas and nowhere states that South of Market is 'officially known as 100 Vara'. That gloss is Wikipedia's, in an adjacent sentence tagged Citation-needed since September 2019."
+  - "The extent dispute is largely a category error between an administrative designation and a surveying description, and separating them resolves most of it. On administrative extent the 1945 reading holds: Assessor's block sheets 3717 (Mission/Spear/Howard/Main) and 3746 (Folsom/Main/Harrison/Beale) lie east of 1st Street and are headed '100 VARA BLK. 325' and '332'. On 1847 geometry nothing is adjudicated, because no one in this investigation ever saw the 1847 plan."
+  - "AB 3746 measures 275.00 x 275.00 ft -- exactly 100 varas square -- east of 1st Street, where Page & Turnbull (2009) say the grid 'replicated the 50 Vara Survey' (a 137.5 ft module). Their sentence is not supported by the modern block record, though the sheets are modern and much of that land was under Yerba Buena Cove in 1847."
+  - "The SoHo-derivation claim for 'SoMa' is not merely unattributed: it is traceable to the first revision of Wikipedia's South of Market article, 5 March 2004, revid 2647532, where it appears hedged as 'probably' and unsourced. It has carried a Citation-needed tag since July 2013 and has never been sourced."
+  - "At its earliest verified print use -- Los Angeles Times, 6 November 1988 -- 'SoMa' was NOT a synonym for South of Market: the article bounds it by 'Market, 1st, Townsend and 12th streets', excluding everything east of 1st. The acronym enters the record naming a sub-area, not the survey district."
+  - "Three mutually inconsistent extents for the 100 Vara series now sit in the record -- Page & Turnbull's 1st-to-5th, the 1945 Assessor's south-of-Market-to-the-Ferry, and SF Memory's 'Ninth Street to the Bay' -- and they should be carried as three dated claims rather than reconciled."
+  - "The East Cut's 2017-versus-2018 confusion resolves into three separate events: branding launch 8 June 2017, Google Maps adoption spring 2018, and the legal assessment-district name change by BOS Resolution 492-19 on 19 November 2019."
+  - "The widely cited '90% thought it was dumb' survey is a paraphrase of a paraphrase. The NYT reports only that Tad Bogdan organised a survey of 271 neighbours and that, in his account, 90 percent 'disliked the name'. The instrument was never located and its field date is bounded only between June 2017 and August 2018."
+coverage: >
+  Bronze, single-provider. One commissioned pass (Perplexity Agent API via MCP,
+  not OpenRouter, not graded, no claim scoring), plus an operator verification
+  pass that read primary sources directly. Q2 rests almost entirely on the
+  commissioned run and is marked as such throughout the analysis; none of its
+  sources were independently opened. Q1 and Q3 carry first-hand primary-source
+  verification and are correspondingly stronger.
+
+  Five of seven deep-research calls timed out at the client's 300s ceiling, and
+  three Q3 calls were downgraded to a weaker fast preset as a result; one of
+  those returned a false negative on the 1945 document. The provider returned no
+  usage or cost metadata on any call, so cost is unrecorded rather than
+  estimated.
+
+  The 1847 O'Farrell plan was never viewed by anyone -- not by a model, which
+  cannot read a map image, and not by the operator, who could not locate it
+  under the cited title in the David Rumsey, Library of Congress or Bancroft
+  catalogs. Every claim about 1847 block geometry in this investigation is
+  therefore secondhand.

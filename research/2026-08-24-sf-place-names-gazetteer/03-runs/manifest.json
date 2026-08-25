@@ -1,0 +1,35 @@
+{
+  "models_dispatched": [
+    "perplexity sonar deep-research preset (via MCP, not OpenRouter dispatch)",
+    "perplexity fast preset (perplexity_ask), substituted for three Q3 calls after repeated timeouts"
+  ],
+  "inputs": [
+    "00-topic/source-material.md (operator-authored research brief, verbatim)",
+    "01-brief/brief.md (the commission as dispatched)"
+  ],
+  "runs": [
+    "perplexity-2026-08-24 (single-provider, 10 calls, 5 usable responses)",
+    "operator-verification-2026-08-24 (no model; direct primary-source retrieval)"
+  ],
+  "failures": [
+    {
+      "attempted": "perplexity_research (deep-research preset) on Q1, Q3, and both halves of a split Q3",
+      "outcome": "5 of 7 calls timed out at the MCP client's 300s ceiling; requests were accepted server-side and returned nothing to the caller",
+      "consequence": "Q1 and Q3 re-issued at reduced scope; Q3 split in two; three Q3 calls downgraded to the fast preset",
+      "indicated_fix": "raise PERPLEXITY_TIMEOUT_MS — the calls were completing, just past the ceiling"
+    },
+    {
+      "attempted": "perplexity_ask on the 1945 City and County of San Francisco document",
+      "outcome": "false negative — reported the document unfindable across Internet Archive, HathiTrust, SFPL/SF History Center, sfplanning.org and BOS materials",
+      "consequence": "operator located it directly via the Wikipedia footnote that a sibling response had surfaced; response preserved unedited as response-q3b-1945-document.md"
+    },
+    {
+      "attempted": "reading the 1847 O'Farrell plan",
+      "outcome": "not attempted by any model — none of these tools can read a map image; the cited title was not located in any catalog searched",
+      "consequence": "Q3's 1847-geometry half remains unadjudicated; recorded as the highest-value open task"
+    }
+  ],
+  "cost_metadata": "none returned by the provider on any call; per-call cost unknown and deliberately not estimated",
+  "superseded_count": 0,
+  "manifest_excerpt": "Single-provider interactive commission via MCP (Perplexity Agent API, not OpenRouter), 2026-08-24T22:30:00Z to 2026-08-24T22:47:00Z, followed by an operator verification pass 22:47Z-23:05Z that retrieved and read the primary sources the commission could not reach. Not graded, not cross-checked, no claim scoring. The investigation's strongest findings come from the verification pass, not from the dispatched models — which is itself the run's most useful observation."
+}
