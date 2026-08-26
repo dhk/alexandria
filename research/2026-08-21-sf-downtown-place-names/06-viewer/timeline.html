@@ -163,10 +163,16 @@ footer.end .mono{font-size:11.5px}
 .scrub{position:relative; flex:1 1 340px; min-width:240px; padding:14px 0 4px}
 .scrub input[type=range]{width:100%; margin:0; accent-color:var(--brass); cursor:pointer}
 .scrub input[type=range]:focus-visible{outline:2px solid var(--brass-bright); outline-offset:4px}
-.ticks{position:relative; height:22px; margin-top:2px}
-.tick{position:absolute; transform:translateX(-50%); text-align:center;
+.ticks{position:relative; height:36px; margin-top:2px}
+.tick{position:absolute; top:0; transform:translateX(-50%); text-align:center;
   font-family:"IBM Plex Mono",monospace; font-size:9.5px; color:var(--ink-faint);
   letter-spacing:.06em; white-space:nowrap}
+.tick.row2{top:15px}
+.tick.row2 b{height:19px}
+.endnote{position:absolute; right:0; top:17px; text-align:right;
+  font-family:"IBM Plex Mono",monospace; font-size:9.5px; color:var(--ink-faint);
+  letter-spacing:.06em; white-space:nowrap}
+.endnote.on{color:var(--brass)}
 .tick b{display:block; width:1px; height:5px; background:var(--brass); margin:0 auto 2px}
 .tick.on{color:var(--brass)}
 .play{font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.1em;
@@ -429,24 +435,39 @@ function render(){
   Array.prototype.forEach.call(document.querySelectorAll(".tick"), function(t){
     t.classList.toggle("on", +t.dataset.y <= y);
   });
+  document.getElementById("endnote").classList.toggle("on", y >= LAST);
   document.getElementById("btnGhost").setAttribute("aria-pressed", ghostOn ? "true":"false");
 }
 
 /* ---------- ticks ---------- */
 var ticks = document.getElementById("ticks");
+
+// The record ends at the last survey it can date, not at the right-hand end of
+// the slider -- those last few years are only air, and labelling them "record
+// ends" put the wrong year on the claim. The note rides on 1868 itself.
+//
+// Rows alternate when two labels would overlap. Three ticks do not need that
+// today; a page whose premise is that people will send in more dates will.
+var MIN_GAP = 11;   // percent of the track, roughly one label's width
+var placed = [];
 DATED.forEach(function(o){
-  var t = document.createElement("div");
-  t.className = "tick"; t.dataset.y = o.g.year;
-  t.style.left = ((o.g.year - Y0) / (Y1 - Y0) * 100) + "%";
-  t.innerHTML = "<b></b>" + o.g.year;
-  ticks.appendChild(t);
+  var pct = (o.g.year - Y0) / (Y1 - Y0) * 100;
+  var el = document.createElement("div");
+  el.className = "tick"; el.dataset.y = o.g.year;
+  el.style.left = pct + "%";
+  el.innerHTML = "<b></b>" + o.g.year;
+  if (placed.some(function(q){ return Math.abs(q - pct) < MIN_GAP; })) el.classList.add("row2");
+  placed.push(pct);
+  ticks.appendChild(el);
 });
-var endTick = document.createElement("div");
-endTick.className = "tick"; endTick.dataset.y = 9999;
-endTick.style.left = "100%";
-endTick.style.transform = "translateX(-100%)";
-endTick.innerHTML = "<b></b>record ends";
-ticks.appendChild(endTick);
+
+// The terminus is a note, not a tick: centred on 1868 it would run off the
+// right-hand end of a narrow track, and it belongs to the whole timeline rather
+// than to that one survey. Row two is free, so it sits there.
+var endNote = document.createElement("div");
+endNote.className = "endnote"; endNote.id = "endnote";
+endNote.textContent = "record ends " + LAST;
+ticks.appendChild(endNote);
 
 /* ---------- the three acts ---------- */
 var actlist = document.getElementById("actlist");
