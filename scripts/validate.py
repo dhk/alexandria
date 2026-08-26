@@ -448,6 +448,28 @@ def check_viewers(errors: list[str]) -> None:
     checked = 0
     for template in sorted(RESEARCH.glob("*/06-viewer/template.html")):
         slug = template.parent.parent.name
+
+        # An investigation may ship its own builder. The matrix builder below
+        # reads 05-analysis/matrices.md, which only the matrix investigations
+        # have; a viewer built from geometry, or from anything else, carries a
+        # 06-viewer/build.py and is checked by running it. The invariant is the
+        # same either way — the committed page must be what its source builds.
+        own = template.parent / "build.py"
+        if own.exists():
+            proc = subprocess.run(
+                [sys.executable, str(own), "--check"],
+                capture_output=True, text=True,
+            )
+            if proc.returncode != 0:
+                detail = (proc.stderr or proc.stdout).strip().splitlines()
+                errors.append(
+                    f"{_rel(template.parent / 'index.html')}: "
+                    + (detail[-1] if detail else "build.py --check failed")
+                    + f". Run: python3 {_rel(own)}"
+                )
+            checked += 1
+            continue
+
         try:
             output, built, _ = build_viewer(slug)
         except ViewerError as exc:
