@@ -44,18 +44,20 @@ TIGER_ROOT = "https://www2.census.gov/geo/tiger"
 # peninsula plus Treasure Island and deliberately omits the Farallon Islands:
 # legally part of the City and County, 27 miles out, nothing but ocean between.
 PRESETS = {
+    # No class filter. --report on the real file settled it: of 4,090 segments
+    # in the city box, every unnamed one is noise — 237 ramps and 10
+    # census-internal features, none of them named — while S1400 "local street"
+    # is 3,715 segments of which 3,593 carry a name. Requiring a name drops
+    # 412 features and loses nothing anyone could point at, which is the right
+    # rule for an atlas about street names. Class tiers were solving a size
+    # problem that does not exist: 3,678 named segments is a couple of MB.
     "city": {
         "bbox": {"west": -122.5250, "south": 37.7000, "east": -122.3550, "north": 37.8400},
-        # Every local street in San Francisco is far more geometry than one page
-        # should carry, so city-wide keeps the through-network.
-        "mtfcc": ["S1100", "S1200"],
+        "mtfcc": [],
     },
     "soma": {
         "bbox": {"west": -122.4100, "south": 37.7720, "east": -122.3860, "north": 37.7970},
-        # The pilot adds local streets and alleys. The alleys matter: Minna,
-        # Natoma, Russ, Shipley and Tehama are named in the sources, and the
-        # place-name boundaries are described in terms of this grid.
-        "mtfcc": ["S1100", "S1200", "S1400", "S1730"],
+        "mtfcc": [],
     },
 }
 
@@ -94,7 +96,7 @@ def overlaps(shp_bbox, box) -> bool:
     return not (xmax < box["west"] or xmin > box["east"] or ymax < box["south"] or ymin > box["north"])
 
 
-def to_geojson(payload: bytes, layer: str, box: dict, mtfcc: list[str]) -> list[dict]:
+def to_geojson(payload: bytes, layer: str, box: dict, mtfcc: list[str], named_only: bool = True) -> list[dict]:
     """Read the shapefile out of the zip in memory and emit filtered features."""
     import shapefile  # pyshp — pure python, no binary dependency
 
@@ -109,8 +111,11 @@ def to_geojson(payload: bytes, layer: str, box: dict, mtfcc: list[str]) -> list[
                 continue
             rec = sr.record.as_dict()
             code = rec.get("MTFCC")
-            if layer == "roads" and mtfcc and code not in mtfcc:
-                continue
+            if layer == "roads":
+                if mtfcc and code not in mtfcc:
+                    continue
+                if named_only and not rec.get("FULLNAME"):
+                    continue
             geo = shp.__geo_interface__
             geo["coordinates"] = _round(geo["coordinates"])
             props = {"name": rec.get("FULLNAME") or None}
@@ -125,10 +130,11 @@ def to_geojson(payload: bytes, layer: str, box: dict, mtfcc: list[str]) -> list[
     return feats
 
 
+PRECISION = 6
 def _round(x):
     if isinstance(x, (list, tuple)):
         return [_round(i) for i in x]
-    return round(x, 6) if isinstance(x, float) else x
+    return round(x, PRECISION) if isinstance(x, float) else x
 
 
 def main() -> int:
@@ -139,9 +145,15 @@ def main() -> int:
     ap.add_argument("--extent", default="city", choices=sorted(PRESETS),
                     help="city = all of San Francisco (default); soma = the downtown pilot")
     ap.add_argument("--layers", default="roads,water", help="comma-separated: roads, water")
-    ap.add_argument("--mtfcc", help="comma-separated override for the road-class filter")
+    ap.add_argument("--mtfcc", help="comma-separated MTFCC filter; default is every class, since the name test does the work")
+    ap.add_argument("--include-unnamed", action="store_true",
+                    help="keep unnamed road segments (ramps, census artefacts). Off by default: on the real file every unnamed segment was noise")
     ap.add_argument("--out", default=str(pathlib.Path(__file__).resolve().parent.parent / "04-normalized" / "geo"),
                     help="output directory (default: this investigation's 04-normalized/geo)")
+    ap.add_argument("--precision", type=int, default=5,
+                    help="coordinate decimal places (default 5, about a metre)")
+    ap.add_argument("--report", action="store_true",
+                    help="fetch and print the MTFCC class histogram for the extent, write nothing")
     ap.add_argument("--dry-run", action="store_true", help="print what would be fetched; fetch nothing")
     ap.add_argument("--list-years", action="store_true", help="print available TIGER vintages and exit")
     args = ap.parse_args()
@@ -165,6 +177,31 @@ def main() -> int:
     if unknown:
         raise SystemExit(f"unknown layer(s): {', '.join(unknown)}")
 
+    global PRECISION
+    PRECISION = args.precision
+
+    if args.report:
+        import shapefile, collections
+        year = args.year or list_years()[-1]
+        payload = fetch(zip_url(year, "roads"))
+        counts, named = collections.Counter(), collections.Counter()
+        with zipfile.ZipFile(io.BytesIO(payload)) as z:
+            stem = next(n[:-4] for n in z.namelist() if n.endswith(".shp"))
+            parts = {e: io.BytesIO(z.read(f"{stem}.{e}")) for e in ("shp", "dbf", "shx")}
+            rdr = shapefile.Reader(shp=parts["shp"], dbf=parts["dbf"], shx=parts["shx"])
+            for sr in rdr.iterShapeRecords():
+                if not getattr(sr.shape, "points", None) or not overlaps(sr.shape.bbox, box):
+                    continue
+                rec = sr.record.as_dict(); c = rec.get("MTFCC")
+                counts[c] += 1
+                if rec.get("FULLNAME"):
+                    named[c] += 1
+        print(f"TIGER{year}, extent {args.extent}: {sum(counts.values())} segments in the box\n")
+        print(f"{'MTFCC':8} {'total':>7} {'named':>7}  meaning")
+        for c, n in counts.most_common():
+            print(f"{c:8} {n:7} {named[c]:7}  {MTFCC_LABEL.get(c, '?')}")
+        return 0
+
     year = args.year
     if not year and not args.dry_run:
         year = list_years()[-1]
@@ -174,7 +211,7 @@ def main() -> int:
         for layer in layers:
             print(f"{layer:6} <- {zip_url(year, layer)}")
         print(f"extent {args.extent} {box}")
-        print(f"road classes {mtfcc} ({', '.join(MTFCC_LABEL.get(c, c) for c in mtfcc)})")
+        print(f"road classes {mtfcc or 'all'}; named segments only: {not args.include_unnamed}")
         print(f"out    {pathlib.Path(args.out).resolve()}")
         return 0
 
@@ -187,7 +224,7 @@ def main() -> int:
         url = zip_url(year, layer)
         print(f"… {layer} ({args.extent}) from TIGER{year}", file=sys.stderr)
         payload = fetch(url)
-        feats = to_geojson(payload, layer, box, mtfcc)
+        feats = to_geojson(payload, layer, box, mtfcc, not args.include_unnamed)
         target = out_dir / f"{args.extent}-{layer}.geojson"
         target.write_text(json.dumps(
             {"type": "FeatureCollection", "features": feats}, separators=(",", ":"), sort_keys=True))
@@ -200,7 +237,8 @@ def main() -> int:
             "vintage": f"TIGER{year}", "retrieved_utc": stamped,
             "licence": PUBLIC_DOMAIN, "attribution_required": False,
             "crs": "NAD83 (EPSG:4269), used as WGS84 for display; the difference is sub-metre here",
-            "mtfcc_filter": mtfcc if layer == "roads" else None,
+            "mtfcc_filter": (mtfcc or "all classes") if layer == "roads" else None,
+            "named_only": (not args.include_unnamed) if layer == "roads" else None,
             "marker": "FETCHED",
         })
         print(f"  {len(feats)} features · {mb:.1f} MB", file=sys.stderr)

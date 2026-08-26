@@ -23,6 +23,14 @@ topic_kind: historical-gazetteer
 probe_run: claude-probe-2026-08-25   # single-source, not graded, not an
                                      # answer to either brief
 
+# 05-analysis/ holds work done against committed data rather than against a
+# model's answer. survey-grid-measurement.md is the first claim in this
+# investigation corroborated by independent physical measurement instead of
+# by a second document. It is single-analyst and not graded, and it does not
+# change the assurance level: neither brief has been answered.
+analysis:
+  - survey-grid-measurement.md   # O'Farrell's 1847 module, from TIGER 2025
+
 notes: >
   Two briefs; one single-source retrieval probe, no commissioned findings. The operator supplied a multi-phase project
   brief for a San Francisco historical place-names gazetteer; the
