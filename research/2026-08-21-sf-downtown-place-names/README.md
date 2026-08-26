@@ -127,6 +127,16 @@ Run 2026-08-25, single source, ungraded. In short:
   and reference host attempted was blocked; the agency archive was not.
   Any plan that depends on hand retrieval has to account for that.
 
+## Modern geometry
+
+[`02-run-plan/acquire-geo.md`](02-run-plan/acquire-geo.md) covers acquiring
+street and boundary geometry from Overture Maps for all of San Francisco, not
+just the pilot — the source brief's scope was always the whole city, with
+downtown/SoMa as a high-documentation starting point. Acquisition runs on a
+host with open egress and commits derived GeoJSON plus a provenance sidecar;
+the licence question (ODbL versus public-domain TIGER) is settled there rather
+than at publication time.
+
 ## What a later session would need to decide
 
 1. Whether the host is stable enough for a long searching run.
