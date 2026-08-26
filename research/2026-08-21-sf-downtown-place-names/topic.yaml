@@ -5,7 +5,10 @@
 # produced evidence for this investigation, so there is no run to
 # publish from. Every field below was written by hand.
 
-title: "San Francisco downtown/SoMa historical place names"
+# The slug below is an identifier and does not change; the title describes and
+# does. Renaming the slug would break alexandria_slug on the dhk.io card, the
+# publish scanner's key, and STUDIES in that repo's sync-study.mjs.
+title: "San Francisco, read from public data: surveys, streets and place names"
 status: "single-source-probe"
 assurance_level: "bronze"
 
@@ -14,6 +17,29 @@ opened: 2026-08-21
 requested_by: operator (davehk@gmail.com)
 
 topic_kind: historical-gazetteer
+
+# SCOPE DECISION, 2026-08-26 (operator). The investigation opened as a
+# place-names atlas. Its place-name half is blocked -- neither commission has
+# answered, and the host cannot be reached -- while its geometry half is not,
+# and produced the first claim here corroborated by independent physical
+# measurement rather than by a second document (05-analysis/).
+#
+# The trunk is therefore the survey record read from public data, with place
+# names as one strand on it rather than the whole subject. This is not a
+# retreat from the original brief: San Francisco's place names ARE largely
+# survey names -- 100 Vara District, Western Addition, Horner's Addition,
+# Richmond, Sunset -- so the surveys are the substrate the names sit on.
+#
+# What it changes in practice: work that can proceed from committed
+# public-domain data is preferred over work that waits on a commission, and
+# the lobster host moves from blocking to enriching. When the commissions do
+# run, their names land on a frame that already exists.
+scope_decision:
+  date: 2026-08-26
+  by: operator
+  trunk: survey record from public-domain data
+  strand: place names
+  blocked_work_demoted: [brief-a-gazetteer, brief-b-cases-chronology]
 
 # No commissioned_run / dispatched_models / grading_model fields.
 # The one OpenRouter dispatch attempted did not return evidence — see
