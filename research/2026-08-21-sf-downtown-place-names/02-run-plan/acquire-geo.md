@@ -59,37 +59,51 @@ trims.
 | `roads` | `ROADS` | street centrelines with `FULLNAME` and an `MTFCC` class code |
 | `water` | `AREAWATER` | water polygons — **today's shoreline as data**, replacing a hand-drawn curve |
 
-| `--extent` | Covers | Road classes |
-|---|---|---|
-| `city` *(default)* | Peninsula plus Treasure Island | `S1100`, `S1200`, `S1400` |
-| `soma` | The downtown pilot | adds `S1730` alleys |
+| `--extent` | Covers |
+|---|---|
+| `city` *(default)* | Peninsula plus Treasure Island |
+| `soma` | The downtown pilot |
 
-**TIGER's road classes are federal-functional, not urban-arterial**, and this is
-the trap. `S1100` is limited-access freeway; `S1200` is US and state highway.
-Almost every street in San Francisco — Geary, Mission, Market, Clement — is
-`S1400`, "Local Neighborhood Road." A city-wide filter of `S1100` plus `S1200`
-returns the freeways and little else.
+**There is no class filter, and that is a finding rather than an oversight.**
+`--report` on the real file gave this for the city box:
 
-Found the hard way: that filter returned **64 features city-wide while the SoMa
-pilot returned 326** — a subset larger than its superset, which is the signal
-that a filter is wrong rather than merely tight. Run `--report` before trusting
-any class filter:
+| MTFCC | total | named | |
+|---|---:|---:|---|
+| `S1400` | 3,715 | 3,593 | local street |
+| `S1630` | 237 | **0** | ramp |
+| `S1200` | 34 | 34 | secondary road |
+| `S1100` | 30 | 30 | primary road |
+| `S1730` | 24 | 21 | alley |
+| others | 50 | 23 | walkways, private roads, census artefacts |
+
+Every unnamed segment is noise — ramps and census-internal geometry, none of
+which carry a name — so **requiring a name is the whole filter**. It takes
+4,090 segments to 3,678 and loses nothing anyone could point at on a map,
+which is the right rule for an atlas about street names. `--include-unnamed`
+turns it off; `--mtfcc` still allows class filtering if a use ever needs it.
+
+Two things this corrected, both worth recording because both were confidently
+wrong beforehand:
+
+- **TIGER's classes are federal-functional, not urban-arterial.** `S1100` is
+  limited-access freeway and `S1200` is US or state highway. Geary, Mission,
+  Market and Clement are all `S1400`. A city-wide filter of `S1100` plus
+  `S1200` returned **64 features while the SoMa pilot returned 326** — a subset
+  larger than its superset, which is the signal that a filter is wrong rather
+  than merely tight.
+- **Alleys are not `S1730`.** There are 24 of those in the entire city. Minna,
+  Natoma, Russ, Shipley and Tehama — the alleys the place-name sources actually
+  name — are coded `S1400` like everything else, so the pilot's alley tier was
+  buying about two dozen features rather than the alley network.
+
+Class tiering was also solving a size problem that does not exist. 3,678 named
+segments is a couple of megabytes, against a 16 MB artifact ceiling.
+
+Run `--report` before trusting any filter:
 
 ```bash
 uv run --no-project --with pyshp python acquire-geo.py --report
 ```
-
-It fetches the roads file, clips to the extent, and prints a histogram of MTFCC
-codes with how many carry a name — the numbers a tier decision should be made
-on rather than guessed at.
-
-The alleys are not a detail. Minna, Natoma, Russ, Shipley and Tehama are named
-in the 2009 context statement, and the place-name boundaries are described in
-terms of this grid — "bounded by Market, Howard, 1st, and 2nd streets" needs
-1st and 2nd to exist. City-wide drops them because every local street in San
-Francisco is far more geometry than one page should carry; the script warns
-past 12 MB per layer, since a published artifact caps at 16 MB in total and the
-historical layers need the rest.
 
 Both boxes are hand-chosen and approximate. **They bound and trim a download
 and assert no extent** — never cite one as a boundary. The `city` box omits the
