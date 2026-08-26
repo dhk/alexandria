@@ -14,7 +14,19 @@ Published: <https://claude.ai/code/artifact/08fa997f-d2fb-4f94-b5af-813ab3b7b78b
 ```
 python3 06-viewer/build.py            # write index.html
 python3 06-viewer/build.py --check    # fail if the committed file is stale
+python3 06-viewer/build.py --bare     # print the page without the html skeleton
 ```
+
+`template.html` carries page content only — no doctype, no `<html>`, no `<head>`,
+no `<body>` — because that is the shape a published Claude Artifact wants, where
+the host supplies the skeleton. A file on disk needs the skeleton to be a
+document, so `index.html` is written wrapped and `--bare` prints the unwrapped
+form for an Artifact publish. One authored template, two derived shapes, neither
+hand-maintained.
+
+The wrapping is not cosmetic: `dhk-website`'s `scripts/sync-study.mjs` derives
+its copy of this page by slicing `<body>` out of `index.html`, and cannot find
+it in a fragment.
 
 Every line on the page comes from `../04-normalized/geo/city-roads.geojson` and
 `city-water.geojson` — committed, checksummed, public domain, with provenance in

@@ -126,19 +126,44 @@ def build_data():
     }
 
 
-def render():
+# template.html carries page content only -- no doctype, no <html>, no <head>,
+# no <body> -- because that is the shape a published Artifact wants; the host
+# supplies the skeleton. A file on disk needs the skeleton to be a document, and
+# so does dhk-website's scripts/sync-study.mjs, which slices <body> out of this
+# page to derive its own markup. So index.html is written wrapped, and --bare
+# prints the unwrapped form for an Artifact publish. One authored template, two
+# shapes, neither of them hand-maintained.
+HEAD_OPEN = '<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n'
+VIEWPORT = '<meta name="viewport" content="width=device-width,initial-scale=1">\n'
+
+
+def render(bare=False):
     template = (HERE / "template.html").read_text()
     if "__DATA__" not in template:
         raise SystemExit("template.html has no __DATA__ placeholder")
     payload = json.dumps(build_data(), separators=(",", ":"), sort_keys=False)
-    return template.replace("__DATA__", payload)
+    page = template.replace("__DATA__", payload)
+    if bare:
+        return page
+
+    # Everything up to the end of </style> is head material; the rest is body.
+    split = page.index("</style>") + len("</style>")
+    return (HEAD_OPEN + VIEWPORT + page[:split].strip()
+            + "\n</head>\n<body>\n" + page[split:].strip() + "\n</body>\n</html>\n")
 
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--check", action="store_true",
                     help="fail if the committed index.html is not what this builds")
+    ap.add_argument("--bare", action="store_true",
+                    help="print the page without the html/head/body skeleton, "
+                         "the shape a published Artifact wants, and exit")
     args = ap.parse_args()
+
+    if args.bare:
+        sys.stdout.write(render(bare=True))
+        return 0
 
     page = render()
     target = HERE / "index.html"
