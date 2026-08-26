@@ -204,7 +204,16 @@ footer.end .mono{font-size:11.5px}
 .meter{height:5px; background:var(--rule-soft); border-radius:3px; overflow:hidden; margin-top:8px}
 .meter i{display:block; height:100%; background:var(--brass); width:0;
   transition:width .28s ease}
-@media (prefers-reduced-motion:reduce){.meter i{transition:none}}
+
+/* The fade is a courtesy to the eye, not a claim about history: a survey still
+   arrives on its exact year and the counter still snaps. Scrubbing turns it off,
+   because a 550ms fade chasing a dragged slider reads as lag. */
+.fillgroup{transition:opacity .55s ease}
+.scrubbing .fillgroup{transition:none}
+@media (prefers-reduced-motion:reduce){
+  .meter i{transition:none}
+  .fillgroup{transition:none}
+}
 
 </style>
 <div class="wrap">
@@ -213,21 +222,21 @@ footer.end .mono{font-size:11.5px}
       <div class="eyebrow">San Francisco &middot; what the survey record can date</div>
       <h1>Twenty-One Years</h1>
       <p class="sub">Three surveys, twenty-one years apart, laid out 55% of the streets
-      San Francisco has today. Run the slider and watch them arrive &mdash; then keep
-      going, because after 1868 this record has nothing more to show you, and the
-      other 45% of the city has no date at all.</p>
+      San Francisco has today. Run the slider and watch them arrive. It ends in 1868
+      because that is where the record ends &mdash; the other 45% of this city is on the
+      map with no date at all.</p>
     </div>
   </header>
 
   <div class="timebar">
-    <div class="year mono" id="yr">1835</div>
+    <div class="year mono" id="yr">1843</div>
     <div class="yearmeta">
       <span class="big" id="km">0 km</span>
       <span class="sm" id="pc">0% of the modern city</span>
       <div class="meter"><i id="bar"></i></div>
     </div>
     <div class="scrub">
-      <input type="range" id="slider" min="1835" max="2026" step="1" value="1835"
+      <input type="range" id="slider" min="1843" max="1872" step="1" value="1843"
              aria-label="Year" aria-describedby="yr">
       <div class="ticks" id="ticks"></div>
     </div>
@@ -284,12 +293,16 @@ footer.end .mono{font-size:11.5px}
     that appear in 1868 were sand until the 1900s. This is a timeline of when the city was
     <em>laid out</em>, not when it was built.</p>
 
-    <h2>Why it stops</h2>
-    <p>Drag past 1868 and nothing happens for a hundred and fifty-eight years. That is not a
-    bug in the animation. Four of the seven grids on this map have no survey date in this
-    corpus, and a third of the city's street length belongs to no grid at all &mdash; the
-    hills, the parks, the Presidio, the deliberately curving plats of Sea Cliff and St
-    Francis Wood.</p>
+    <h2>Why it stops in 1868</h2>
+    <p>Not because the city stopped being surveyed &mdash; because this corpus stops being
+    able to date it. Four of the seven grids on this map have no survey date here, and a
+    third of the city's street length belongs to no grid at all: the hills, the parks, the
+    Presidio, the deliberately curving plats of Sea Cliff and St Francis Wood.</p>
+    <p>An earlier version of this page let the slider run to 2026 so you could feel the
+    silence. It turns out that a hundred and fifty-eight years of nothing happening is
+    just a hundred and fifty-eight years of nothing happening. The gap is better stated
+    than endured, so the timeline ends where its evidence does and the panel beside the
+    map carries the rest.</p>
     <p>Together that is 45% of San Francisco, present on the map and absent from its
     history. The honest way to draw a gap is at full size.</p>
 
@@ -349,7 +362,7 @@ function d(p){ var s="M"+p[0]+" "+p[1]; for(var i=2;i<p.length;i+=2) s+="L"+p[i]
 var gWater=el("g",{}), gGhost=el("g",{}), fills=[];
 svg.appendChild(gWater); svg.appendChild(gGhost);
 D.water.forEach(function(w){ gWater.appendChild(el("path",{d:d(w)+"Z",fill:"var(--water)",stroke:"none"})); });
-for (var k=0;k<NG;k++){ var g=el("g",{}); fills.push(g); svg.appendChild(g); }
+for (var k=0;k<NG;k++){ var g=el("g",{"class":"fillgroup"}); fills.push(g); svg.appendChild(g); }
 
 // Every street is drawn twice: once as faint ground that is always present, and
 // once in colour in its grid's own group, revealed on its survey year. The ghost
@@ -372,7 +385,8 @@ svg.setAttribute("preserveAspectRatio","xMidYMid meet");
 // `pick` is null for "nothing picked" and a grid index otherwise, where -1 is a
 // real value meaning the ungridded third. Using -1 for both would make
 // deselecting the ungridded group redraw it.
-var year = 1835, playing = false, ghostOn = true, pick = null, timer = null;
+var Y0 = 1843, Y1 = 1872, SWEEP_MS = 11000;   // the record's own span, plus a little air
+var year = Y0, playing = false, ghostOn = true, pick = null, raf = null;
 
 function laidBy(y){
   var m = 0;
@@ -380,30 +394,33 @@ function laidBy(y){
   return m;
 }
 function render(){
-  document.getElementById("yr").textContent = year;
-  var m = laidBy(year), pc = m/TOTAL*100;
+  // `year` runs fractionally while playing so the sweep is smooth; everything
+  // shown or compared uses the whole year, so a survey still lands on its date.
+  var y = Math.floor(year);
+  document.getElementById("yr").textContent = y;
+  var m = laidBy(y), pc = m/TOTAL*100;
   document.getElementById("km").textContent = (m/1000).toFixed(0) + " km laid out";
   document.getElementById("pc").textContent = pc.toFixed(1) + "% of the modern city";
   document.getElementById("bar").style.width = pc.toFixed(1) + "%";
-  document.getElementById("slider").value = year;
+  document.getElementById("slider").value = y;
 
   D.grids.forEach(function(g,k){
     if (!fills[k]) return;
-    var on = g.year && g.year <= year;
+    var on = g.year && g.year <= y;
     var dim = pick !== null && pick !== k;
     fills[k].setAttribute("opacity", on ? (dim ? 0.10 : 1) : 0);
   });
   gGhost.setAttribute("opacity", ghostOn ? 1 : 0);
 
   Array.prototype.forEach.call(document.querySelectorAll("#actlist .act"), function(b,i){
-    b.classList.toggle("live", DATED[i].g.year <= year);
+    b.classList.toggle("live", DATED[i].g.year <= y);
   });
   Array.prototype.forEach.call(document.querySelectorAll("#gaplist .gapitem"), function(b,i){
     var key = i < UNDATED.length ? UNDATED[i].k : -1;   // last row is the ungridded third
     b.setAttribute("aria-pressed", pick === key ? "true" : "false");
   });
   Array.prototype.forEach.call(document.querySelectorAll(".tick"), function(t){
-    t.classList.toggle("on", +t.dataset.y <= year);
+    t.classList.toggle("on", +t.dataset.y <= y);
   });
   document.getElementById("btnGhost").setAttribute("aria-pressed", ghostOn ? "true":"false");
 }
@@ -413,15 +430,15 @@ var ticks = document.getElementById("ticks");
 DATED.forEach(function(o){
   var t = document.createElement("div");
   t.className = "tick"; t.dataset.y = o.g.year;
-  t.style.left = ((o.g.year - 1835) / (2026 - 1835) * 100) + "%";
+  t.style.left = ((o.g.year - Y0) / (Y1 - Y0) * 100) + "%";
   t.innerHTML = "<b></b>" + o.g.year;
   ticks.appendChild(t);
 });
 var endTick = document.createElement("div");
 endTick.className = "tick"; endTick.dataset.y = 9999;
 endTick.style.left = "100%";
-endTick.innerHTML = "<b></b>nothing after " + LAST;
 endTick.style.transform = "translateX(-100%)";
+endTick.innerHTML = "<b></b>record ends";
 ticks.appendChild(endTick);
 
 /* ---------- the three acts ---------- */
@@ -479,28 +496,44 @@ function pickGrid(k){
 }
 
 /* ---------- transport ---------- */
-function step(){
-  year += 1;
-  if (year > 2026){ year = 2026; stop(); }
+// Wall-clock rather than a fixed step per year: the sweep should take the same
+// eleven seconds however many years the record turns out to cover, so extending
+// it with new plats slows the playhead instead of lengthening the film.
+var last = 0;
+function frame(now){
+  if (!playing) return;
+  var dt = last ? now - last : 16;
+  last = now;
+  year += (Y1 - Y0) * (dt / SWEEP_MS);
+  if (year >= Y1){ year = Y1; render(); stop(); return; }
   render();
+  raf = requestAnimationFrame(frame);
 }
 function play(){
   if (playing) return;
-  playing = true;
+  document.body.classList.remove("scrubbing");
+  if (year >= Y1) year = Y0;
+  playing = true; last = 0;
   document.getElementById("play").textContent = "Pause";
   document.getElementById("play").setAttribute("aria-pressed","true");
-  if (year >= 2026) year = 1835;
-  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  timer = setInterval(step, reduced ? 90 : 42);
+  raf = requestAnimationFrame(frame);
 }
 function stop(){
-  playing = false; clearInterval(timer); timer = null;
+  playing = false;
+  if (raf) cancelAnimationFrame(raf);
+  raf = null;
   document.getElementById("play").textContent = "Play";
   document.getElementById("play").setAttribute("aria-pressed","false");
 }
 document.getElementById("play").addEventListener("click", function(){ playing ? stop() : play(); });
 document.getElementById("slider").addEventListener("input", function(e){
-  stop(); year = +e.target.value; render();
+  stop();
+  document.body.classList.add("scrubbing");
+  year = +e.target.value;
+  render();
+});
+document.getElementById("slider").addEventListener("change", function(){
+  document.body.classList.remove("scrubbing");
 });
 document.getElementById("btnGhost").addEventListener("click", function(){
   ghostOn = !ghostOn; render();
