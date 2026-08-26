@@ -8,6 +8,12 @@
 Run where the network is open -- lobster, not a session container, whose egress
 does not reach data.sfgov.org.
 
+On lobster, refresh with `git fetch && git reset --hard origin/<branch>`, never
+`git pull`. The working branch is restarted from main after each squash-merge
+and force-pushed, so its history is rewritten regularly; pull correctly refuses
+to fast-forward across that and leaves the checkout diverged. Nothing originates
+on lobster that is not pushed immediately, so a reset loses nothing.
+
 WHY THIS LEADS WITH THE LICENCE
 
 This repository is MIT. TIGER/Line is public domain under 17 U.S.C. 105, which
@@ -36,6 +42,7 @@ historical name would assert a precision the record does not support.
 from __future__ import annotations
 
 import argparse
+import collections
 import datetime as _dt
 import hashlib
 import json
@@ -56,6 +63,10 @@ HOST = "https://data.sfgov.org"
 DATASET = "p5b7-5n3h"
 
 PRECISION = 6
+
+# Socrata pages at 1000 by default. This is far above any plausible neighbourhood
+# count, and the run reports the feature count so a silent truncation would show.
+ROW_LIMIT = 5000
 
 # Licences this repository can carry. The test is share-alike, not openness:
 # an ODbL extract committed here would put ODbL on an MIT repository and
@@ -116,7 +127,7 @@ def geojson(dataset: str) -> bytes:
     from /resource. Try the first, fall back to the second, and say which won."""
     urls = [
         f"{HOST}/api/geospatial/{dataset}?method=export&format=GeoJSON",
-        f"{HOST}/resource/{dataset}.geojson?$limit=5000",
+        f"{HOST}/resource/{dataset}.geojson?$limit={ROW_LIMIT}",
     ]
     last = None
     for u in urls:
@@ -127,19 +138,48 @@ def geojson(dataset: str) -> bytes:
             return payload
         except Exception as exc:         # noqa: BLE001 - report and try the next
             last = f"{u}: {exc}"
+            print(f"  (no luck with {u.split('?')[0]}: {exc})", file=sys.stderr)
     raise SystemExit(f"no GeoJSON endpoint answered.\n  last error: {last}")
 
 
-def thin(obj: dict) -> dict:
+def thin(obj: dict):
+    """Round coordinates, and separate the features that have a shape from those
+    that do not.
+
+    Socrata's /resource endpoint emits a feature per ROW, and a row with no
+    shape becomes a feature whose geometry is null. Those are not drawable and
+    must not be written, but the count is worth reporting rather than swallowing:
+    a neighbourhood set where some entries have no polygon is telling you
+    something about the dataset.
+
+    GeometryCollection has no top-level "coordinates" either, so it is reported
+    the same way instead of crashing.
+    """
     def r(x):
         if isinstance(x, list):
             return [r(i) for i in x]
         if isinstance(x, float):
             return round(x, PRECISION)
         return x
+
+    kept, dropped, kinds = [], [], collections.Counter()
     for f in obj.get("features", []):
-        f["geometry"]["coordinates"] = r(f["geometry"]["coordinates"])
-    return obj
+        g = f.get("geometry")
+        kinds[(g or {}).get("type") or "null"] += 1
+        if not g or "coordinates" not in g:
+            dropped.append(f)
+            continue
+        g["coordinates"] = r(g["coordinates"])
+        kept.append(f)
+    return kept, dropped, kinds
+
+
+def label_of(props: dict) -> str:
+    """Best guess at the human name of a row, for reporting only."""
+    for k in ("nhood", "name", "neighborhood", "neighbourhood", "analysis_neighborhood"):
+        if props.get(k):
+            return str(props[k])
+    return "(unnamed)"
 
 
 def main() -> int:
@@ -186,8 +226,16 @@ def main() -> int:
               file=sys.stderr)
         return 3
 
-    obj = thin(json.loads(geojson(args.dataset)))
-    feats = obj.get("features", [])
+    raw_obj = json.loads(geojson(args.dataset))
+    feats, dropped, kinds = thin(raw_obj)
+    print(f"  geometry types: "
+          + ", ".join(f"{k} x{n}" for k, n in kinds.most_common()), file=sys.stderr)
+    if dropped:
+        names = ", ".join(sorted(label_of(f.get("properties") or {}) for f in dropped)[:8])
+        print(f"  ! {len(dropped)} feature(s) have no drawable geometry and were not written: "
+              f"{names}", file=sys.stderr)
+    if not feats:
+        raise SystemExit("no features with geometry; nothing written")
     out_dir = pathlib.Path(args.out).resolve()
     out_dir.mkdir(parents=True, exist_ok=True)
     target = out_dir / "neighborhoods.geojson"
@@ -220,6 +268,8 @@ def main() -> int:
         "retrieved_utc": _dt.datetime.now(_dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "file": target.name,
         "features": len(feats),
+        "features_without_geometry": len(dropped),
+        "geometry_types": dict(kinds),
         "bytes": size,
         "sha256": hashlib.sha256(target.read_bytes()).hexdigest(),
         "properties": props,
