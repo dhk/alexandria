@@ -182,10 +182,57 @@ def label_of(props: dict) -> str:
     return "(unnamed)"
 
 
+
+def probe(dataset: str) -> int:
+    """Show what the endpoints actually return, so a wrong guess costs one run.
+
+    Written because the first real fetch produced 41 rows with null geometry and
+    no recognisable name column -- the dataset's own description warns it changed
+    format in November 2023 -- and this container cannot reach data.sfgov.org to
+    look. Guessing across several round trips is worse than one that reports.
+    """
+    print("\n--- 1. /resource/<id>.json, one row: the columns as they really are")
+    try:
+        row = json.loads(get(f"{HOST}/resource/{dataset}.json?$limit=1"))
+        if not row:
+            print("   (no rows)")
+        else:
+            for k, v in sorted(row[0].items()):
+                s = json.dumps(v) if not isinstance(v, str) else v
+                s = s.replace("\n", " ")
+                looks = ""
+                if isinstance(v, dict) and "coordinates" in v: looks = "   <-- GEOMETRY (object)"
+                elif isinstance(v, str) and v.lstrip()[:1] in "{[" and "coord" in v.lower():
+                    looks = "   <-- GEOMETRY (encoded as text)"
+                elif isinstance(v, str) and v.upper().startswith(("MULTIPOLYGON", "POLYGON")):
+                    looks = "   <-- GEOMETRY (WKT)"
+                print(f"   {k:28} {s[:88]}{'…' if len(s) > 88 else ''}{looks}")
+    except Exception as exc:                                  # noqa: BLE001
+        print(f"   failed: {exc}")
+
+    print("\n--- 2. /api/geospatial/<id>, first 300 bytes verbatim")
+    try:
+        raw = get(f"{HOST}/api/geospatial/{dataset}?method=export&format=GeoJSON")
+        print("   " + repr(raw[:300].decode("utf-8", "replace")))
+    except Exception as exc:                                  # noqa: BLE001
+        print(f"   failed: {exc}")
+
+    print("\n--- 3. row count")
+    try:
+        n = json.loads(get(f"{HOST}/resource/{dataset}.json?$select=count(*)"))
+        print(f"   {n}")
+    except Exception as exc:                                  # noqa: BLE001
+        print(f"   failed: {exc}")
+    print("\nSend this output back. Nothing was written.")
+    return 0
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--dataset", default=DATASET, help=f"Socrata dataset id (default {DATASET})")
     ap.add_argument("--licence", action="store_true", help="report the terms and exit, write nothing")
+    ap.add_argument("--probe", action="store_true",
+                    help="show what each endpoint really returns, write nothing")
     ap.add_argument("--dry-run", action="store_true", help="say what would be fetched and written")
     ap.add_argument("--out", default=str(OUT), help="output directory")
     ap.add_argument("--force", action="store_true",
@@ -214,6 +261,8 @@ def main() -> int:
 
     if args.licence:
         return 0
+    if args.probe:
+        return probe(args.dataset)
     if verdict == "refuse":
         print(f"REFUSED: {raw} is {why}.\n"
               "Nothing written. This is the same reasoning that made acquire-geo.py\n"
