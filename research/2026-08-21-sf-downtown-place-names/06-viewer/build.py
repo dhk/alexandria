@@ -41,14 +41,20 @@ LAT_M = 111132.0
 LON_M = 111320.0 * math.cos(math.radians(LAT0))
 
 # (bearing in degrees CCW from east, folded to 0-180; stable id)
+# (bearing, id, survey year or None, survey as cited)
+#
+# Only three of the seven can be dated from this corpus. The other four are
+# measured and deliberately undated: no source here says when they were laid
+# out, and a guessed year would be worse than a gap -- the gap is what someone
+# who knows can correct.
 GRIDS = [
-    (3.5,  "richmond-sunset"),
-    (9.5,  "western-addition"),
-    (45.0, "south-of-market"),
-    (54.5, "bayview"),
-    (18.0, "portola"),
-    (86.5, "lakeside"),
-    (59.0, "excelsior"),
+    (3.5,  "richmond-sunset",  1868, "Potter & Humphrey, 18 May 1868"),
+    (9.5,  "western-addition", 1855, "Van Ness Ordinance, 1855-56"),
+    (45.0, "south-of-market",  1847, "O'Farrell, 1847"),
+    (54.5, "bayview",          None, None),
+    (18.0, "portola",          None, None),
+    (86.5, "lakeside",         None, None),
+    (59.0, "excelsior",        None, None),
 ]
 TOL = 2.5          # degrees; a street beyond this from every peak is ungridded
 MIN_SEG = 8.0      # metres; shorter pieces have unreliable bearings
@@ -71,7 +77,7 @@ def grid_of(bearing):
     ungridded from 33% to 70% and quietly deleted half of every grid.
     """
     best, best_d = -1, 999.0
-    for i, (theta, _) in enumerate(GRIDS):
+    for i, (theta, *_rest) in enumerate(GRIDS):
         d = min(abs(((bearing - theta + 90) % 180) - 90),
                 abs(((bearing - theta) % 180) - 90))
         if d < best_d:
@@ -117,8 +123,9 @@ def build_data():
                 water.append([round(q, PRECISION) for p in map(project, r) for q in p])
 
     return {
-        "grids": [{"bearing": t, "id": n, "metres": round(km[i])}
-                  for i, (t, n) in enumerate(GRIDS)],
+        "grids": [{"bearing": t, "id": n, "metres": round(km[i]),
+                   "year": y, "survey": s}
+                  for i, (t, n, y, s) in enumerate(GRIDS)],
         "unassigned_m": round(km[-1]),
         "rose": [round(x) for x in rose],
         "roads": feats,
@@ -133,14 +140,22 @@ def build_data():
 # page to derive its own markup. So index.html is written wrapped, and --bare
 # prints the unwrapped form for an Artifact publish. One authored template, two
 # shapes, neither of them hand-maintained.
+# Both pages are built from the same data by the same script. The map and the
+# timeline are separate pages rather than two modes of one because they are
+# shared separately -- each gets its own URL and its own argument.
+PAGES = {
+    "index":    {"template": "template.html",          "out": "index.html"},
+    "timeline": {"template": "timeline-template.html", "out": "timeline.html"},
+}
+
 HEAD_OPEN = '<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n'
 VIEWPORT = '<meta name="viewport" content="width=device-width,initial-scale=1">\n'
 
 
-def render(bare=False):
-    template = (HERE / "template.html").read_text()
+def render(bare=False, page="index"):
+    template = (HERE / PAGES[page]["template"]).read_text()
     if "__DATA__" not in template:
-        raise SystemExit("template.html has no __DATA__ placeholder")
+        raise SystemExit(f"{PAGES[page]['template']} has no __DATA__ placeholder")
     payload = json.dumps(build_data(), separators=(",", ":"), sort_keys=False)
     page = template.replace("__DATA__", payload)
     if bare:
@@ -156,28 +171,40 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--check", action="store_true",
                     help="fail if the committed index.html is not what this builds")
+    ap.add_argument("--page", choices=sorted(PAGES), default=None,
+                    help="build just this page (default: all of them)")
     ap.add_argument("--bare", action="store_true",
                     help="print the page without the html/head/body skeleton, "
                          "the shape a published Artifact wants, and exit")
     args = ap.parse_args()
 
     if args.bare:
-        sys.stdout.write(render(bare=True))
+        sys.stdout.write(render(bare=True, page=args.page or "index"))
         return 0
+
+    wanted = [args.page] if args.page else sorted(PAGES)
+    if args.check:
+        for name in wanted:
+            built = render(page=name)
+            target = HERE / PAGES[name]["out"]
+            if not target.exists():
+                print(f"{target.name} is missing; run build.py", file=sys.stderr)
+                return 1
+            if target.read_text() != built:
+                print(f"{target.name} is stale; run build.py and commit the result",
+                      file=sys.stderr)
+                return 1
+            print(f"{target.name} up to date ({len(built) / 1048576:.2f} MB)")
+        return 0
+
+    for name in wanted:
+        if name != "index":
+            out = HERE / PAGES[name]["out"]
+            out.write_text(render(page=name))
+            print(f"wrote {out.name} — {out.stat().st_size / 1048576:.2f} MB")
 
     page = render()
     target = HERE / "index.html"
-    if args.check:
-        if not target.exists():
-            print("index.html is missing; run build.py", file=sys.stderr)
-            return 1
-        if target.read_text() != page:
-            print("index.html is stale; run build.py and commit the result",
-                  file=sys.stderr)
-            return 1
-        print(f"index.html up to date ({len(page) / 1048576:.2f} MB)")
-        return 0
-
     target.write_text(page)
     data = json.loads(page.split('type="application/json">', 1)[1].split("</script>", 1)[0])
     total = sum(g["metres"] for g in data["grids"]) + data["unassigned_m"]

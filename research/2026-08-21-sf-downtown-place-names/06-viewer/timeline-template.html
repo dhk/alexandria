@@ -1,0 +1,562 @@
+<title>Twenty-One Years</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --ink:#16202A; --ink-soft:#4A5A63; --ink-faint:#8496A0;
+  --paper:#EDEFEA; --panel:#F6F7F3; --land:#E4E7DF;
+  --water:#AFC7D0; --rule:#C4CBC2; --rule-soft:#D8DDD4;
+  --brass:#8A5A18; --brass-bright:#B07226; --brass-wash:rgba(176,114,38,.14);
+  --shadow:rgba(22,32,42,.13);
+  --g0:#2F6485; --g1:#A2413A; --g2:#2E7361; --g3:#8E6A1C;
+  --g4:#484A86; --g5:#5F6D2C; --g6:#77416A; --g7:#93A2A9;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ink:#DFE6E6; --ink-soft:#9BAAB2; --ink-faint:#66787F;
+    --paper:#0F1720; --panel:#16212B; --land:#182430;
+    --water:#0E1D27; --rule:#2C3A44; --rule-soft:#22303A;
+    --brass:#D79A45; --brass-bright:#E7B063; --brass-wash:rgba(215,154,69,.16);
+    --shadow:rgba(0,0,0,.5);
+    --g0:#6BA8CB; --g1:#DE8078; --g2:#5EB79E; --g3:#D3A544;
+    --g4:#8E90D6; --g5:#A3B45C; --g6:#C081AF; --g7:#55666E;
+  }
+}
+:root[data-theme="dark"]{
+  --ink:#DFE6E6; --ink-soft:#9BAAB2; --ink-faint:#66787F;
+  --paper:#0F1720; --panel:#16212B; --land:#182430;
+  --water:#0E1D27; --rule:#2C3A44; --rule-soft:#22303A;
+  --brass:#D79A45; --brass-bright:#E7B063; --brass-wash:rgba(215,154,69,.16);
+  --shadow:rgba(0,0,0,.5);
+  --g0:#6BA8CB; --g1:#DE8078; --g2:#5EB79E; --g3:#D3A544;
+  --g4:#8E90D6; --g5:#A3B45C; --g6:#C081AF; --g7:#55666E;
+}
+*{box-sizing:border-box}
+body{margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Newsreader",Georgia,serif; font-size:16px; line-height:1.55;
+  -webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:"Instrument Serif",Georgia,serif; font-weight:400; text-wrap:balance; margin:0}
+.mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace}
+a{color:var(--brass); text-underline-offset:2px}
+
+.wrap{max-width:1320px; margin:0 auto; padding:26px 20px 56px;
+  display:flex; flex-direction:column; gap:20px}
+header.top{display:flex; flex-wrap:wrap; align-items:flex-end; gap:14px 28px;
+  border-bottom:1px solid var(--rule); padding-bottom:16px}
+header.top h1{font-size:clamp(34px,5.6vw,58px); line-height:.98; letter-spacing:.004em}
+header.top .sub{font-size:15.5px; color:var(--ink-soft); max-width:60ch; margin-top:8px}
+.eyebrow{font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.17em;
+  text-transform:uppercase; color:var(--ink-faint)}
+
+.stage{display:grid; grid-template-columns:minmax(0,1fr) 316px; gap:18px; align-items:stretch}
+@media (max-width:960px){.stage{grid-template-columns:minmax(0,1fr)}}
+
+.plate{position:relative; background:var(--land); border:1px solid var(--rule);
+  border-radius:2px; overflow:hidden; box-shadow:0 1px 0 var(--shadow); min-height:660px}
+@media (max-width:960px){.plate{min-height:0; aspect-ratio:147/141}}
+svg.map{position:absolute; inset:0; display:block; width:100%; height:100%;
+  touch-action:none; cursor:grab}
+svg.map.drag{cursor:grabbing}
+.road{fill:none; stroke-linecap:round; stroke-linejoin:round; vector-effect:non-scaling-stroke}
+
+.readout{position:absolute; left:12px; top:12px; background:var(--panel);
+  border:1px solid var(--rule); border-radius:2px; padding:7px 10px;
+  font-family:"IBM Plex Mono",monospace; font-size:11.5px; color:var(--ink-soft);
+  pointer-events:none; opacity:0; transition:opacity .12s; max-width:min(320px,60%)}
+.readout.on{opacity:1}
+.readout b{color:var(--ink); font-weight:500}
+
+.scalebar{position:absolute; right:12px; bottom:12px; display:flex; flex-direction:column;
+  align-items:flex-end; gap:3px; font-family:"IBM Plex Mono",monospace;
+  font-size:10px; color:var(--ink-soft); pointer-events:none}
+.scalebar .bar{height:3px; background:var(--ink-soft); width:90px}
+
+.rail{display:flex; flex-direction:column; gap:14px; min-width:0}
+.card{background:var(--panel); border:1px solid var(--rule); border-radius:2px; padding:13px 14px}
+.card h3{font-size:19px; margin-bottom:2px}
+.card .note{font-size:13.5px; color:var(--ink-soft); margin:6px 0 0}
+
+.rose{width:100%; height:auto; display:block; margin:2px 0 6px}
+.rose .spoke{stroke:var(--ink-faint); stroke-width:1.1}
+.rose .spoke.lit{stroke-width:2.2}
+.rose .ring{fill:none; stroke:var(--rule); stroke-width:1}
+.rose text{font-family:"IBM Plex Mono",monospace; font-size:9px; fill:var(--ink-faint);
+  letter-spacing:.08em}
+
+.keys{display:flex; flex-direction:column; gap:1px; margin-top:4px}
+.key{display:grid; grid-template-columns:15px 1fr auto; align-items:baseline; gap:9px;
+  padding:5px 6px; border:0; background:transparent; text-align:left; cursor:pointer;
+  color:var(--ink); border-radius:2px; width:100%; font:inherit}
+.key:hover{background:var(--brass-wash)}
+.key[aria-pressed="true"]{background:var(--ink); color:var(--paper)}
+.key[aria-pressed="true"] .sub{color:var(--paper); opacity:.72}
+.key:focus-visible{outline:2px solid var(--brass-bright); outline-offset:-2px}
+.swatch{width:15px; height:3px; border-radius:2px; align-self:center}
+.key .nm{font-size:14.5px; line-height:1.2}
+.key .sub{display:block; font-family:"IBM Plex Mono",monospace; font-size:10px;
+  letter-spacing:.05em; color:var(--ink-faint); margin-top:1px}
+.key .amt{font-family:"IBM Plex Mono",monospace; font-size:11px;
+  font-variant-numeric:tabular-nums; color:var(--ink-soft)}
+.key[aria-pressed="true"] .amt{color:var(--paper)}
+.dated{color:var(--brass)}
+.key[aria-pressed="true"] .dated{color:var(--paper)}
+
+.tools{display:flex; gap:0; border:1px solid var(--rule); border-radius:2px; overflow:hidden}
+.tools button{flex:1; font-family:"IBM Plex Mono",monospace; font-size:10.5px;
+  letter-spacing:.09em; text-transform:uppercase; padding:8px 6px; border:0;
+  background:transparent; color:var(--ink-soft); cursor:pointer}
+.tools button+button{border-left:1px solid var(--rule)}
+.tools button[aria-pressed="true"]{background:var(--ink); color:var(--paper)}
+.tools button:focus-visible{outline:2px solid var(--brass-bright); outline-offset:-2px}
+
+.prose{max-width:74ch; display:flex; flex-direction:column; gap:14px}
+.prose h2{font-size:clamp(24px,3vw,32px); margin-top:12px}
+.prose p{margin:0}
+.prose .lede{font-size:18px}
+.rulez{border:0; border-top:1px solid var(--rule); margin:10px 0 0}
+
+.acts{display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:14px;
+  max-width:1000px}
+.act{border-left:2px solid var(--brass); padding:2px 0 2px 12px}
+.act .yr{font-family:"IBM Plex Mono",monospace; font-size:12px; letter-spacing:.09em;
+  color:var(--brass)}
+.act h4{font-family:"Instrument Serif",Georgia,serif; font-weight:400; font-size:20px; margin:2px 0 4px}
+.act p{font-size:14px; color:var(--ink-soft); margin:0}
+
+table.data{border-collapse:collapse; font-family:"IBM Plex Mono",monospace; font-size:12px;
+  font-variant-numeric:tabular-nums; min-width:520px}
+.scroll{overflow-x:auto; max-width:100%}
+table.data th{text-align:left; font-weight:500; color:var(--ink-faint); letter-spacing:.08em;
+  text-transform:uppercase; font-size:10px; padding:0 14px 6px 0; border-bottom:1px solid var(--rule)}
+table.data td{padding:5px 14px 5px 0; border-bottom:1px solid var(--rule-soft); color:var(--ink-soft)}
+table.data td:first-child{color:var(--ink)}
+table.data td.num{text-align:right}
+
+.hair{background:var(--brass-wash); border:1px solid var(--brass); border-radius:2px;
+  padding:14px 16px; max-width:74ch}
+.hair h3{font-size:20px; margin-bottom:6px}
+.hair p{font-size:14.5px; color:var(--ink-soft); margin:0 0 8px}
+.hair p:last-child{margin-bottom:0}
+.hair code{font-family:"IBM Plex Mono",monospace; font-size:12.5px; color:var(--ink)}
+
+footer.end{border-top:1px solid var(--rule); padding-top:16px; display:flex;
+  flex-wrap:wrap; gap:6px 26px; font-size:13.5px; color:var(--ink-soft)}
+footer.end .mono{font-size:11.5px}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important; animation:none!important}}
+
+.timebar{display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+  background:var(--panel); border:1px solid var(--rule); border-radius:2px; padding:12px 14px}
+.year{font-family:"Instrument Serif",Georgia,serif; font-size:46px; line-height:1;
+  font-variant-numeric:tabular-nums; min-width:2.6ch}
+.yearmeta{display:flex; flex-direction:column; gap:1px; min-width:150px}
+.yearmeta .big{font-family:"IBM Plex Mono",monospace; font-size:15px;
+  font-variant-numeric:tabular-nums; color:var(--ink)}
+.yearmeta .sm{font-family:"IBM Plex Mono",monospace; font-size:10px; letter-spacing:.09em;
+  text-transform:uppercase; color:var(--ink-faint)}
+.scrub{position:relative; flex:1 1 340px; min-width:240px; padding:14px 0 4px}
+.scrub input[type=range]{width:100%; margin:0; accent-color:var(--brass); cursor:pointer}
+.scrub input[type=range]:focus-visible{outline:2px solid var(--brass-bright); outline-offset:4px}
+.ticks{position:relative; height:22px; margin-top:2px}
+.tick{position:absolute; transform:translateX(-50%); text-align:center;
+  font-family:"IBM Plex Mono",monospace; font-size:9.5px; color:var(--ink-faint);
+  letter-spacing:.06em; white-space:nowrap}
+.tick b{display:block; width:1px; height:5px; background:var(--brass); margin:0 auto 2px}
+.tick.on{color:var(--brass)}
+.play{font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.1em;
+  text-transform:uppercase; padding:10px 18px; border:1px solid var(--rule);
+  background:transparent; color:var(--ink); cursor:pointer; border-radius:2px}
+.play[aria-pressed="true"]{background:var(--ink); color:var(--paper)}
+.play:focus-visible{outline:2px solid var(--brass-bright); outline-offset:-2px}
+
+.acts{display:flex; flex-direction:column; gap:1px}
+.act{display:grid; grid-template-columns:15px 1fr auto; gap:9px; align-items:baseline;
+  padding:6px; border:0; background:transparent; text-align:left; width:100%;
+  font:inherit; color:var(--ink); cursor:pointer; border-radius:2px; opacity:.32}
+.act.live{opacity:1}
+.act:hover{background:var(--brass-wash)}
+.act:focus-visible{outline:2px solid var(--brass-bright); outline-offset:-2px}
+.act .sw{width:15px; height:3px; border-radius:2px; align-self:center}
+.act .nm{font-size:14.5px}
+.act .sub{display:block; font-family:"IBM Plex Mono",monospace; font-size:10px;
+  color:var(--ink-faint); margin-top:1px}
+.act .amt{font-family:"IBM Plex Mono",monospace; font-size:11px;
+  font-variant-numeric:tabular-nums; color:var(--ink-soft)}
+
+.gap{background:var(--brass-wash); border:1px solid var(--brass); border-radius:2px; padding:12px 14px}
+.gap h3{font-size:19px; margin-bottom:4px}
+.gap p{font-size:13.5px; color:var(--ink-soft); margin:6px 0 0}
+.gapitem{display:grid; grid-template-columns:15px 1fr auto; gap:9px; align-items:baseline;
+  padding:5px 6px; border:0; background:transparent; text-align:left; width:100%;
+  font:inherit; color:var(--ink); cursor:pointer; border-radius:2px}
+.gapitem:hover{background:var(--brass-wash)}
+.gapitem[aria-pressed="true"]{background:var(--ink); color:var(--paper)}
+.gapitem[aria-pressed="true"] .amt,.gapitem[aria-pressed="true"] .sub{color:var(--paper)}
+.gapitem:focus-visible{outline:2px solid var(--brass-bright); outline-offset:-2px}
+.gapitem .sw{width:15px; height:3px; border-radius:2px; align-self:center}
+.gapitem .nm{font-size:14px}
+.gapitem .sub{display:block; font-family:"IBM Plex Mono",monospace; font-size:9.5px;
+  color:var(--ink-faint); margin-top:1px}
+.gapitem .amt{font-family:"IBM Plex Mono",monospace; font-size:10.5px;
+  font-variant-numeric:tabular-nums; color:var(--ink-soft)}
+
+.meter{height:5px; background:var(--rule-soft); border-radius:3px; overflow:hidden; margin-top:8px}
+.meter i{display:block; height:100%; background:var(--brass); width:0;
+  transition:width .28s ease}
+@media (prefers-reduced-motion:reduce){.meter i{transition:none}}
+
+</style>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <div class="eyebrow">San Francisco &middot; what the survey record can date</div>
+      <h1>Twenty-One Years</h1>
+      <p class="sub">Three surveys, twenty-one years apart, laid out 55% of the streets
+      San Francisco has today. Run the slider and watch them arrive &mdash; then keep
+      going, because after 1868 this record has nothing more to show you, and the
+      other 45% of the city has no date at all.</p>
+    </div>
+  </header>
+
+  <div class="timebar">
+    <div class="year mono" id="yr">1835</div>
+    <div class="yearmeta">
+      <span class="big" id="km">0 km</span>
+      <span class="sm" id="pc">0% of the modern city</span>
+      <div class="meter"><i id="bar"></i></div>
+    </div>
+    <div class="scrub">
+      <input type="range" id="slider" min="1835" max="2026" step="1" value="1835"
+             aria-label="Year" aria-describedby="yr">
+      <div class="ticks" id="ticks"></div>
+    </div>
+    <button class="play" id="play" aria-pressed="false">Play</button>
+  </div>
+
+  <div class="stage">
+    <div class="plate">
+      <svg class="map" id="map" role="img"
+           aria-label="Map of San Francisco filling in as each survey is laid out, from 1847 to 1868."></svg>
+      <div class="readout mono" id="readout"></div>
+      <div class="scalebar"><div class="bar" id="sbar"></div><span id="slab">1 km</span></div>
+    </div>
+
+    <div class="rail">
+      <div class="card">
+        <div class="eyebrow">On the timeline</div>
+        <h3>Three surveys</h3>
+        <div class="acts" id="actlist"></div>
+        <p class="note">Each arrives on its own date, not as a gradient &mdash; a survey is
+        an event. Click one to jump to it.</p>
+      </div>
+
+      <div class="gap">
+        <div class="eyebrow">Not on the timeline</div>
+        <h3 id="gaphead">&mdash;</h3>
+        <p style="margin-top:2px">Everything below is drawn on the map and has no date in
+        this corpus. It is shown as faint ground throughout. Click any of it to pick it out.</p>
+        <div class="acts" id="gaplist" style="margin-top:8px"></div>
+        <p><b>If you know when any of these were laid out, that is the correction this
+        map most needs.</b></p>
+      </div>
+
+      <div class="card">
+        <div class="eyebrow">Layers</div>
+        <div class="tools" style="margin-top:6px">
+          <button id="btnGhost" aria-pressed="true">Modern city</button>
+          <button id="btnFit">Reset view</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="prose">
+    <h2>What the slider is actually doing</h2>
+    <p class="lede">Every street on this map is a federal centreline, assigned to a survey
+    grid by the direction it runs. Three of those grids can be dated from the sources in
+    this project; the streets belonging to them appear on their survey year and not before.</p>
+    <p>The dates are events rather than processes, so the map jumps. O'Farrell's survey did
+    not fade in over a decade &mdash; it was drawn, and then it existed. Smoothing that into a
+    gradient would be a prettier animation and a false one.</p>
+    <p>What the map cannot show is <em>construction</em>. A survey is a plan on paper; the
+    streets it specifies were built over the decades that followed, and many of the lines
+    that appear in 1868 were sand until the 1900s. This is a timeline of when the city was
+    <em>laid out</em>, not when it was built.</p>
+
+    <h2>Why it stops</h2>
+    <p>Drag past 1868 and nothing happens for a hundred and fifty-eight years. That is not a
+    bug in the animation. Four of the seven grids on this map have no survey date in this
+    corpus, and a third of the city's street length belongs to no grid at all &mdash; the
+    hills, the parks, the Presidio, the deliberately curving plats of Sea Cliff and St
+    Francis Wood.</p>
+    <p>Together that is 45% of San Francisco, present on the map and absent from its
+    history. The honest way to draw a gap is at full size.</p>
+
+    <h2>This is patchwork, on purpose</h2>
+    <p>The provenance here will change as people who know more say so. Homestead
+    associations and subdivision tracts are the missing unit &mdash; the Eureka Homestead
+    Association of 1864, the Market Street Homestead Association of 1868, dozens more named
+    in the planning record &mdash; each one a dated, bounded plat that would fill the space
+    between the three city-scale surveys. They are not on this map yet because each date
+    has to be read out of a sentence and checked, not scraped.</p>
+  </div>
+
+  <footer class="end">
+    <div>
+      <div class="eyebrow">Sources &amp; method</div>
+      <p style="margin:6px 0 0">Geometry: US Census Bureau TIGER/Line 2025, San Francisco
+      County (FIPS 06075) &mdash; public domain under 17 U.S.C. &sect;105, retrieved and
+      checksummed 26 August 2026. Survey dates from the sources registered in the corpus;
+      the four undated grids are measured, not cited. Companion to
+      <a href="https://www.dhk.io/work/seven-grids">Seven Grids</a>, which draws the same
+      seven surveys without the time axis.</p>
+      <p style="margin:8px 0 0" class="mono">
+        <a href="https://github.com/dhk/alexandria/tree/main/research/2026-08-21-sf-downtown-place-names" target="_blank" rel="noopener">dhk/alexandria &middot; the corpus</a><br>
+        <a href="https://github.com/dhk/alexandria/blob/main/research/2026-08-21-sf-downtown-place-names/05-analysis/grid-classification.md" target="_blank" rel="noopener">05-analysis/grid-classification.md &middot; what this does not claim</a><br>
+        <a href="https://github.com/dhk/alexandria/issues" target="_blank" rel="noopener">tell me what I got wrong &middot; dhk/alexandria issues</a><br>
+        <a href="https://dhk.io" target="_blank" rel="noopener">dhk.io</a>
+      </p>
+    </div>
+  </footer>
+</div>
+
+<script id="DATA" type="application/json">__DATA__</script>
+<script>
+(function(){
+"use strict";
+var D = JSON.parse(document.getElementById("DATA").textContent);
+
+var NAMES = {"richmond-sunset":"Richmond & Sunset","western-addition":"Western Addition",
+  "south-of-market":"South of Market","bayview":"Bayview","portola":"Portola",
+  "lakeside":"Lakeside","excelsior":"Excelsior"};
+var NG = D.grids.length;
+function col(k){ return "var(--g" + (k < 0 ? 7 : k) + ")"; }
+
+var TOTAL = D.grids.reduce(function(a,g){return a+g.metres;},0) + D.unassigned_m;
+var DATED = D.grids.map(function(g,k){return {k:k,g:g};}).filter(function(o){return o.g.year;})
+              .sort(function(a,b){return a.g.year-b.g.year;});
+var UNDATED = D.grids.map(function(g,k){return {k:k,g:g};}).filter(function(o){return !o.g.year;});
+var LAST = DATED[DATED.length-1].g.year;
+
+/* ---------- map ---------- */
+var VB = {x:-6700, y:-8250, w:14900, h:14200};
+var NS = "http://www.w3.org/2000/svg";
+var svg = document.getElementById("map"), readout = document.getElementById("readout");
+function el(n,a){ var e=document.createElementNS(NS,n); for(var k in a) e.setAttribute(k,a[k]); return e; }
+function d(p){ var s="M"+p[0]+" "+p[1]; for(var i=2;i<p.length;i+=2) s+="L"+p[i]+" "+p[i+1]; return s; }
+
+var gWater=el("g",{}), gGhost=el("g",{}), fills=[];
+svg.appendChild(gWater); svg.appendChild(gGhost);
+D.water.forEach(function(w){ gWater.appendChild(el("path",{d:d(w)+"Z",fill:"var(--water)",stroke:"none"})); });
+for (var k=0;k<NG;k++){ var g=el("g",{}); fills.push(g); svg.appendChild(g); }
+
+// Every street is drawn twice: once as faint ground that is always present, and
+// once in colour in its grid's own group, revealed on its survey year. The ghost
+// is what makes 1847 legible -- 5.8% of a city with no outline around it reads
+// as a mistake rather than as a beginning.
+D.roads.forEach(function(r,i){
+  var path = r[2], klass = r[0];
+  var ghost = el("path",{"class":"road", d:d(path), stroke:"var(--ink-faint)",
+                         "stroke-width":0.7, opacity:0.30});
+  ghost.__i = i; gGhost.appendChild(ghost);
+  if (klass >= 0 && D.grids[klass].year){
+    var lit = el("path",{"class":"road", d:d(path), stroke:col(klass), "stroke-width":1.0});
+    lit.__i = i; fills[klass].appendChild(lit);
+  }
+});
+svg.setAttribute("viewBox", VB.x+" "+VB.y+" "+VB.w+" "+VB.h);
+svg.setAttribute("preserveAspectRatio","xMidYMid meet");
+
+/* ---------- state ---------- */
+// `pick` is null for "nothing picked" and a grid index otherwise, where -1 is a
+// real value meaning the ungridded third. Using -1 for both would make
+// deselecting the ungridded group redraw it.
+var year = 1835, playing = false, ghostOn = true, pick = null, timer = null;
+
+function laidBy(y){
+  var m = 0;
+  D.grids.forEach(function(g){ if (g.year && g.year <= y) m += g.metres; });
+  return m;
+}
+function render(){
+  document.getElementById("yr").textContent = year;
+  var m = laidBy(year), pc = m/TOTAL*100;
+  document.getElementById("km").textContent = (m/1000).toFixed(0) + " km laid out";
+  document.getElementById("pc").textContent = pc.toFixed(1) + "% of the modern city";
+  document.getElementById("bar").style.width = pc.toFixed(1) + "%";
+  document.getElementById("slider").value = year;
+
+  D.grids.forEach(function(g,k){
+    if (!fills[k]) return;
+    var on = g.year && g.year <= year;
+    var dim = pick !== null && pick !== k;
+    fills[k].setAttribute("opacity", on ? (dim ? 0.10 : 1) : 0);
+  });
+  gGhost.setAttribute("opacity", ghostOn ? 1 : 0);
+
+  Array.prototype.forEach.call(document.querySelectorAll("#actlist .act"), function(b,i){
+    b.classList.toggle("live", DATED[i].g.year <= year);
+  });
+  Array.prototype.forEach.call(document.querySelectorAll("#gaplist .gapitem"), function(b,i){
+    var key = i < UNDATED.length ? UNDATED[i].k : -1;   // last row is the ungridded third
+    b.setAttribute("aria-pressed", pick === key ? "true" : "false");
+  });
+  Array.prototype.forEach.call(document.querySelectorAll(".tick"), function(t){
+    t.classList.toggle("on", +t.dataset.y <= year);
+  });
+  document.getElementById("btnGhost").setAttribute("aria-pressed", ghostOn ? "true":"false");
+}
+
+/* ---------- ticks ---------- */
+var ticks = document.getElementById("ticks");
+DATED.forEach(function(o){
+  var t = document.createElement("div");
+  t.className = "tick"; t.dataset.y = o.g.year;
+  t.style.left = ((o.g.year - 1835) / (2026 - 1835) * 100) + "%";
+  t.innerHTML = "<b></b>" + o.g.year;
+  ticks.appendChild(t);
+});
+var endTick = document.createElement("div");
+endTick.className = "tick"; endTick.dataset.y = 9999;
+endTick.style.left = "100%";
+endTick.innerHTML = "<b></b>nothing after " + LAST;
+endTick.style.transform = "translateX(-100%)";
+ticks.appendChild(endTick);
+
+/* ---------- the three acts ---------- */
+var actlist = document.getElementById("actlist");
+DATED.forEach(function(o){
+  var b = document.createElement("button");
+  b.className = "act"; b.type = "button";
+  b.innerHTML = '<span class="sw" style="background:'+col(o.k)+'"></span>'
+    + '<span><span class="nm">'+NAMES[o.g.id]+'</span>'
+    + '<span class="sub">'+o.g.survey+'</span></span>'
+    + '<span class="amt">'+(o.g.metres/1000).toFixed(0)+' km</span>';
+  b.addEventListener("click", function(){ stop(); year = o.g.year; render(); });
+  actlist.appendChild(b);
+});
+
+/* ---------- the gap ---------- */
+var undatedM = UNDATED.reduce(function(a,o){return a+o.g.metres;},0) + D.unassigned_m;
+document.getElementById("gaphead").textContent =
+  (undatedM/TOTAL*100).toFixed(0) + "% of the city";
+var gaplist = document.getElementById("gaplist");
+UNDATED.forEach(function(o){
+  var b = document.createElement("button");
+  b.className = "gapitem"; b.type = "button"; b.setAttribute("aria-pressed","false");
+  b.innerHTML = '<span class="sw" style="background:'+col(o.k)+'"></span>'
+    + '<span><span class="nm">'+NAMES[o.g.id]+'</span>'
+    + '<span class="sub">'+o.g.bearing.toFixed(1)+'° · no survey date</span></span>'
+    + '<span class="amt">'+(o.g.metres/1000).toFixed(0)+' km</span>';
+  b.addEventListener("click", function(){ pickGrid(o.k); });
+  gaplist.appendChild(b);
+});
+var nb = document.createElement("button");
+nb.className = "gapitem"; nb.type = "button"; nb.setAttribute("aria-pressed","false");
+nb.innerHTML = '<span class="sw" style="background:'+col(-1)+'"></span>'
+  + '<span><span class="nm">No grid at all</span>'
+  + '<span class="sub">hills, parks, the Presidio, curving plats</span></span>'
+  + '<span class="amt">'+(D.unassigned_m/1000).toFixed(0)+' km</span>';
+nb.addEventListener("click", function(){ pickGrid(-1); });
+gaplist.appendChild(nb);
+
+// Picking an undated grid paints it over the ghost. It has no date, so it cannot
+// enter the timeline -- but it can still be pointed at, which is the whole
+// purpose of listing it.
+var gPick = el("g",{}); svg.appendChild(gPick);
+function pickGrid(k){
+  stop();
+  pick = (pick === k) ? null : k;
+  while (gPick.firstChild) gPick.removeChild(gPick.firstChild);
+  if (pick !== null){
+    D.roads.forEach(function(r){
+      if (r[0] === pick) gPick.appendChild(el("path",{"class":"road", d:d(r[2]),
+        stroke:col(pick), "stroke-width":1.1}));
+    });
+  }
+  render();
+}
+
+/* ---------- transport ---------- */
+function step(){
+  year += 1;
+  if (year > 2026){ year = 2026; stop(); }
+  render();
+}
+function play(){
+  if (playing) return;
+  playing = true;
+  document.getElementById("play").textContent = "Pause";
+  document.getElementById("play").setAttribute("aria-pressed","true");
+  if (year >= 2026) year = 1835;
+  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  timer = setInterval(step, reduced ? 90 : 42);
+}
+function stop(){
+  playing = false; clearInterval(timer); timer = null;
+  document.getElementById("play").textContent = "Play";
+  document.getElementById("play").setAttribute("aria-pressed","false");
+}
+document.getElementById("play").addEventListener("click", function(){ playing ? stop() : play(); });
+document.getElementById("slider").addEventListener("input", function(e){
+  stop(); year = +e.target.value; render();
+});
+document.getElementById("btnGhost").addEventListener("click", function(){
+  ghostOn = !ghostOn; render();
+});
+
+/* ---------- hover ---------- */
+svg.addEventListener("mouseover", function(e){
+  var t = e.target; if (!t || t.__i === undefined) return;
+  var r = D.roads[t.__i], k = r[0], g = k >= 0 ? D.grids[k] : null;
+  var line = !g ? "no grid — fits none of the seven surveys"
+    : g.year ? NAMES[g.id] + " · " + g.survey
+             : NAMES[g.id] + " · no survey date in this corpus";
+  readout.innerHTML = "<b>" + r[1] + "</b><br>" + line;
+  readout.classList.add("on");
+});
+svg.addEventListener("mouseout", function(){ readout.classList.remove("on"); });
+
+/* ---------- pan & zoom ---------- */
+var vb = {x:VB.x,y:VB.y,w:VB.w,h:VB.h};
+function push(){
+  svg.setAttribute("viewBox", vb.x.toFixed(1)+" "+vb.y.toFixed(1)+" "+vb.w.toFixed(1)+" "+vb.h.toFixed(1));
+  var px = svg.clientWidth / vb.w, m = 1000, w = m*px;
+  while (w > 130){ m /= 2; w = m*px; }
+  while (w < 45){ m *= 2; w = m*px; }
+  document.getElementById("sbar").style.width = w.toFixed(0)+"px";
+  document.getElementById("slab").textContent = m >= 1000 ? (m/1000)+" km" : m+" m";
+}
+svg.addEventListener("wheel", function(e){
+  e.preventDefault();
+  var r = svg.getBoundingClientRect();
+  var mx = vb.x + (e.clientX-r.left)/r.width*vb.w, my = vb.y + (e.clientY-r.top)/r.height*vb.h;
+  var f = Math.exp(e.deltaY*0.0012);
+  var nw = Math.min(VB.w*1.4, Math.max(VB.w/60, vb.w*f)); f = nw/vb.w;
+  vb.x = mx-(mx-vb.x)*f; vb.y = my-(my-vb.y)*f; vb.w = nw; vb.h *= f;
+  push();
+}, {passive:false});
+var drag = null;
+svg.addEventListener("pointerdown", function(e){
+  drag = {x:e.clientX,y:e.clientY,vx:vb.x,vy:vb.y};
+  svg.setPointerCapture(e.pointerId); svg.classList.add("drag");
+});
+svg.addEventListener("pointermove", function(e){
+  if (!drag) return;
+  var r = svg.getBoundingClientRect();
+  vb.x = drag.vx - (e.clientX-drag.x)/r.width*vb.w;
+  vb.y = drag.vy - (e.clientY-drag.y)/r.height*vb.h;
+  push();
+});
+["pointerup","pointercancel"].forEach(function(ev){
+  svg.addEventListener(ev, function(){ drag=null; svg.classList.remove("drag"); });
+});
+document.getElementById("btnFit").addEventListener("click", function(){
+  vb = {x:VB.x,y:VB.y,w:VB.w,h:VB.h}; push();
+});
+
+render(); push();
+window.addEventListener("resize", push);
+})();
+</script>
