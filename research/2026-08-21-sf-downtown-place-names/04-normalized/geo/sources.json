@@ -1,0 +1,97 @@
+{
+  "bbox_by_extent": {
+    "city": {
+      "east": -122.355,
+      "north": 37.84,
+      "south": 37.7,
+      "west": -122.525
+    },
+    "soma": {
+      "east": -122.386,
+      "north": 37.797,
+      "south": 37.772,
+      "west": -122.41
+    }
+  },
+  "generated_by": "02-run-plan/acquire-geo.py",
+  "layers": [
+    {
+      "attribution_required": false,
+      "bytes": 1396833,
+      "crs": "NAD83 (EPSG:4269), used as WGS84 for display; the difference is sub-metre here",
+      "extent": "city",
+      "features": 3779,
+      "file": "city-roads.geojson",
+      "layer": "roads",
+      "licence": "Public domain \u2014 work of the U.S. Census Bureau (17 U.S.C. \u00a7105)",
+      "marker": "FETCHED",
+      "mtfcc_filter": [
+        "S1100",
+        "S1200",
+        "S1400"
+      ],
+      "retrieved_utc": "2026-08-26T15:40:53Z",
+      "sha256": "b330e47d12da84bffe915ae73b0618940b2c4702d100dfa275ab22d477cec61e",
+      "source_zip": "https://www2.census.gov/geo/tiger/TIGER2025/ROADS/tl_2025_06075_roads.zip",
+      "source_zip_sha256": "216d1d7e37755b003389f7da6998143a4f4145db0cede470b7f40a0db3f6d1f0",
+      "vintage": "TIGER2025"
+    },
+    {
+      "attribution_required": false,
+      "bytes": 148064,
+      "crs": "NAD83 (EPSG:4269), used as WGS84 for display; the difference is sub-metre here",
+      "extent": "city",
+      "features": 46,
+      "file": "city-water.geojson",
+      "layer": "water",
+      "licence": "Public domain \u2014 work of the U.S. Census Bureau (17 U.S.C. \u00a7105)",
+      "marker": "FETCHED",
+      "mtfcc_filter": null,
+      "retrieved_utc": "2026-08-26T15:40:53Z",
+      "sha256": "8ea5240c0f63c900db9a2ce96f9c620c948a37c7a2b4c195ddf4dcac65b8f73c",
+      "source_zip": "https://www2.census.gov/geo/tiger/TIGER2025/AREAWATER/tl_2025_06075_areawater.zip",
+      "source_zip_sha256": "792fea61ada9e5f67493278b4fec005dd443656e1a573280b20bbabff6031601",
+      "vintage": "TIGER2025"
+    },
+    {
+      "attribution_required": false,
+      "bytes": 130342,
+      "crs": "NAD83 (EPSG:4269), used as WGS84 for display; the difference is sub-metre here",
+      "extent": "soma",
+      "features": 326,
+      "file": "soma-roads.geojson",
+      "layer": "roads",
+      "licence": "Public domain \u2014 work of the U.S. Census Bureau (17 U.S.C. \u00a7105)",
+      "marker": "FETCHED",
+      "mtfcc_filter": [
+        "S1100",
+        "S1200",
+        "S1400",
+        "S1730"
+      ],
+      "retrieved_utc": "2026-08-26T15:40:54Z",
+      "sha256": "1ef57efe7128aebc99c66764a56d025eafdf9dfcaf83059f503c9d7339579b67",
+      "source_zip": "https://www2.census.gov/geo/tiger/TIGER2025/ROADS/tl_2025_06075_roads.zip",
+      "source_zip_sha256": "216d1d7e37755b003389f7da6998143a4f4145db0cede470b7f40a0db3f6d1f0",
+      "vintage": "TIGER2025"
+    },
+    {
+      "attribution_required": false,
+      "bytes": 63637,
+      "crs": "NAD83 (EPSG:4269), used as WGS84 for display; the difference is sub-metre here",
+      "extent": "soma",
+      "features": 3,
+      "file": "soma-water.geojson",
+      "layer": "water",
+      "licence": "Public domain \u2014 work of the U.S. Census Bureau (17 U.S.C. \u00a7105)",
+      "marker": "FETCHED",
+      "mtfcc_filter": null,
+      "retrieved_utc": "2026-08-26T15:40:54Z",
+      "sha256": "d89508f0be7493b2de78fda7925ebdf1ca78b786404ffb49a1877eeb59da6b5a",
+      "source_zip": "https://www2.census.gov/geo/tiger/TIGER2025/AREAWATER/tl_2025_06075_areawater.zip",
+      "source_zip_sha256": "792fea61ada9e5f67493278b4fec005dd443656e1a573280b20bbabff6031601",
+      "vintage": "TIGER2025"
+    }
+  ],
+  "note": "Derived geometry, clipped to a hand-chosen bounding box and thinned to 6 decimal places. The bbox bounds a download and asserts no extent. Source is public domain, so this data carries no licence obligation and does not qualify the repository's MIT licence."
+}
