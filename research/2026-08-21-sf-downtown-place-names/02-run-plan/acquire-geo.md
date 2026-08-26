@@ -61,8 +61,27 @@ trims.
 
 | `--extent` | Covers | Road classes |
 |---|---|---|
-| `city` *(default)* | Peninsula plus Treasure Island | `S1100`, `S1200` — primary and secondary |
-| `soma` | The downtown pilot | adds `S1400` local streets and `S1730` alleys |
+| `city` *(default)* | Peninsula plus Treasure Island | `S1100`, `S1200`, `S1400` |
+| `soma` | The downtown pilot | adds `S1730` alleys |
+
+**TIGER's road classes are federal-functional, not urban-arterial**, and this is
+the trap. `S1100` is limited-access freeway; `S1200` is US and state highway.
+Almost every street in San Francisco — Geary, Mission, Market, Clement — is
+`S1400`, "Local Neighborhood Road." A city-wide filter of `S1100` plus `S1200`
+returns the freeways and little else.
+
+Found the hard way: that filter returned **64 features city-wide while the SoMa
+pilot returned 326** — a subset larger than its superset, which is the signal
+that a filter is wrong rather than merely tight. Run `--report` before trusting
+any class filter:
+
+```bash
+uv run --no-project --with pyshp python acquire-geo.py --report
+```
+
+It fetches the roads file, clips to the extent, and prints a histogram of MTFCC
+codes with how many carry a name — the numbers a tier decision should be made
+on rather than guessed at.
 
 The alleys are not a detail. Minna, Natoma, Russ, Shipley and Tehama are named
 in the 2009 context statement, and the place-name boundaries are described in

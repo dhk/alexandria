@@ -46,9 +46,13 @@ TIGER_ROOT = "https://www2.census.gov/geo/tiger"
 PRESETS = {
     "city": {
         "bbox": {"west": -122.5250, "south": 37.7000, "east": -122.3550, "north": 37.8400},
-        # Every local street in San Francisco is far more geometry than one page
-        # should carry, so city-wide keeps the through-network.
-        "mtfcc": ["S1100", "S1200"],
+        # TIGER's classes are federal-functional, not urban-arterial: S1100 is
+        # limited-access freeway and S1200 is US/state highway, so those two
+        # alone return the freeways and almost nothing a pedestrian would name.
+        # Essentially every San Francisco street is S1400. Verified the hard
+        # way: city-wide on S1100+S1200 returned 64 features while the SoMa
+        # pilot returned 326 — a subset larger than its superset.
+        "mtfcc": ["S1100", "S1200", "S1400"],
     },
     "soma": {
         "bbox": {"west": -122.4100, "south": 37.7720, "east": -122.3860, "north": 37.7970},
@@ -125,10 +129,11 @@ def to_geojson(payload: bytes, layer: str, box: dict, mtfcc: list[str]) -> list[
     return feats
 
 
+PRECISION = 6
 def _round(x):
     if isinstance(x, (list, tuple)):
         return [_round(i) for i in x]
-    return round(x, 6) if isinstance(x, float) else x
+    return round(x, PRECISION) if isinstance(x, float) else x
 
 
 def main() -> int:
@@ -142,6 +147,10 @@ def main() -> int:
     ap.add_argument("--mtfcc", help="comma-separated override for the road-class filter")
     ap.add_argument("--out", default=str(pathlib.Path(__file__).resolve().parent.parent / "04-normalized" / "geo"),
                     help="output directory (default: this investigation's 04-normalized/geo)")
+    ap.add_argument("--precision", type=int, default=5,
+                    help="coordinate decimal places (default 5, about a metre)")
+    ap.add_argument("--report", action="store_true",
+                    help="fetch and print the MTFCC class histogram for the extent, write nothing")
     ap.add_argument("--dry-run", action="store_true", help="print what would be fetched; fetch nothing")
     ap.add_argument("--list-years", action="store_true", help="print available TIGER vintages and exit")
     args = ap.parse_args()
@@ -164,6 +173,31 @@ def main() -> int:
     unknown = [l for l in layers if l not in TIGER_LAYERS]
     if unknown:
         raise SystemExit(f"unknown layer(s): {', '.join(unknown)}")
+
+    global PRECISION
+    PRECISION = args.precision
+
+    if args.report:
+        import shapefile, collections
+        year = args.year or list_years()[-1]
+        payload = fetch(zip_url(year, "roads"))
+        counts, named = collections.Counter(), collections.Counter()
+        with zipfile.ZipFile(io.BytesIO(payload)) as z:
+            stem = next(n[:-4] for n in z.namelist() if n.endswith(".shp"))
+            parts = {e: io.BytesIO(z.read(f"{stem}.{e}")) for e in ("shp", "dbf", "shx")}
+            rdr = shapefile.Reader(shp=parts["shp"], dbf=parts["dbf"], shx=parts["shx"])
+            for sr in rdr.iterShapeRecords():
+                if not getattr(sr.shape, "points", None) or not overlaps(sr.shape.bbox, box):
+                    continue
+                rec = sr.record.as_dict(); c = rec.get("MTFCC")
+                counts[c] += 1
+                if rec.get("FULLNAME"):
+                    named[c] += 1
+        print(f"TIGER{year}, extent {args.extent}: {sum(counts.values())} segments in the box\n")
+        print(f"{'MTFCC':8} {'total':>7} {'named':>7}  meaning")
+        for c, n in counts.most_common():
+            print(f"{c:8} {n:7} {named[c]:7}  {MTFCC_LABEL.get(c, '?')}")
+        return 0
 
     year = args.year
     if not year and not args.dry_run:
