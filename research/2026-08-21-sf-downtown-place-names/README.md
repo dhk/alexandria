@@ -130,12 +130,16 @@ Run 2026-08-25, single source, ungraded. In short:
 ## Modern geometry
 
 [`02-run-plan/acquire-geo.md`](02-run-plan/acquire-geo.md) covers acquiring
-street and boundary geometry from Overture Maps for all of San Francisco, not
-just the pilot — the source brief's scope was always the whole city, with
-downtown/SoMa as a high-documentation starting point. Acquisition runs on a
-host with open egress and commits derived GeoJSON plus a provenance sidecar;
-the licence question (ODbL versus public-domain TIGER) is settled there rather
-than at publication time.
+street and water geometry for all of San Francisco, not just the pilot — the
+source brief's scope was always the whole city, with downtown/SoMa as a
+high-documentation starting point. Acquisition runs on a host with open egress
+and commits derived GeoJSON plus a provenance sidecar.
+
+The source is Census TIGER/Line, which is public domain, because this
+repository is MIT and MIT cannot relicense somebody else's data. Overture Maps
+is better data but carries ODbL, whose share-alike would attach to a committed
+extract and arguably to any place-name geometry georeferenced against it. That
+reasoning is written down in the doc rather than left as a preference.
 
 ## What a later session would need to decide
 

@@ -1,223 +1,230 @@
 #!/usr/bin/env python3
-"""Acquire Overture Maps geometry for the downtown/SoMa pilot, clipped and stamped.
+"""Acquire modern street and water geometry for San Francisco, stamped with provenance.
 
-Run this where the network is open — lobster, not a session container, whose
-egress allowlist reaches S3 but little else. It writes derived GeoJSON plus a
-provenance sidecar into 04-normalized/geo/, which is what a viewer inlines.
+Default source is Census TIGER/Line, which is a work of the U.S. federal
+government and therefore public domain (17 U.S.C. §105): no licence, no
+attribution obligation, no share-alike. That keeps this repository's MIT
+licence accurate across every file in it.
 
-The point is not the download. It is that the output carries where it came
-from, when, under what licence, and a checksum — so a reader can check it the
-same way they can check a quoted page.
+Overture Maps is available behind --source overture and is BETTER data, but its
+transportation and divisions themes derive from OpenStreetMap and carry ODbL.
+ODbL's share-alike attaches to a Derivative Database, and a committed .geojson
+extract is exactly that — so using it would make this an MIT repository
+containing ODbL files, and would arguably put ODbL on the place-name geometry
+derived against it. Hence the default.
 
-    uv run --no-project --with duckdb python acquire-geo.py --list-releases
-    uv run --no-project --with duckdb python acquire-geo.py --dry-run
-    uv run --no-project --with duckdb python acquire-geo.py
+Run where the network is open — lobster, not a session container, whose egress
+reaches S3 and GitHub and little else.
+
+    uv run --no-project --with pyshp python acquire-geo.py --list-years
+    uv run --no-project --with pyshp python acquire-geo.py --dry-run
+    uv run --no-project --with pyshp python acquire-geo.py               # all of San Francisco
+    uv run --no-project --with pyshp python acquire-geo.py --extent soma
 """
 from __future__ import annotations
 
 import argparse
 import datetime as _dt
 import hashlib
+import io
 import json
 import pathlib
+import re
 import sys
 import urllib.request
-import xml.etree.ElementTree as ET
+import zipfile
 
-BUCKET = "overturemaps-us-west-2"
-S3_HTTPS = f"https://{BUCKET}.s3.amazonaws.com"
+# San Francisco is FIPS state 06, county 075. TIGER ships one file per county,
+# so the download is already city-scoped and the bbox only trims.
+STATE_COUNTY = "06075"
+TIGER_ROOT = "https://www2.census.gov/geo/tiger"
 
-# Bounding boxes are hand-chosen and approximate. They exist to bound a
-# download and assert no extent — never cite one as a boundary.
-#
-# "city" covers the peninsula plus Treasure Island, which is where the street
-# grid and the place names are. It deliberately excludes the Farallon Islands,
-# which are legally part of the City and County of San Francisco and 27 miles
-# out to sea; including them would stretch the box across mostly empty ocean
-# for no gain.
+# Bounding boxes are hand-chosen and approximate. They exist to bound and trim,
+# and assert no extent — never cite one as a boundary. "city" covers the
+# peninsula plus Treasure Island and deliberately omits the Farallon Islands:
+# legally part of the City and County, 27 miles out, nothing but ocean between.
 PRESETS = {
     "city": {
         "bbox": {"west": -122.5250, "south": 37.7000, "east": -122.3550, "north": 37.8400},
-        # City-wide with every residential street is far more geometry than a
-        # single page should carry, so the default keeps the through-network.
-        "road_classes": ["motorway", "trunk", "primary", "secondary", "tertiary"],
+        # Every local street in San Francisco is far more geometry than one page
+        # should carry, so city-wide keeps the through-network.
+        "mtfcc": ["S1100", "S1200"],
     },
     "soma": {
         "bbox": {"west": -122.4100, "south": 37.7720, "east": -122.3860, "north": 37.7970},
-        # The pilot is small enough to take the full local grid, which is what
-        # the place-name boundaries are actually described in terms of.
-        "road_classes": ["motorway", "trunk", "primary", "secondary", "tertiary",
-                         "residential", "unclassified", "living_street"],
+        # The pilot adds local streets and alleys. The alleys matter: Minna,
+        # Natoma, Russ, Shipley and Tehama are named in the sources, and the
+        # place-name boundaries are described in terms of this grid.
+        "mtfcc": ["S1100", "S1200", "S1400", "S1730"],
     },
 }
 
-# Overture themes carry different licences per theme; transportation and
-# divisions derive from OpenStreetMap and are ODbL, which obliges attribution
-# and share-alike on anything published from them. Recorded per layer so the
-# obligation travels with the data instead of living in someone's memory.
-LAYERS = {
-    "transportation": {
-        "path": "theme=transportation/type=segment",
-        "licence": "ODbL 1.0 (derived from OpenStreetMap)",
-        "attribution": "© OpenStreetMap contributors, via Overture Maps Foundation",
-        "columns": "id, names.primary AS name, class, subtype",
-        "where": "class IS NOT NULL AND names.primary IS NOT NULL",
-    },
-    "divisions": {
-        "path": "theme=divisions/type=division_area",
-        "licence": "ODbL 1.0 (derived from OpenStreetMap)",
-        "attribution": "© OpenStreetMap contributors, via Overture Maps Foundation",
-        "columns": "id, names.primary AS name, subtype, class",
-        "where": "names.primary IS NOT NULL",
-    },
+MTFCC_LABEL = {
+    "S1100": "primary road", "S1200": "secondary road", "S1400": "local street",
+    "S1500": "vehicular trail", "S1630": "ramp", "S1640": "service drive",
+    "S1730": "alley", "S1740": "private road", "S1780": "parking lot road",
 }
 
+TIGER_LAYERS = {
+    "roads": {"kind": "ROADS", "file": "roads", "geom": "LineString"},
+    "water": {"kind": "AREAWATER", "file": "areawater", "geom": "Polygon"},
+}
 
-def latest_release() -> str:
-    """Newest release prefix in the public bucket, read from the listing."""
-    url = f"{S3_HTTPS}/?list-type=2&prefix=release/&delimiter=/&max-keys=1000"
-    with urllib.request.urlopen(url, timeout=60) as r:
-        root = ET.fromstring(r.read())
-    ns = {"s3": "http://s3.amazonaws.com/doc/2006-03-01/"}
-    prefixes = [p.text for p in root.findall(".//s3:CommonPrefixes/s3:Prefix", ns) if p.text]
-    releases = sorted(p.split("/")[1] for p in prefixes if p.count("/") == 2)
-    if not releases:
-        raise SystemExit("no releases found in the bucket listing")
-    return releases[-1]
+PUBLIC_DOMAIN = "Public domain — work of the U.S. Census Bureau (17 U.S.C. §105)"
 
 
-def sql_for(layer: str, release: str, out_path: pathlib.Path, bbox: dict, road_classes: list[str]) -> str:
-    spec = LAYERS[layer]
-    src = f"s3://{BUCKET}/release/{release}/{spec['path']}/*"
-    extra = ""
-    if layer == "transportation" and road_classes:
-        allowed = ", ".join(f"'{c}'" for c in road_classes)
-        extra = f"\n    AND class IN ({allowed})"
-    return f"""
-INSTALL httpfs; LOAD httpfs;
-INSTALL spatial; LOAD spatial;
-SET s3_region='us-west-2';
-COPY (
-  SELECT {spec['columns']},
-         ST_GeomFromWKB(geometry) AS geometry
-  FROM read_parquet('{src}', hive_partitioning=1)
-  WHERE bbox.xmin > {bbox['west']} AND bbox.xmax < {bbox['east']}
-    AND bbox.ymin > {bbox['south']} AND bbox.ymax < {bbox['north']}
-    AND {spec['where']}{extra}
-) TO '{out_path}' (FORMAT GDAL, DRIVER 'GeoJSON', LAYER_CREATION_OPTIONS 'COORDINATE_PRECISION=6');
-""".strip()
+def list_years() -> list[str]:
+    with urllib.request.urlopen(TIGER_ROOT + "/", timeout=60) as r:
+        html = r.read().decode("utf-8", "replace")
+    return sorted({m for m in re.findall(r"TIGER(\d{4})", html)})
 
 
-def thin(path: pathlib.Path) -> int:
-    """Drop nulls and trim to 6dp (~0.1 m). Returns the feature count."""
-    doc = json.loads(path.read_text())
-    feats = doc.get("features", [])
+def zip_url(year: str, layer: str) -> str:
+    spec = TIGER_LAYERS[layer]
+    return f"{TIGER_ROOT}/TIGER{year}/{spec['kind']}/tl_{year}_{STATE_COUNTY}_{spec['file']}.zip"
 
-    def rd(x):
-        if isinstance(x, list):
-            return [rd(i) for i in x]
-        return round(x, 6) if isinstance(x, float) else x
 
-    for f in feats:
-        f.pop("bbox", None)
-        f["properties"] = {k: v for k, v in (f.get("properties") or {}).items() if v not in (None, "")}
-        if f.get("geometry"):
-            f["geometry"]["coordinates"] = rd(f["geometry"]["coordinates"])
-    doc["features"] = feats
-    path.write_text(json.dumps(doc, separators=(",", ":"), sort_keys=True))
-    return len(feats)
+def fetch(url: str) -> bytes:
+    with urllib.request.urlopen(url, timeout=600) as r:
+        return r.read()
+
+
+def overlaps(shp_bbox, box) -> bool:
+    xmin, ymin, xmax, ymax = shp_bbox
+    return not (xmax < box["west"] or xmin > box["east"] or ymax < box["south"] or ymin > box["north"])
+
+
+def to_geojson(payload: bytes, layer: str, box: dict, mtfcc: list[str]) -> list[dict]:
+    """Read the shapefile out of the zip in memory and emit filtered features."""
+    import shapefile  # pyshp — pure python, no binary dependency
+
+    feats = []
+    with zipfile.ZipFile(io.BytesIO(payload)) as z:
+        stem = next(n[:-4] for n in z.namelist() if n.endswith(".shp"))
+        parts = {ext: io.BytesIO(z.read(f"{stem}.{ext}")) for ext in ("shp", "dbf", "shx")}
+        rdr = shapefile.Reader(shp=parts["shp"], dbf=parts["dbf"], shx=parts["shx"])
+        for sr in rdr.iterShapeRecords():
+            shp = sr.shape
+            if not getattr(shp, "points", None) or not overlaps(shp.bbox, box):
+                continue
+            rec = sr.record.as_dict()
+            code = rec.get("MTFCC")
+            if layer == "roads" and mtfcc and code not in mtfcc:
+                continue
+            geo = shp.__geo_interface__
+            geo["coordinates"] = _round(geo["coordinates"])
+            props = {"name": rec.get("FULLNAME") or None}
+            if layer == "roads":
+                props["mtfcc"] = code
+                props["kind"] = MTFCC_LABEL.get(code, code)
+            else:
+                props["kind"] = rec.get("MTFCC")
+            feats.append({"type": "Feature",
+                          "properties": {k: v for k, v in props.items() if v},
+                          "geometry": geo})
+    return feats
+
+
+def _round(x):
+    if isinstance(x, (list, tuple)):
+        return [_round(i) for i in x]
+    return round(x, 6) if isinstance(x, float) else x
 
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--release", help="Overture release, e.g. 2026-08-19.0 (default: newest)")
+    ap.add_argument("--source", default="tiger", choices=("tiger", "overture"),
+                    help="tiger = public domain (default); overture = richer but ODbL")
+    ap.add_argument("--year", help="TIGER vintage, e.g. 2025 (default: newest published)")
     ap.add_argument("--extent", default="city", choices=sorted(PRESETS),
                     help="city = all of San Francisco (default); soma = the downtown pilot")
-    ap.add_argument("--road-classes", help="comma-separated override for the transportation filter")
-    ap.add_argument("--layers", default=",".join(LAYERS), help="comma-separated: " + ", ".join(LAYERS))
+    ap.add_argument("--layers", default="roads,water", help="comma-separated: roads, water")
+    ap.add_argument("--mtfcc", help="comma-separated override for the road-class filter")
     ap.add_argument("--out", default=str(pathlib.Path(__file__).resolve().parent.parent / "04-normalized" / "geo"),
                     help="output directory (default: this investigation's 04-normalized/geo)")
-    ap.add_argument("--dry-run", action="store_true", help="print the SQL and exit; fetch nothing")
-    ap.add_argument("--list-releases", action="store_true", help="print the newest release and exit")
+    ap.add_argument("--dry-run", action="store_true", help="print what would be fetched; fetch nothing")
+    ap.add_argument("--list-years", action="store_true", help="print available TIGER vintages and exit")
     args = ap.parse_args()
 
-    if args.list_releases:
-        print(latest_release())
+    if args.source == "overture":
+        print("! Overture's transportation and divisions themes are ODbL. Share-alike attaches to a\n"
+              "! committed extract, which would put ODbL files in an MIT repository. See acquire-geo.md.\n"
+              "! Not implemented here on purpose: choose it deliberately, not by default.", file=sys.stderr)
+        return 2
+
+    if args.list_years:
+        print(" ".join(list_years()))
         return 0
 
     preset = PRESETS[args.extent]
-    bbox = preset["bbox"]
-    road_classes = ([c.strip() for c in args.road_classes.split(",") if c.strip()]
-                    if args.road_classes else preset["road_classes"])
-    release = args.release or latest_release()
-    out_dir = pathlib.Path(args.out).resolve()
+    box = preset["bbox"]
+    mtfcc = ([c.strip().upper() for c in args.mtfcc.split(",") if c.strip()]
+             if args.mtfcc else preset["mtfcc"])
     layers = [l.strip() for l in args.layers.split(",") if l.strip()]
-    unknown = [l for l in layers if l not in LAYERS]
+    unknown = [l for l in layers if l not in TIGER_LAYERS]
     if unknown:
         raise SystemExit(f"unknown layer(s): {', '.join(unknown)}")
 
+    year = args.year
+    if not year and not args.dry_run:
+        year = list_years()[-1]
+    year = year or "YYYY"
+
     if args.dry_run:
         for layer in layers:
-            print(f"-- {layer} ({args.extent})\n"
-                  f"{sql_for(layer, release, out_dir / f'{args.extent}-{layer}.geojson', bbox, road_classes)}\n")
+            print(f"{layer:6} <- {zip_url(year, layer)}")
+        print(f"extent {args.extent} {box}")
+        print(f"road classes {mtfcc} ({', '.join(MTFCC_LABEL.get(c, c) for c in mtfcc)})")
+        print(f"out    {pathlib.Path(args.out).resolve()}")
         return 0
 
-    import duckdb  # imported late so --dry-run and --list-releases need no extension download
-
+    out_dir = pathlib.Path(args.out).resolve()
     out_dir.mkdir(parents=True, exist_ok=True)
     stamped = _dt.datetime.now(_dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     records = []
-    con = duckdb.connect()
+
     for layer in layers:
+        url = zip_url(year, layer)
+        print(f"… {layer} ({args.extent}) from TIGER{year}", file=sys.stderr)
+        payload = fetch(url)
+        feats = to_geojson(payload, layer, box, mtfcc)
         target = out_dir / f"{args.extent}-{layer}.geojson"
-        print(f"… {layer} ({args.extent}) from release {release}", file=sys.stderr)
-        con.execute(sql_for(layer, release, target, bbox, road_classes))
-        count = thin(target)
-        digest = hashlib.sha256(target.read_bytes()).hexdigest()
-        records.append({
-            "layer": layer,
-            "file": target.name,
-            "features": count,
-            "bytes": target.stat().st_size,
-            "sha256": digest,
-            "source": f"s3://{BUCKET}/release/{release}/{LAYERS[layer]['path']}/",
-            "source_https": f"{S3_HTTPS}/release/{release}/{LAYERS[layer]['path']}/",
-            "release": release,
-            "retrieved_utc": stamped,
-            "licence": LAYERS[layer]["licence"],
-            "attribution": LAYERS[layer]["attribution"],
-            "marker": "FETCHED",
-            "extent": args.extent,
-            "road_classes": road_classes if layer == "transportation" else None,
-        })
+        target.write_text(json.dumps(
+            {"type": "FeatureCollection", "features": feats}, separators=(",", ":"), sort_keys=True))
         mb = target.stat().st_size / 1_048_576
-        print(f"  {count} features · {mb:.1f} MB · {digest[:12]}…", file=sys.stderr)
+        records.append({
+            "layer": layer, "extent": args.extent, "file": target.name,
+            "features": len(feats), "bytes": target.stat().st_size,
+            "sha256": hashlib.sha256(target.read_bytes()).hexdigest(),
+            "source_zip": url, "source_zip_sha256": hashlib.sha256(payload).hexdigest(),
+            "vintage": f"TIGER{year}", "retrieved_utc": stamped,
+            "licence": PUBLIC_DOMAIN, "attribution_required": False,
+            "crs": "NAD83 (EPSG:4269), used as WGS84 for display; the difference is sub-metre here",
+            "mtfcc_filter": mtfcc if layer == "roads" else None,
+            "marker": "FETCHED",
+        })
+        print(f"  {len(feats)} features · {mb:.1f} MB", file=sys.stderr)
         if mb > 12:
-            print(f"  ! {target.name} is {mb:.1f} MB. A published artifact caps at 16 MB total, "
-                  f"so this needs a tighter class filter or a coarser extent before it is inlined.",
-                  file=sys.stderr)
+            print(f"  ! {target.name} is {mb:.1f} MB. A published artifact caps at 16 MB in total,\n"
+                  f"  ! so this needs a tighter class filter before it is inlined.", file=sys.stderr)
 
     sidecar = out_dir / "sources.json"
-    sidecar_path_note = out_dir / "sources.json"
     existing = {}
-    if sidecar_path_note.exists():
+    if sidecar.exists():
         try:
-            existing = json.loads(sidecar_path_note.read_text())
+            existing = json.loads(sidecar.read_text())
         except json.JSONDecodeError:
             existing = {}
-    kept = [r for r in existing.get("layers", [])
-            if (r.get("extent"), r.get("layer")) not in {(r2["extent"], r2["layer"]) for r2 in records}]
-    records = sorted(kept + records, key=lambda r: (r.get("extent", ""), r["layer"]))
+    fresh = {(r["extent"], r["layer"]) for r in records}
+    kept = [r for r in existing.get("layers", []) if (r.get("extent"), r.get("layer")) not in fresh]
     sidecar.write_text(json.dumps({
-        "note": (
-            "Derived geometry, clipped to a hand-chosen bounding box and thinned to 6 decimal "
-            "places. The bbox bounds the download and asserts no extent. Licence obligations "
-            "below travel with any publication of this data."
-        ),
+        "note": ("Derived geometry, clipped to a hand-chosen bounding box and thinned to 6 decimal "
+                 "places. The bbox bounds a download and asserts no extent. Source is public domain, "
+                 "so this data carries no licence obligation and does not qualify the repository's "
+                 "MIT licence."),
         "bbox_by_extent": {k: v["bbox"] for k, v in PRESETS.items()},
-        "duckdb": duckdb.__version__,
         "generated_by": "02-run-plan/acquire-geo.py",
-        "layers": records,
+        "layers": sorted(kept + records, key=lambda r: (r.get("extent", ""), r["layer"])),
     }, indent=2, sort_keys=True) + "\n")
     print(f"wrote {sidecar}", file=sys.stderr)
     return 0
