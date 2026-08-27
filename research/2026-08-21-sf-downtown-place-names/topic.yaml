@@ -34,6 +34,34 @@ topic_kind: historical-gazetteer
 # public-domain data is preferred over work that waits on a commission, and
 # the lobster host moves from blocking to enriching. When the commissions do
 # run, their names land on a frame that already exists.
+# METHOD DECISION, 2026-08-26 (operator). Multi-model commissioning is
+# abandoned for this investigation. It produced no findings: commission A was
+# dispatched, never returned, and its run record orphaned on a host that has
+# not been diagnosed; commission B was never dispatched. Every source this
+# corpus actually holds was obtained by hand -- a document located, fetched,
+# read, and quoted with its page.
+#
+# So the method is the one with the track record, industrialised rather than
+# repeated ad hoc. What that means concretely is in
+# 02-run-plan/retrieval-pipeline.md.
+#
+# The briefs are not deleted. They stop being work orders waiting on a host and
+# become what they always described: the question list a retrieval pass answers.
+method_decision:
+  date: 2026-08-26
+  by: operator
+  chosen: hand retrieval, industrialised
+  abandoned: multi-model commissioning
+  because: >
+    Commissioning produced zero findings across two briefs; hand retrieval
+    produced every source in the corpus, the conflict register, and the one
+    claim corroborated by independent measurement.
+  consequences:
+    - briefs A and B are re-read as a question list, not a dispatch payload
+    - the lobster journal diagnostic leaves the backlog
+    - r-2026-0821-01 is recorded as abandoned rather than pending reconciliation
+    - Minority Report has no further role in this investigation
+
 scope_decision:
   date: 2026-08-26
   by: operator
