@@ -1,5 +1,9 @@
 # San Francisco, read from public data
 
+> **Picking this up in a new session?** Read
+> [`HANDOFF.md`](HANDOFF.md) first — state of play, what to build next, and the
+> things that will bite you.
+
 **Scope decision, 26 August 2026.** This investigation opened as a
 place-names atlas for downtown and SoMa. Its trunk is now the **survey
 record read from public-domain data**, with place names as one strand on
