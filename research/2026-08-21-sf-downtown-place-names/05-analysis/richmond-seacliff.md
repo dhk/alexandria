@@ -125,3 +125,146 @@ neighbourhood in this corpus. Closing it needs sources outside SF Planning.
   surname — is `RECALLED` and unverified here. It wants a second document.
 - **The ruler is the same flat-earth approximation** used elsewhere in this
   investigation: fine for bearings and lengths at city scale.
+
+## The northern band: where two surveys meet
+
+Reproducible — `python3 richmond-extent.py --band`, stdlib only, no network.
+Same inputs as above.
+
+The four-neighbourhood study asks how much of the Richmond sits on its own grid.
+It cannot ask the more interesting question, because it only tests one grid.
+Widening the study to the whole northern edge of the city — fifteen DataSF
+analysis neighbourhoods from the Pacific to the Bay, the four above plus the
+Presidio, Golden Gate Park, Presidio Heights, Lone Mountain/USF, the Marina,
+Pacific Heights, the Western Addition, Japantown, Russian Hill, Nob Hill and
+North Beach — lets both city-scale surveys be tested against the same street at
+once:
+
+- **Richmond & Sunset, 3.5°** — Potter & Humphrey, 18 May 1868;
+- **Western Addition, 9.5°** — Van Ness Ordinance, 1855–56.
+
+Both at 2.5° tolerance, and each tested against **both** of its orthogonal
+families (`θ` and `θ+90`), because a grid is two families and testing one throws
+every cross street into "ungridded". The two windows, `[1.0, 6.0]` and
+`[7.0, 12.0]`, do not overlap: no segment can be counted twice, and the three
+shares sum to 100% by construction rather than by luck.
+
+| neighbourhood | named streets | centreline | 1868 | 1855–56 | neither |
+|---|---:|---:|---:|---:|---:|
+| Seacliff | 16 | 7.92 km | 57.8% | 2.7% | 39.5% |
+| Outer Richmond | 43 | 64.37 km | **93.2%** | 2.7% | 4.1% |
+| Inner Richmond | 16 | 19.87 km | **95.1%** | 1.1% | 3.8% |
+| Lincoln Park | 10 | 7.45 km | 21.2% | 3.8% | 75.0% |
+| Presidio | 200 | 80.83 km | 16.8% | 7.1% | **76.1%** |
+| Golden Gate Park | 34 | 45.74 km | 32.6% | 5.6% | **61.8%** |
+| Presidio Heights | 24 | 13.72 km | 18.5% | 69.9% | 11.7% |
+| Lone Mountain/USF | 46 | 15.45 km | 7.2% | **82.1%** | 10.7% |
+| Marina | 50 | 35.36 km | 1.0% | **77.9%** | 21.1% |
+| Pacific Heights | 16 | 16.38 km | 0.3% | **99.2%** | 0.5% |
+| Western Addition | 33 | 18.61 km | 1.1% | **91.0%** | 8.0% |
+| Japantown | 5 | 0.64 km | 0.0% | 90.1% | 9.9% |
+| Russian Hill | 56 | 15.09 km | 1.0% | **93.0%** | 6.0% |
+| Nob Hill | 51 | 6.12 km | 1.0% | **96.9%** | 2.0% |
+| North Beach | 74 | 14.26 km | 0.4% | **85.4%** | 14.2% |
+| **band** | **627** | **361.82 km** | 32.6% | 34.9% | 32.4% |
+
+### Predictions made before the run, and how they fared
+
+Thirteen of fifteen held. The two that did not are the useful ones.
+
+**Held.** The Richmond pair stays above 93%. The three reservations — Presidio,
+Golden Gate Park, Lincoln Park — land on *neither*, at 76%, 62% and 75%, exactly
+as `grid-classification.md` says a park or a military road should. Pacific
+Heights, the Western Addition, Japantown, Nob Hill, North Beach and the Marina
+all sit on 9.5° above 77%. Presidio Heights was predicted 1855–56-dominant and
+came in at 69.9%.
+
+**Wrong: Lone Mountain/USF.** Predicted mixed, 20–50% on each, on the reasoning
+that it lies west of Divisadero and so inside the Outside Lands. Measured
+**7.2% / 82.1%** — as clean a Van Ness Ordinance neighbourhood as the Western
+Addition itself. The prediction confused a *jurisdictional* boundary with a
+*surveyed* one. The Outside Lands were land the city acquired; the bearing on
+the ground records who drew the streets, and here the answer is the eastern
+survey, carried west.
+
+**Wrong: Russian Hill.** Predicted 50–80% on 1855–56, expecting the hill to
+break the grid. Measured **93.0%**. A street climbing a 30% gradient keeps its
+plan bearing; topography bends streets in section, not in plan. Only the
+deliberately curvilinear ones (Lombard's crooked block, the Vallejo stairways)
+fall out, and they are 6% of the length.
+
+### Where the boundary actually falls
+
+A per-neighbourhood table cannot answer this, and neither can a per-street one.
+A street is a line, so averaging its vertices puts a long east–west boulevard in
+the middle of nothing; sorting Presidio Heights' streets by mean longitude
+produces an interleaving that is an artefact of that averaging, not a finding.
+
+Binning the **segments** by their own midpoints into 0.005° columns (~440 m)
+does answer it:
+
+| column (lon) | km | 1868 | 1855–56 | neither |
+|---|---:|---:|---:|---:|
+| … | | | | |
+| −122.470 | 23.14 | 47% | 3% | 51% |
+| −122.465 | 20.82 | 50% | 3% | 47% |
+| **−122.460** | **23.75** | **26%** | **23%** | **51%** |
+| −122.455 | 21.20 | 7% | 46% | 47% |
+| −122.450 | 21.97 | 2% | 60% | 38% |
+| −122.445 | 18.86 | 3% | 88% | 9% |
+| … | | | | |
+
+The changeover is not gradual. It is one column wide. Across the ten columns
+from −122.510 to −122.465 the 1855–56 grid never exceeds **3.7%**; across the
+ten from −122.450 east, the 1868 grid never exceeds **3.0%**. In the single
+column between them the two are level, 26% to 23%. (The eleventh western
+column, the −122.515 sliver at the Lands End tip, is 2.08 km of centreline
+reading 23% / 17% / 60% — too little to carry a claim, and excluded from the
+two figures above for that reason rather than because it disagrees.)
+
+That column spans lon −122.460 to −122.455. **Arguello Blvd runs from
+−122.4616 to −122.4575** — measured from the committed centrelines — so it lies
+inside that column and very nearly is it. On the ground, the 1868 Outside Lands
+survey and the 1855–56 Van Ness Ordinance survey meet at Arguello Boulevard,
+along a seam roughly 440 m wide.
+
+The seam is a seam and not a line. Inside Presidio Heights, seven streets carry
+the 1868 bearing — Commonwealth Ave and Jordan Ave at 100%, Palm Ave at 96%,
+Heather Ave 71%, Iris Ave 55%, Euclid Ave 46%, Manzanita Ave 42% — while their
+immediate neighbours Cherry, Maple, Locust, Cook, Blake, Walnut and Presidio Ave
+are 100% on 9.5°. That is a block of Richmond-grid streets sitting east of
+Arguello, which is why Presidio Heights reads 18.5% / 69.9% rather than 0% / 90%.
+
+### What this cannot distinguish
+
+**It measures bearing, not authorship.** The clearest demonstration is in the
+Presidio, where the single most 1868-looking feature is **Golden Gate Brg, 97%
+on the 1868 grid**, together with `State Rte 1` at 61% and `Arguello Blvd` at
+54%. A 1937 suspension bridge is not an Outside Lands street; it runs at 3.5°
+because it runs north. The same caution applies to the Jordan Park block above:
+those streets share Potter and Humphrey's bearing, and this measurement cannot
+say whether they were drawn by that survey, by a later subdivider continuing it,
+or by coincidence. `RECALLED` and unverified here.
+
+**The 9.5° label is broader than the survey it names.** Nob Hill, Russian Hill
+and North Beach score 97%, 93% and 85% on a grid this corpus dates to 1855–56,
+and those streets are older than that. The Van Ness Ordinance extended a bearing
+westward; it did not invent it. So "1855–56" in the table is the name
+`grid-classification.md` gives the 9.5° family, not a date for every street in
+it. Separating the pre-1855 north-of-Market grid from the ordinance's extension
+needs a spatial method this script does not have, and a document this corpus
+does not hold.
+
+**A reservation's "neither" is three things.** The Presidio's 76% and the park's
+62% mix curvilinear design, roads that followed terrain, and service tracks. The
+band cannot tell them apart, for the same reason `grid-classification.md` says
+its own *ungridded* category cannot.
+
+**Japantown is 640 m of centreline and five named streets.** Its 90.1% is a
+real number about a very small sample; it is in the table because it is in the
+band, not because it carries weight.
+
+**Both peaks and the tolerance are still inherited**, hand-chosen in
+`grid-classification.md` and not fitted. Widening the tolerance past 3.0° would
+make the two windows touch, and the disjointness the three-way split relies on
+would stop being true.
