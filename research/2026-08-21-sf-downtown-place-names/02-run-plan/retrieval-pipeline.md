@@ -114,16 +114,37 @@ beside measured ones without contaminating them.
 of public domain over ODbL). `acquire-neighborhoods.py` (DataSF, licence read at
 run time and refused if share-alike, with `--probe`). `05-analysis/measure-grid.py`
 (measurement from committed geometry, stdlib only, no network).
+`acquire-documents.py` — stage 2, mechanised: fetch, checksum, extract, settle
+the page offset, append provenance to `04-normalized/sources/manifest.json`.
+
+**How `acquire-documents.py` handles the offset**, because it is the part that
+could quietly poison everything downstream. It reads footers and headers,
+tallies the offsets they imply, and *proposes* one with the evidence printed
+beside it — then writes nothing. Recording requires `--offset` explicitly:
+an integer, `auto` to accept the proposal, or `none`. The manifest records which
+of those it was, in `page_offset_basis`, so a citation's authority is legible
+later. A candidate is rejected unless it is a plausible page number for a
+document of that length, which is what stops a footer's `1864` becoming page
+1864 — the same mistake the plat extraction made by taking the nearest
+four-digit year.
+
+`--selftest` proves the detector against pages whose offset is known, including
+the year case, and needs no network. `--verify` re-fetches every recorded
+document and compares sha256: the manifest claims the bytes, and that tests the
+claim. A document whose sha256 has changed at its URL is refused rather than
+quietly updated — any quotation already taken from it may no longer be on the
+page cited, which is a finding, not a nuisance.
+
+The local store carries its own `.gitignore`, written by the script, ignoring
+everything except the manifest. Proven by `git add -A --dry-run`: it stages the
+manifest and the ignore file, and neither the documents nor their extractions.
 
 **Not built, in the order it is worth building.**
 
-1. `acquire-documents.py` — take a URL, fetch on lobster, checksum, extract
-   text, establish the page offset by reading footers, append to
-   `04-normalized/sources/manifest.json`. Stage 2, mechanised.
-2. `quote.py` — search the local extractions for a phrase, return the passage
+1. `quote.py` — search the local extractions for a phrase, return the passage
    with its printed and PDF page and a ready-formed citation. Stage 3, and the
    one that changes how fast entries can be written.
-3. **Prose to polygon.** A bounding description — "bounded by Market, Howard,
+2. **Prose to polygon.** A bounding description — "bounded by Market, Howard,
    1st, and 2nd" — plus the committed centrelines, producing a polygon and a
    precision marker. The intersection solver in `measure-grid.py` is already
    half of this. Without it, every extent stays hand-drawn and the atlas cannot

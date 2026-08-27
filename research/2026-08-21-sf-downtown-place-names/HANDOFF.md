@@ -27,46 +27,49 @@ pass answers.
 
 | | state |
 |---|---|
-| `04-normalized/geo/` | TIGER 2025: 3,701 named streets, 46 water features, city-wide, PDDL/public domain, checksummed sidecar |
+| `04-normalized/geo/` | TIGER 2025: 3,701 named streets, 46 water features, city-wide, PDDL/public domain, checksummed sidecar. Plus 41 DataSF analysis-neighbourhood polygons, own sidecar |
 | `05-analysis/survey-grid-measurement.md` | O'Farrell's 1847 module measured from centrelines to 2.84 ft RMS. First claim here corroborated by measurement rather than a second document |
 | `05-analysis/grid-classification.md` | Seven survey grids, and what the classification does not claim |
 | `06-viewer/index.html` | **Seven Grids** — live at <https://www.dhk.io/work/seven-grids> |
 | `06-viewer/timeline.html` | **Twenty-One Years** — built and committed, *not* on dhk.io yet |
+| `04-normalized/sources/` | manifest + a `.gitignore` that makes committing a corpus impossible. Empty until documents are fetched on lobster |
 | place names | ~20 SoMa entries from one probe, 3 conflicts unadjudicated |
 
 Both viewers are derived: edit `06-viewer/*template.html`, run
 `python3 06-viewer/build.py`, commit the result. `scripts/validate.py` runs
 `build.py --check` and fails on a stale page.
 
-## The immediate open thing
+## The neighbourhood boundaries, and what they cost to get
 
-`acquire-neighborhoods.py` fetched 41 rows from DataSF Analysis Neighborhoods —
-the right count — but **every one had null geometry and no recognisable name
-column**. The dataset warns it changed format in November 2023. Nothing was
-written.
+**Closed, 27 Aug.** `04-normalized/geo/neighborhoods.geojson` holds 41
+MultiPolygons, city-wide, PDDL, with its own checksummed sidecar. It is the
+modern frame a city-wide neighbourhood map hangs on.
 
-```bash
-uv run --no-project python acquire-neighborhoods.py --probe
-```
+Worth knowing why it took two sessions. The script pointed at DataSF dataset
+`p5b7-5n3h`, which is named "Analysis Neighborhoods" and reports
+`count(*) = 41` — the right name and the right count, arriving with **no data
+and no error**. It is not a dataset: it is a saved canvas map *view*, with an
+empty `columns` array, a `/resource` endpoint serving the single row `[{}]`, and
+a 53-byte empty `FeatureCollection`. Every request returned 200.
 
-That prints the real column names, the first 300 bytes of the geospatial
-endpoint's response, and the row count. The geometry is probably in a column the
-GeoJSON exporter does not recognise. Fix the fetch from what it reports.
+The tell was `--probe` printing *no columns at all*. The polygons live in the
+view's `modifyingViewUid`, `j2bu-swwd`, with columns `nhood` and `the_geom`.
+Both ids are in the script, with the trap written out beside them.
 
-City-wide neighbourhood boundaries are the unblock for a city-wide neighbourhood
-map — a complete modern frame with historical names hung on it where evidence
-exists.
+Add it to the list below: **a plausible name and a correct row count are not
+evidence that you fetched anything.**
 
 ## What to build, in order
 
-1. **`acquire-documents.py`** — fetch a document, checksum it, extract text,
-   establish its printed-to-PDF page offset by reading footers, append to
-   `04-normalized/sources/manifest.json`. Commit the manifest, never the
-   documents (see the pipeline doc).
-2. **`quote.py`** — search the local extractions for a phrase, return the passage
+1. **`quote.py`** — search the local extractions for a phrase, return the passage
    with printed and PDF page and a formed citation. This is what makes writing
    entries fast enough to be worth doing.
-3. **Prose to polygon** — a bounding description plus the committed centrelines,
+   `acquire-documents.py` is **built** and is what feeds it: it fetches,
+   checksums, extracts, settles the page offset and records provenance. It
+   proposes an offset from the footers but will not record one without
+   `--offset`, because a wrong offset poisons every citation while looking
+   correct. `--selftest` proves the detector without touching the network.
+2. **Prose to polygon** — a bounding description plus the committed centrelines,
    producing a polygon and a precision marker. The intersection solver in
    `05-analysis/measure-grid.py` is already half of it. Without this, extents
    stay hand-drawn and cannot grow past what one person can draw.

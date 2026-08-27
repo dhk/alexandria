@@ -1,0 +1,5 @@
+{
+  "documents": [],
+  "generated_by": "02-run-plan/acquire-documents.py",
+  "note": "Provenance for documents retrieved by hand, NOT the documents themselves. Each entry carries enough to re-fetch the document and prove it is the same bytes: url, sha256 as fetched, retrieval time in UTC, page count, the printed-to-PDF page offset, and how the text was extracted. The documents and their extractions are deliberately absent -- CONTRIBUTING.md forbids committing copyrighted source corpora without permission, and these municipal planning documents have terms that have not been established. Cite as 'printed p.18 (PDF p.20)': page_offset is pdf_page minus printed_page."
+}
