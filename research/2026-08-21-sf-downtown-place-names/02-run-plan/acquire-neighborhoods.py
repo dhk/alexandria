@@ -55,12 +55,24 @@ OUT = HERE.parent / "04-normalized" / "geo"
 
 HOST = "https://data.sfgov.org"
 
-# The dataset id below is RECALLED, not verified -- it is the identifier this
-# script's author believed corresponded to DataSF's "Analysis Neighborhoods".
-# It may be wrong. The run therefore prints the dataset's own name and
-# description before writing anything, so a wrong id is caught by eye rather
-# than silently fetching some other polygon set. --dataset overrides it.
-DATASET = "p5b7-5n3h"
+# FETCHED 2026-08-27, and the correction is worth keeping.
+#
+# This script first used p5b7-5n3h, which IS named "Analysis Neighborhoods" and
+# DOES report count(*) = 41 -- the right name, the right count, and no data.
+# /resource returned the single row `[{}]`, and the geospatial export returned a
+# 53-byte FeatureCollection with an empty feature list. Both endpoints answered
+# 200. Nothing announced itself as broken.
+#
+# p5b7-5n3h is not a dataset. Its displayType is `visualization_canvas_map` and
+# its `columns` array is empty: it is a saved map VIEW, which is what the
+# dataset description means by "as of November 2023 this map has been updated to
+# use a new format". The polygons live in the view's `modifyingViewUid`, below,
+# where the columns are `nhood` and `the_geom` (MultiPolygon).
+#
+# The lesson is the one in HANDOFF.md: a plausible name and a correct row count
+# are not evidence that you fetched anything. --dataset overrides this.
+DATASET = "j2bu-swwd"
+WRAPPER_VIEW = "p5b7-5n3h"   # the canvas map that fronts it; kept so the id is greppable
 
 PRECISION = 6
 
@@ -190,6 +202,10 @@ def probe(dataset: str) -> int:
     no recognisable name column -- the dataset's own description warns it changed
     format in November 2023 -- and this container cannot reach data.sfgov.org to
     look. Guessing across several round trips is worse than one that reports.
+
+    It paid immediately: section 1 printed no columns at all, which is what an
+    empty row object looks like, and that is what identified p5b7-5n3h as a
+    visualization view rather than a dataset. See the note on DATASET.
     """
     print("\n--- 1. /resource/<id>.json, one row: the columns as they really are")
     try:
@@ -307,6 +323,11 @@ def main() -> int:
         "host": HOST,
         "dataset": args.dataset,
         "dataset_name": name,
+        "wrapper_view": WRAPPER_VIEW,
+        "wrapper_view_note": (
+            f"{WRAPPER_VIEW} is DataSF's saved canvas map of this dataset. It carries the same "
+            "name and reports the same row count, but serves no columns and an empty feature "
+            "list. It is not the source of this file."),
         "metadata_url": f"{HOST}/api/views/{args.dataset}.json",
         "licence": raw,
         "licence_verdict": verdict,
