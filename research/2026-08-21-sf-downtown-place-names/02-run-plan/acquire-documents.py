@@ -201,6 +201,41 @@ def extract(path: pathlib.Path, pdf: bool) -> tuple[list[str], str]:
 ROMAN = re.compile(r"^[ivxlcdm]{1,7}$")
 NUMBER = re.compile(r"\d{1,4}")
 
+# A page number is found by looking for the shapes a page number takes, in order
+# of how much they mean, and stopping at the first shape that gives a confident
+# answer.
+#
+# Learned from the Page & Turnbull SoMa statement, which defeated the first
+# version of this detector. Its page number is "-10-", printed in the header
+# BLOCK at line six -- past any plausible "first two lines" window -- while the
+# last lines of every page are dense footnote text. Looking at the edges of a
+# page found footnotes; looking for the SHAPE found the number on 115 of 118
+# pages, all of them agreeing on offset 2, which is the value the handoff had
+# already established by hand.
+#
+# The lesson generalises: position is a weak signal and shape is a strong one.
+DASHED = re.compile(r"^[\-–—]\s*(\d{1,4})\s*[\-–—]$")
+STANDALONE = re.compile(r"^[\[\(]?(\d{1,4})[\.\]\)]?$")
+LABELLED = re.compile(r"^page\s+(\d{1,4})$", re.I)
+
+# A sectioned document numbers its pages "IV.C-12", not "12". The number still
+# implies an offset, but a citation that renders it "p.12" is wrong -- the page
+# says IV.C-12 and a reader checking the quote will not find it. So the prefix
+# is captured too, and stored, and quote.py is expected to use it.
+#
+# Found on the Central SoMa EIR's cultural resources chapter, where every page
+# is IV.C-N and N happens to equal the PDF index. Offset 0 and a wrong label is
+# a more dangerous result than no answer at all.
+COMPOUND = re.compile(r"^([A-Z][A-Za-z0-9.]{0,12}?)[\-–—](\d{1,4})$")
+
+TIERS = ("dashed", "compound", "standalone", "edge")
+TIER_NOTE = {
+    "dashed": "a number fenced by dashes, e.g. -10-",
+    "compound": "a sectioned label, e.g. IV.C-12",
+    "standalone": "a line that is nothing but a number",
+    "edge": "a number at either end of a short header or footer line",
+}
+
 
 def _edge_numbers(line: str) -> list[int]:
     """Numbers at either end of a short line -- where a page number sits.
@@ -220,10 +255,27 @@ def _edge_numbers(line: str) -> list[int]:
     return [int(n) for n in edges]
 
 
-def page_candidates(text: str) -> list[int]:
-    lines = [ln for ln in (text or "").splitlines() if ln.strip()]
+def candidates(text: str, tier: str) -> list[int]:
+    """Numbers on this page that could be its printed page number, by tier.
+
+    The two shape tiers read every line, because the number can sit anywhere in
+    a header or footer block. The edge tier keeps the positional heuristic for
+    documents that print a bare number inside a running head.
+    """
+    lines = [ln.strip() for ln in (text or "").splitlines() if ln.strip()]
     if not lines:
         return []
+    if tier == "dashed":
+        return [int(m.group(1)) for m in map(DASHED.match, lines) if m]
+    if tier == "compound":
+        return [int(m.group(2)) for m in map(COMPOUND.match, lines) if m]
+    if tier == "standalone":
+        out = []
+        for line in lines:
+            m = STANDALONE.match(line) or LABELLED.match(line)
+            if m:
+                out.append(int(m.group(1)))
+        return out
     looked_at = lines[-FOOTER_LINES:] + lines[:HEADER_LINES]
     out: list[int] = []
     for line in looked_at:
@@ -232,7 +284,7 @@ def page_candidates(text: str) -> list[int]:
 
 
 def roman_pages(pages: list[str]) -> list[int]:
-    """PDF indices whose footer is a roman numeral -- i.e. front matter.
+    """PDF indices whose header or footer is a roman numeral -- i.e. front matter.
 
     Reported because roman front matter is usually the REASON an offset exists,
     and a reader who sees "pages i-ii are roman, offset 2" understands the
@@ -241,27 +293,45 @@ def roman_pages(pages: list[str]) -> list[int]:
     out = []
     for i, text in enumerate(pages, start=1):
         lines = [ln.strip() for ln in (text or "").splitlines() if ln.strip()]
-        for line in lines[-FOOTER_LINES:]:
-            if ROMAN.match(line.lower().strip(".")):
+        for line in lines[:HEADER_LINES + 6] + lines[-FOOTER_LINES:]:
+            bare = line.lower().strip("-–— .")
+            if bare and ROMAN.match(bare):
                 out.append(i)
                 break
     return out
 
 
-def offset_evidence(pages: list[str]) -> tuple[collections.Counter, list[tuple]]:
+def label_prefix(pages: list[str]) -> tuple[str | None, int]:
+    """The compound page-label prefix shared by most pages, e.g. "IV.C"."""
+    seen: collections.Counter = collections.Counter()
+    for text in pages:
+        for line in [ln.strip() for ln in (text or "").splitlines() if ln.strip()]:
+            m = COMPOUND.match(line)
+            if m:
+                seen[m.group(1)] += 1
+    if not seen:
+        return None, 0
+    prefix, count = seen.most_common(1)[0]
+    return (prefix, count) if count >= MIN_AGREEING_PAGES else (None, count)
+
+
+def offset_evidence(pages: list[str], tier: str) -> tuple[collections.Counter, list[tuple]]:
     """Tally offset = pdf_index - printed_number over every plausible candidate.
 
     Returns the tally and a per-page trace for printing, so the human confirming
-    the number can see the footers it came from rather than a bare integer.
+    the number can see what it came from rather than a bare integer.
     """
     n = len(pages)
     tally: collections.Counter = collections.Counter()
     trace: list[tuple] = []
     for i, text in enumerate(pages, start=1):
         best = None
-        for cand in page_candidates(text):
+        for cand in candidates(text, tier):
             # A printed page number cannot plausibly exceed the document's own
-            # length. This is what rejects years, street numbers and parcel ids.
+            # length. This is what rejects years, street numbers and parcel ids:
+            # on the SoMa statement it silently threw out 1880, 1873 and 1886,
+            # each of which sat alone on a line and would otherwise have implied
+            # an offset near -1880.
             if not (1 <= cand <= n + PAGE_NUMBER_SLACK):
                 continue
             off = i - cand
@@ -270,8 +340,7 @@ def offset_evidence(pages: list[str]) -> tuple[collections.Counter, list[tuple]]
             tally[off] += 1
             if best is None:
                 best = (cand, off)
-        lines = [ln.strip() for ln in (text or "").splitlines() if ln.strip()]
-        trace.append((i, lines[-1][:60] if lines else "", best))
+        trace.append((i, best))
     return tally, trace
 
 
@@ -287,8 +356,36 @@ def propose(tally: collections.Counter) -> tuple[int | None, int, float]:
     return offset, count, share
 
 
+def best_proposal(pages: list[str]):
+    """First tier that yields a confident offset. Returns (tier, offset, count, share)."""
+    for tier in TIERS:
+        tally, _ = offset_evidence(pages, tier)
+        offset, count, share = propose(tally)
+        if offset is not None:
+            return tier, offset, count, share
+    return None, None, 0, 0.0
+
+
+def agreement(pages: list[str], offset: int) -> tuple[int, str]:
+    """How many candidates support an offset, in the STRONGEST tier that has any.
+
+    Tier rank beats raw count. On the Central SoMa EIR the edge tier found 69
+    supporters and the compound tier 68, and reporting the edge tier would have
+    credited the weaker evidence -- the one that reads a number off the end of a
+    line -- for a number the page-label shape had actually established.
+    """
+    fallback = (0, "none")
+    for tier in TIERS:
+        tally, _ = offset_evidence(pages, tier)
+        count = tally.get(offset, 0)
+        if count >= MIN_AGREEING_PAGES:
+            return count, tier
+        if count > fallback[0]:
+            fallback = (count, tier)
+    return fallback
+
+
 def report_offset(pages: list[str], doc_id: str) -> int | None:
-    tally, trace = offset_evidence(pages)
     romans = roman_pages(pages)
     print(f"\n--- page offset for {doc_id}: the evidence, not a decision")
     print(f"    {len(pages)} PDF pages")
@@ -296,34 +393,51 @@ def report_offset(pages: list[str], doc_id: str) -> int | None:
         print(f"    roman-numbered front matter at PDF pages: "
               f"{', '.join(str(p) for p in romans[:12])}"
               f"{' …' if len(romans) > 12 else ''}")
-    if not tally:
-        print("    no page-number-like footers found at all.")
-        print("    Read several footers yourself and pass --offset N.")
+
+    print("\n    what each way of looking finds (offset = PDF page - printed page):")
+    found_any = False
+    for tier in TIERS:
+        tally, _ = offset_evidence(pages, tier)
+        if not tally:
+            print(f"      {tier:<11} ({TIER_NOTE[tier]}): nothing")
+            continue
+        found_any = True
+        top = ", ".join(f"offset {o} x{c}" for o, c in tally.most_common(3))
+        pages_seen = sum(tally.values())
+        print(f"      {tier:<11} ({TIER_NOTE[tier]}):")
+        print(f"        {top}   [{pages_seen} candidate(s) over {len(pages)} pages]")
+    if not found_any:
+        print("\n    no page-number-like text found at all. Read several pages "
+              "yourself and pass --offset N.")
         return None
 
-    print("\n    offsets implied by footers (offset = PDF page - printed page):")
-    for off, count in tally.most_common(5):
-        print(f"      offset {off:>4}   supported by {count:>4} candidate(s)")
-
-    print("\n    sample pages (PDF page | last line | printed -> offset):")
-    shown = [t for t in trace if t[2]][:8]
-    for i, last, best in shown:
-        cand, off = best
-        print(f"      {i:>4} | {last:<60} | {cand} -> {off}")
-
-    offset, count, share = propose(tally)
+    tier, offset, count, share = best_proposal(pages)
     if offset is None:
-        print(f"\n    NO CONFIDENT PROPOSAL "
-              f"(best had {count} supporter(s), {share:.0%} agreement; "
-              f"needs {MIN_AGREEING_PAGES} and {MIN_AGREEMENT_SHARE:.0%}).")
-        print("    Read the footers yourself and pass --offset N.")
+        print(f"\n    NO CONFIDENT PROPOSAL from any tier "
+              f"(needs {MIN_AGREEING_PAGES} agreeing candidates and "
+              f"{MIN_AGREEMENT_SHARE:.0%} agreement).")
+        print("    Read the page numbers yourself and pass --offset N.")
         return None
 
-    print(f"\n    PROPOSED offset {offset}  "
-          f"({count} agreeing candidates, {share:.0%} of those found)")
-    print(f"    Meaning: printed p.N is PDF p.N+{offset}. Spot-check two pages:")
-    for i, last, best in shown[:3]:
-        print(f"      PDF p.{i} should print '{i - offset}' -- its last line is: {last!r}")
+    # Show pages whose own candidate supports the proposed offset. Showing the
+    # first candidate found instead let a page appear to contradict the very
+    # number it was being used to justify.
+    shown = [(i, i - offset) for i, text in enumerate(pages, start=1)
+             if (i - offset) in candidates(text, tier)][:6]
+    print(f"\n    PROPOSED offset {offset}, from the '{tier}' tier "
+          f"({count} agreeing candidates, {share:.0%} of that tier's)")
+    pfx, _ = label_prefix(pages)
+    lbl = f"{pfx}-N" if pfx and tier == "compound" else "p.N"
+    print(f"    Meaning: printed {lbl} is PDF p.N+{offset}." if offset >= 0 else
+          f"    Meaning: printed {lbl} is PDF p.N-{abs(offset)}.")
+    print("    Spot-check -- these pages, by this offset, should print:")
+    prefix, _ = label_prefix(pages)
+    for i, printed in shown:
+        label = f"{prefix}-{printed}" if prefix and tier == "compound" else str(printed)
+        print(f"      PDF p.{i:<4} -> printed {label}")
+    if prefix and tier == "compound":
+        print(f"    NOTE: pages are labelled '{prefix}-N', not bare numbers. "
+              f"Cite them that way.")
     print("\n    Nothing was written to the manifest. To record it:")
     print(f"      --offset {offset}    (or --offset auto to accept this proposal)")
     return offset
@@ -333,19 +447,24 @@ def report_offset(pages: list[str], doc_id: str) -> int | None:
 # manifest
 
 
-def _citation_form(offset: int | None) -> str:
+def _citation_form(offset: int | None, label_format: str) -> str:
     """How a citation from this document should read.
 
     0 is a real offset, not a missing one, and a document that numbers its cover
     gives a negative one -- so this branches on `is None`, not on truthiness.
+
+    The label matters as much as the offset. A page printed "IV.C-12" cited as
+    "p.12" sends a reader to a page that does not exist, and offset arithmetic
+    alone will never notice.
     """
     if offset is None:
         return "no printed pagination; cite the PDF page"
+    printed = label_format.replace("{n}", "N")
     if offset == 0:
-        return "printed page equals PDF page"
+        return f"printed {printed} is PDF p.N"
     if offset > 0:
-        return f"printed p.N is PDF p.N+{offset}"
-    return f"printed p.N is PDF p.N-{abs(offset)}"
+        return f"printed {printed} is PDF p.N+{offset}"
+    return f"printed {printed} is PDF p.N-{abs(offset)}"
 
 
 def load_manifest(path: pathlib.Path) -> dict:
@@ -507,7 +626,10 @@ def cmd_acquire(args) -> int:
         if proposed is None:
             print("\nNo proposal to accept. Nothing written.", file=sys.stderr)
             return 4
-        settled, basis = proposed, "accepted the footer proposal (--offset auto)"
+        tier, _, count, share = best_proposal(pages)
+        settled = proposed
+        basis = (f"accepted the proposal (--offset auto); '{tier}' tier, "
+                 f"{count} agreeing candidates, {share:.0%} agreement")
     elif args.offset == "none":
         settled, basis = None, "no printed page numbers (asserted by operator)"
     else:
@@ -515,12 +637,22 @@ def cmd_acquire(args) -> int:
             settled = int(args.offset)
         except ValueError:
             raise SystemExit("--offset takes an integer, 'auto', or 'none'")
-        tally, _ = offset_evidence(pages)
-        agree = tally.get(settled, 0)
-        basis = f"confirmed by operator; {agree} footer candidate(s) agree"
+        agree, tier = agreement(pages, settled)
+        basis = (f"confirmed by operator; {agree} candidate(s) agree "
+                 f"via the '{tier}' tier" if agree else
+                 "asserted by operator; no page number found supports it")
         if agree == 0:
-            print(f"  ! no footer supports offset {settled}. Recording it anyway "
-                  f"because you asked; the manifest says so.", file=sys.stderr)
+            print(f"  ! nothing on the page supports offset {settled}. Recording it "
+                  f"anyway because you asked; the manifest says so.", file=sys.stderr)
+
+    prefix, prefix_count = label_prefix(pages) if pdf else (None, 0)
+    if args.label_format:
+        label_format, label_basis = args.label_format, "given by operator (--label-format)"
+    elif prefix:
+        label_format = prefix + "-{n}"
+        label_basis = f"read from {prefix_count} page label(s) of the form '{prefix}-N'"
+    else:
+        label_format, label_basis = "p.{n}", "bare page numbers"
 
     entry = {
         "id": args.id,
@@ -534,7 +666,9 @@ def cmd_acquire(args) -> int:
         "pages": len(pages) if pdf else None,
         "page_offset": settled,
         "page_offset_basis": basis,
-        "citation_form": _citation_form(settled),
+        "citation_form": _citation_form(settled, label_format),
+        "page_label_format": label_format,
+        "page_label_basis": label_basis,
         "extraction_method": method,
         "extraction_chars": chars,
         "rights": args.rights,
@@ -589,19 +723,44 @@ def selftest() -> int:
     pages = ["COVER", "CONTENTS", "i", "ii"]
     pages += [f"Historic Context Statement\n\nbody text on this page\n\n{i - 4}"
               for i in range(5, 41)]
-    tally, _ = offset_evidence(pages)
-    offset, count, share = propose(tally)
     print("Expect offset 4 recovered from 36 numbered pages:")
+    tier, offset, count, share = best_proposal(pages)
     check("offset", offset, 4)
     check("agreeing pages >= 30", count >= 30, True)
+
+    # The Page & Turnbull shape, which defeated the first detector: the number
+    # is "-N-" high in the HEADER block, and every page ends in footnote text.
+    # Looking at the edges of the page finds footnotes; looking for the shape
+    # finds the number.
+    print("\nExpect offset 2 from '-N-' in a header block, past any edge window:")
+    pt = []
+    for i in range(1, 41):
+        pt.append(
+            "Historic Context Statement   South of Market Area\n"
+            "  San Francisco, California\n\n\n\n"
+            "June 30, 2009  Page & Turnbull, Inc.\n"
+            f"-{i - 2}-\n"
+            "body text discussing the 1880s and the 1906 fire\n"
+            "13 San Francisco Planning Department, Preservation Bulletin No. 11,\n"
+            "3.")
+    tier2, off2, count2, _ = best_proposal(pt)
+    check("offset", off2, 2)
+    check("tier", tier2, "dashed")
+    check("agreeing pages", count2 >= 35, True)
 
     # A footer carrying a year must not become a page number.
     print("\nExpect a 1864 footer to be rejected as a page number:")
     yearly = [f"text\n\nEureka Homestead Association, 1864\n\n{i}" for i in range(1, 31)]
-    tally2, _ = offset_evidence(yearly)
-    off2, _, _ = propose(tally2)
-    check("offset", off2, 0)
-    check("1864 never implied an offset", any(o < -1000 for o in tally2), False)
+    _, off3, _, _ = best_proposal(yearly)
+    check("offset", off3, 0)
+    t3, _ = offset_evidence(yearly, "standalone")
+    check("1864 never implied an offset", any(o < -1000 for o in t3), False)
+
+    # A bare year alone on a line -- the real SoMa noise -- must also be rejected.
+    print("\nExpect a bare '1886' line to be rejected too:")
+    bare_year = [f"text about the fire\n1886\n-{i - 1}-" for i in range(1, 31)]
+    _, off4, _, _ = best_proposal(bare_year)
+    check("offset", off4, 1)
 
     # Prose must not be mined for page numbers.
     print("\nExpect a long prose line to yield no candidate:")
@@ -609,11 +768,10 @@ def selftest() -> int:
                                         "between Seventeenth and Twentieth Streets, "
                                         "Noe and Douglass, covering some 40 acres."), [])
 
-    print("\nExpect no proposal when footers disagree:")
+    print("\nExpect no proposal when the numbers disagree:")
     noisy = [f"text\n\n{i * 7 % 30 + 1}" for i in range(1, 31)]
-    t3, _ = offset_evidence(noisy)
-    o3, _, _ = propose(t3)
-    check("offset", o3, None)
+    _, off5, _, _ = best_proposal(noisy)
+    check("offset", off5, None)
 
     print(f"\n{'PASSED' if not failures else str(failures) + ' FAILURE(S)'}")
     return 1 if failures else 0
@@ -626,6 +784,9 @@ def main() -> int:
     ap.add_argument("--title", help="human title for the manifest")
     ap.add_argument("--offset", help="integer, 'auto' to accept the proposal, or "
                                      "'none'. Omit to report the evidence and write nothing.")
+    ap.add_argument("--label-format", help="how a printed page is written, with {n} "
+                                          "for the number, e.g. 'IV.C-{n}'. Read from the "
+                                          "pages when not given.")
     ap.add_argument("--rights", default="not established",
                     help="terms under which the document is published (default: not established)")
     ap.add_argument("--replace", action="store_true",
