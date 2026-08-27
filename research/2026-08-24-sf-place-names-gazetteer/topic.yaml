@@ -1,0 +1,78 @@
+# Alexandria investigation metadata.
+# Schema not yet formalized under schemas/ (see
+# src/alexandria/infrastructure/research_repo.py) — this follows the
+# lenient best-effort shape that module reads: title, status,
+# assurance_level. Additional fields below are documentation, not
+# machine-read yet.
+
+title: "San Francisco place names — SoMa, The East Cut, and the 100 Vara District"
+status: "single-source-draft"
+assurance_level: "bronze"
+
+slug: 2026-08-24-sf-place-names-gazetteer
+opened: 2026-08-24
+requested_by: operator (davehk@gmail.com)
+
+topic_kind: historical-source-investigation
+subject: >
+  Three unresolved questions carried over from a prior research pass, for a
+  version-controlled historical gazetteer of San Francisco place names covering
+  the downtown / South of Market district, 1847 to the present. The gazetteer
+  records how names emerged, shifted, competed, faded and were revived, and is
+  intended to feed a map with a time slider.
+
+# ---- editorial: nothing below here was written by a tool ----
+origin: >
+  The operator had already run one pass over SF Planning's Historic Context
+  Statement for South of the Market (Page & Turnbull, 30 June 2009) and settled
+  seven findings from it. Three questions survived that pass — the ones the
+  operator judged that pure retrieval might settle and that reading a single
+  context statement could not. This investigation is the attempt at them.
+claim_under_test: >
+  Three separate claims, not one. (1) That "SoMa" has a datable first print use
+  and a known coiner, and that it was coined in imitation of SoHo. (2) That "The
+  East Cut" has a clean adoption record with published boundaries and a
+  documented ~90% disapproval survey. (3) That the 100 Vara District's extent is
+  settled — where a 2009 planning document and a 1945 city document, reported
+  secondhand, describe materially different areas under the same name.
+why_now: >
+  The gazetteer's governing principle is that a neighborhood is not a timeless
+  polygon but a claim, made by a source, at a date, with a degree of precision
+  and authority. That principle only pays off if the claims underneath it carry
+  real locators. These three were the ones still resting on assertion.
+scope: >
+  Deliberately excluded: the seven findings already settled from Page &
+  Turnbull, which the brief instructed not to re-derive. Also excluded: any
+  attempt to draw boundaries. Where a name's extent is unknown the correct
+  output was "unknown extent", and in several places that is what this
+  investigation returns.
+
+  Not excluded but not achieved: reading the 1847 O'Farrell plan. It is the
+  single highest-value open task and no part of this apparatus could do it.
+
+runs:
+  - id: perplexity-2026-08-24
+    outcome: partial
+    role: canonical
+    note: >-
+      Single-provider commission via MCP. 10 calls, 5 usable responses, 5
+      timeouts. Not graded, not cross-checked. One response is a recorded false
+      negative, preserved unedited.
+  - id: operator-verification-2026-08-24
+    outcome: completed
+    role: verification
+    note: >-
+      No model. Direct retrieval and reading of the 1945 Journal of Proceedings,
+      four Assessor's block sheets, the 1988 LA Times article, and the Wikipedia
+      revision history. Produced the investigation's strongest findings.
+
+# The observation worth carrying out of this investigation, independent of its
+# subject:
+#
+# The commissioned instrument failed on exactly the material that mattered
+# most. It could not read a map image, could not read a scanned municipal
+# record, and returned a confident false negative on a document that a footnote
+# chase found in minutes. What made the difference was not a better model but a
+# different act — following one response's attribution back to its source. A
+# research apparatus that only dispatches prompts cannot do that, and this run
+# is a clean case of the gap.

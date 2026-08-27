@@ -1,0 +1,48 @@
+# Run metadata (AGENTS.md rule 6: provider, model, prompt, brief revision,
+# execution time, tool access, checksums — recorded for every run).
+
+provider: "Perplexity Agent API, via MCP perplexity server (not OpenRouter dispatch)"
+model: "perplexity sonar deep-research preset (perplexity_research); fast preset (perplexity_ask) for three Q3 calls"
+run_kind: single-provider-interactive
+brief_path: 01-brief/brief.md
+brief_revision: 1
+brief_sha256: f63265464d3f1567608ec87c9b9df5deae04d0a8d55fc581ad2e86ac50f00872
+execution_started: 2026-08-24T22:30:00Z
+execution_completed: 2026-08-24T22:47:00Z
+tool_access:
+  - perplexity_research (deep-research preset, live web)
+  - perplexity_ask (fast preset, search_context_size=high, live web)
+dispatch_ledger:
+  perplexity_research:
+    calls: 7
+    completed: 2
+    timed_out: 5
+  perplexity_ask:
+    calls: 3
+    completed: 3
+    timed_out: 0
+prompt: >
+  Three prompts, one per question, each carrying the operator's seven
+  provenance rules as a system prompt and the required Verdict / Evidence /
+  What-you-could-not-verify output shape. Q1 and Q3 were each re-issued in a
+  shortened form after their full-length dispatch timed out; Q3 was then split
+  into a map half and a document half, and both halves were re-issued against
+  the fast preset after the deep-research preset timed out on each. Q2 ran once
+  as written. See 01-brief/brief.md, "Scope reductions forced during dispatch".
+caveats: >
+  Single provider, not graded and not cross-checked against another model. No
+  claim scoring, no grading model, no claim landscape — this run was not
+  dispatched through Alexandria's commission pipeline and carries none of its
+  apparatus.
+
+  Five of seven deep-research calls timed out at the MCP client's 300s limit.
+  The requests had already been accepted server-side, so they were in all
+  likelihood billed without returning anything; the provider returned no usage
+  or cost metadata on any call, so per-call cost is unknown and is not recorded
+  here rather than being estimated. Raising PERPLEXITY_TIMEOUT_MS is the
+  indicated fix — the calls were completing, just past the ceiling.
+
+  The three fast-preset calls are a weaker instrument than the preset they
+  replaced, and one of them (response-q3b) returned a false negative: it
+  reported the 1945 document unfindable when the document is retrievable and
+  was subsequently read. Preserved unedited.
