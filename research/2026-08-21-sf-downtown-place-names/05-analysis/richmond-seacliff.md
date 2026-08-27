@@ -268,3 +268,94 @@ band, not because it carries weight.
 `grid-classification.md` and not fitted. Widening the tolerance past 3.0° would
 make the two windows touch, and the disjointness the three-way split relies on
 would stop being true.
+
+## The names on the grid: sub-districts, and the alphabet of 1909
+
+The measurements above describe a survey. These are the names hung on it, from
+three third-party documents added after the SF Planning gap was established.
+All are `FETCHED`. All are HTML with no pagination, so every citation here is
+document-level by construction — which is the correct behaviour, not a
+shortfall.
+
+### The Richmond is a container, not a leaf
+
+> San Francisco's Richmond District neighborhoods include Anza Vista, Inner
+> Richmond, Lake Street, Lands End, Laurel Heights/Jordan Park, Lincoln
+> Park/Fort Miley, Lone Montain, Outer Richmond, Presidio Terrace, Sea Cliff,
+> and Sutro Heights.
+
+— `wnp-richmond-district`. (`Lone Montain` is the source's spelling.)
+
+Eleven names inside one DataSF polygon pair. Note **Sea Cliff is listed as part
+of the Richmond**, where `neighborhoods.geojson` carries Seacliff as a separate
+analysis neighbourhood. Both are true of their own frame; neither is wrong. The
+same document gives a prose extent — the Richmond "lies between the Presidio
+and Golden Gate Park, and runs west from Lone Mountain to Ocean Beach" — which
+is a candidate for the prose-to-polygon work that is not built.
+
+### Jordan Park names the anomaly
+
+The northern-band section found a block of streets east of Arguello sitting on
+the 1868 bearing inside a neighbourhood that is otherwise 1855–56:
+Commonwealth and Jordan at 100%, Palm at 96%. That block has a name.
+
+> The Berliner House (1938, Gardner Dailey) at 120 Commonwealth Avenue in the
+> Jordan Park neighborhood
+
+— `modern-architecture-context-2011`, printed p.44 (PDF p.48).
+
+So the stranded Richmond-grid streets are **Laurel Heights/Jordan Park**, which
+the Richmond District's own list claims. The measurement found a shape and the
+documents supply its name.
+
+**This is not proof that Jordan Park was platted on the 1868 grid.** Bearing is
+not authorship — the same section records the Golden Gate Bridge scoring 97% on
+that grid because a 1937 span happens to run north. What is now true is that the
+anomaly is a named place rather than an unexplained smear.
+
+### The cross streets were lettered, and renamed in 1909
+
+The avenues are numbered and the cross streets are named for Spanish explorers —
+Anza, Balboa, Cabrillo — which looks like a scheme. It is a repair.
+
+> In 1909, a special commission was created by the Board of Supervisors to
+> address these confusions and recommend changes to the Board. One of the
+> biggest problems the Street Naming Commission encountered was the confusion
+> between the numbered streets running from First Street downtown out to 34th
+> street in the Mission District, and the numbered "avenues" in the western part
+> of the city.
+
+> There remained the question of the alphabetical streets A through X to be
+> named. A - C would need to be named. D Street was already being called Fulton,
+> since it was an extension from downtown. Golden Gate Park had eliminated E - G.
+> It was suggested that H Street be renamed to honor President Lincoln with no
+> objection. That left I - X in the alphabetical sequence to be named.
+
+— both `wnp-street-names`.
+
+So the Richmond and Sunset cross streets were **lettered A through X** as
+Potter and Humphrey's paper grid, and given names in 1909 by a commission
+convened over postal confusion. Anza/Balboa/Cabrillo are A/B/C; Fulton is D;
+Lincoln is H; Irving, Judah, Kirkham and Lawton are I/J/K/L and are pointedly
+not Spanish — the source attributes that to a reaction against a "Spanish Town"
+controversy.
+
+This is the same shape as South of Market's succession in
+[`soma-neighborhoods.md`](soma-neighborhoods.md): a name is replaced when the
+thing it names changes use or ownership. Here the mechanism is administrative
+and precisely dated, which SoMa's transitions are not.
+
+### What is soft about this section
+
+- **One author, one publisher.** The street-naming account is by John Freeman
+  for the Western Neighborhoods Project — a 501(c)(3) with no reuse licence
+  stated, so its text stays local and quotation here is short and attributed.
+  It is not a municipal document and carries no citation apparatus in the
+  extraction. A second source for the 1909 commission would settle it;
+  `RECALLED` knowledge that such a commission existed is not evidence.
+- **The letter-to-name mapping is quoted, not verified against the ground.**
+  Whether every one of I–X landed as the source says could be checked against
+  `city-roads.geojson` and has not been.
+- **`wnp-sea-cliff` proved thin.** It is "First House of Sea Cliff", a single
+  property account, not a naming history. Sea Cliff's own name origin remains
+  uncited in this corpus.
