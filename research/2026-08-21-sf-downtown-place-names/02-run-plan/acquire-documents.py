@@ -83,8 +83,11 @@ PAGE_NUMBER_SLACK = 25
 
 # How much of a page to look at. Printed numbers live in the footer, sometimes
 # the header, never the middle.
-FOOTER_LINES = 3
-HEADER_LINES = 2
+# A header or footer is a BLOCK, not a line. The Corbett Heights statement
+# prints its page number inside a running head at line four -- "Adopted August
+# 16, 2017  113  Michael R. Corbett" -- which a two-line window never sees.
+FOOTER_LINES = 6
+HEADER_LINES = 6
 MAX_LINE_CHARS = 120        # a line of body prose is not a page number
 
 # What it takes to propose an offset rather than shrug.
@@ -326,6 +329,12 @@ def offset_evidence(pages: list[str], tier: str) -> tuple[collections.Counter, l
     trace: list[tuple] = []
     for i, text in enumerate(pages, start=1):
         best = None
+        # A page votes at most ONCE for a given offset. Counting every candidate
+        # instead let noise drown a real signal: on the Corbett Heights statement
+        # the true offset had 265 supporters against a runner-up of 15, and still
+        # scored 24% because footnote numbers were each counted separately.
+        # Pages are the electorate; numbers on a page are not.
+        seen_here: set[int] = set()
         for cand in candidates(text, tier):
             # A printed page number cannot plausibly exceed the document's own
             # length. This is what rejects years, street numbers and parcel ids:
@@ -337,19 +346,25 @@ def offset_evidence(pages: list[str], tier: str) -> tuple[collections.Counter, l
             off = i - cand
             if not (-5 <= off <= 200):
                 continue
-            tally[off] += 1
+            if off not in seen_here:
+                seen_here.add(off)
+                tally[off] += 1
             if best is None:
                 best = (cand, off)
         trace.append((i, best))
     return tally, trace
 
 
-def propose(tally: collections.Counter) -> tuple[int | None, int, float]:
+def propose(tally: collections.Counter,
+            pages_with_candidates: int = 0) -> tuple[int | None, int, float]:
     """Return (offset or None, agreeing pages, share of candidate-bearing pages)."""
     if not tally:
         return None, 0, 0.0
     offset, count = tally.most_common(1)[0]
-    total = sum(tally.values())
+    # Denominator is the pages that produced any candidate at all -- so a page
+    # that offered nothing does not count against the answer, and a page that
+    # offered five numbers does not count five times.
+    total = pages_with_candidates if pages_with_candidates else sum(tally.values())
     share = count / total if total else 0.0
     if count < MIN_AGREEING_PAGES or share < MIN_AGREEMENT_SHARE:
         return None, count, share
@@ -359,8 +374,8 @@ def propose(tally: collections.Counter) -> tuple[int | None, int, float]:
 def best_proposal(pages: list[str]):
     """First tier that yields a confident offset. Returns (tier, offset, count, share)."""
     for tier in TIERS:
-        tally, _ = offset_evidence(pages, tier)
-        offset, count, share = propose(tally)
+        tally, trace = offset_evidence(pages, tier)
+        offset, count, share = propose(tally, sum(1 for _, b in trace if b))
         if offset is not None:
             return tier, offset, count, share
     return None, None, 0, 0.0
@@ -385,6 +400,43 @@ def agreement(pages: list[str], offset: int) -> tuple[int, str]:
     return fallback
 
 
+def _ranges(nums: list[int]) -> str:
+    """Compress [3,4,5,9] to "3-5, 9"."""
+    if not nums:
+        return ""
+    out, start, prev = [], nums[0], nums[0]
+    for n in nums[1:]:
+        if n == prev + 1:
+            prev = n
+            continue
+        out.append(f"{start}-{prev}" if prev > start else f"{start}")
+        start = prev = n
+    out.append(f"{start}-{prev}" if prev > start else f"{start}")
+    return ", ".join(out)
+
+
+def offset_exceptions(pages: list[str], offset: int, tier: str) -> tuple[int, int, str]:
+    """Pages that offer a page number which the settled offset does not explain.
+
+    One offset per document is a simplification, and back matter is where it
+    breaks. North Beach numbers its appendix "-d2-"; the Modern Architecture
+    statement restarts its appendix at 1. In both the offset is right for the
+    body and wrong past it, and a citation from those pages would be confidently
+    wrong. So the disagreeing pages are counted and their ranges recorded, and
+    quote.py is expected to warn when a hit falls inside one.
+    """
+    agree, disagree = 0, []
+    for i, text in enumerate(pages, start=1):
+        cands = candidates(text, tier)
+        if not cands:
+            continue
+        if (i - offset) in cands:
+            agree += 1
+        else:
+            disagree.append(i)
+    return agree, len(disagree), _ranges(disagree)
+
+
 def report_offset(pages: list[str], doc_id: str) -> int | None:
     romans = roman_pages(pages)
     print(f"\n--- page offset for {doc_id}: the evidence, not a decision")
@@ -402,10 +454,11 @@ def report_offset(pages: list[str], doc_id: str) -> int | None:
             print(f"      {tier:<11} ({TIER_NOTE[tier]}): nothing")
             continue
         found_any = True
-        top = ", ".join(f"offset {o} x{c}" for o, c in tally.most_common(3))
-        pages_seen = sum(tally.values())
+        top = ", ".join(f"offset {o} on {c} page(s)" for o, c in tally.most_common(3))
+        _, tr = offset_evidence(pages, tier)
+        seen = sum(1 for _, b in tr if b)
         print(f"      {tier:<11} ({TIER_NOTE[tier]}):")
-        print(f"        {top}   [{pages_seen} candidate(s) over {len(pages)} pages]")
+        print(f"        {top}   [{seen} of {len(pages)} pages offered a number]")
     if not found_any:
         print("\n    no page-number-like text found at all. Read several pages "
               "yourself and pass --offset N.")
@@ -425,7 +478,7 @@ def report_offset(pages: list[str], doc_id: str) -> int | None:
     shown = [(i, i - offset) for i, text in enumerate(pages, start=1)
              if (i - offset) in candidates(text, tier)][:6]
     print(f"\n    PROPOSED offset {offset}, from the '{tier}' tier "
-          f"({count} agreeing candidates, {share:.0%} of that tier's)")
+          f"({count} agreeing pages, {share:.0%} of pages offering a number)")
     pfx, _ = label_prefix(pages)
     lbl = f"{pfx}-N" if pfx and tier == "compound" else "p.N"
     print(f"    Meaning: printed {lbl} is PDF p.N+{offset}." if offset >= 0 else
@@ -629,16 +682,22 @@ def cmd_acquire(args) -> int:
         tier, _, count, share = best_proposal(pages)
         settled = proposed
         basis = (f"accepted the proposal (--offset auto); '{tier}' tier, "
-                 f"{count} agreeing candidates, {share:.0%} agreement")
+                 f"{count} agreeing page(s), {share:.0%} agreement")
     elif args.offset == "none":
-        settled, basis = None, "no printed page numbers (asserted by operator)"
+        # Precisely what is known: the extraction showed no page number. Whether
+        # the document prints one that this extractor dropped is a different
+        # claim, and not one this script is in a position to make.
+        settled, basis = None, ("no page number appears in the extracted text "
+                                "(--offset none); cite the PDF page")
     else:
         try:
             settled = int(args.offset)
         except ValueError:
             raise SystemExit("--offset takes an integer, 'auto', or 'none'")
         agree, tier = agreement(pages, settled)
-        basis = (f"confirmed by operator; {agree} candidate(s) agree "
+        _, n_bad, bad_ranges = (offset_exceptions(pages, settled, tier)
+                                if tier != "none" else (0, 0, ""))
+        basis = (f"confirmed by operator; {agree} page(s) agree "
                  f"via the '{tier}' tier" if agree else
                  "asserted by operator; no page number found supports it")
         if agree == 0:
@@ -654,6 +713,15 @@ def cmd_acquire(args) -> int:
     else:
         label_format, label_basis = "p.{n}", "bare page numbers"
 
+    if settled is not None and pdf:
+        best_tier = agreement(pages, settled)[1]
+        if best_tier != "none":
+            n_ok, n_bad, bad_ranges = offset_exceptions(pages, settled, best_tier)
+        else:
+            n_ok, n_bad, bad_ranges = 0, 0, ""
+    else:
+        n_ok, n_bad, bad_ranges = 0, 0, ""
+
     entry = {
         "id": args.id,
         "title": args.title or args.id,
@@ -667,6 +735,13 @@ def cmd_acquire(args) -> int:
         "page_offset": settled,
         "page_offset_basis": basis,
         "citation_form": _citation_form(settled, label_format),
+        "page_offset_pages_agreeing": n_ok,
+        "page_offset_pages_disagreeing": n_bad,
+        "page_offset_exception_pages": bad_ranges,
+        "page_offset_exception_note": (
+            "PDF pages that print a number the offset does not explain -- usually "
+            "separately paginated back matter. A citation from these pages needs its "
+            "printed number read directly." if bad_ranges else ""),
         "page_label_format": label_format,
         "page_label_basis": label_basis,
         "extraction_method": method,
