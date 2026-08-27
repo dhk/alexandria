@@ -1,0 +1,31 @@
+{
+  "attribution": "(none stated)",
+  "attribution_required": false,
+  "bytes": 1019115,
+  "crs": "WGS84 (EPSG:4326) as served",
+  "dataset": "j2bu-swwd",
+  "dataset_name": "Analysis Neighborhoods",
+  "features": 41,
+  "features_without_geometry": 0,
+  "file": "neighborhoods.geojson",
+  "generated_by": "02-run-plan/acquire-neighborhoods.py",
+  "geometry_types": {
+    "MultiPolygon": 41
+  },
+  "host": "https://data.sfgov.org",
+  "licence": "PDDL",
+  "licence_forced": false,
+  "licence_reason": "PDDL, no obligation",
+  "licence_verdict": "allow",
+  "marker": "FETCHED",
+  "metadata_url": "https://data.sfgov.org/api/views/j2bu-swwd.json",
+  "note": "Modern administrative neighbourhood boundaries. One authoritative polygon each, city-wide, no disputes -- a frame to hang history on, NOT historical place names. Historical extents are contested and assembled from sources; labelling one of these polygons with a historical name would assert a precision the record does not support.",
+  "precision": 6,
+  "properties": [
+    "nhood"
+  ],
+  "retrieved_utc": "2026-08-27T00:08:47Z",
+  "sha256": "8cb18925ef2e1bc7a00900a8c70575e2f5ec6511e5a21ebf86c3d58625061a9f",
+  "wrapper_view": "p5b7-5n3h",
+  "wrapper_view_note": "p5b7-5n3h is DataSF's saved canvas map of this dataset. It carries the same name and reports the same row count, but serves no columns and an empty feature list. It is not the source of this file."
+}

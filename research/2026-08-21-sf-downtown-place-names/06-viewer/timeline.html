@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Seven Grids</title>
+<title>Twenty-One Years</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
@@ -150,45 +150,143 @@ footer.end{border-top:1px solid var(--rule); padding-top:16px; display:flex;
 footer.end .mono{font-size:11.5px}
 
 @media (prefers-reduced-motion:reduce){*{transition:none!important; animation:none!important}}
+
+.timebar{display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+  background:var(--panel); border:1px solid var(--rule); border-radius:2px; padding:12px 14px}
+.year{font-family:"Instrument Serif",Georgia,serif; font-size:46px; line-height:1;
+  font-variant-numeric:tabular-nums; min-width:2.6ch}
+.yearmeta{display:flex; flex-direction:column; gap:1px; min-width:150px}
+.yearmeta .big{font-family:"IBM Plex Mono",monospace; font-size:15px;
+  font-variant-numeric:tabular-nums; color:var(--ink)}
+.yearmeta .sm{font-family:"IBM Plex Mono",monospace; font-size:10px; letter-spacing:.09em;
+  text-transform:uppercase; color:var(--ink-faint)}
+.scrub{position:relative; flex:1 1 340px; min-width:240px; padding:14px 0 4px}
+.scrub input[type=range]{width:100%; margin:0; accent-color:var(--brass); cursor:pointer}
+.scrub input[type=range]:focus-visible{outline:2px solid var(--brass-bright); outline-offset:4px}
+.ticks{position:relative; height:36px; margin-top:2px}
+.tick{position:absolute; top:0; transform:translateX(-50%); text-align:center;
+  font-family:"IBM Plex Mono",monospace; font-size:9.5px; color:var(--ink-faint);
+  letter-spacing:.06em; white-space:nowrap}
+.tick.row2{top:15px}
+.tick.row2 b{height:19px}
+.endnote{position:absolute; right:0; top:17px; text-align:right;
+  font-family:"IBM Plex Mono",monospace; font-size:9.5px; color:var(--ink-faint);
+  letter-spacing:.06em; white-space:nowrap}
+.endnote.on{color:var(--brass)}
+.tick b{display:block; width:1px; height:5px; background:var(--brass); margin:0 auto 2px}
+.tick.on{color:var(--brass)}
+.play{font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.1em;
+  text-transform:uppercase; padding:10px 18px; border:1px solid var(--rule);
+  background:transparent; color:var(--ink); cursor:pointer; border-radius:2px}
+.play[aria-pressed="true"]{background:var(--ink); color:var(--paper)}
+.play:focus-visible{outline:2px solid var(--brass-bright); outline-offset:-2px}
+
+.acts{display:flex; flex-direction:column; gap:1px}
+.act{display:grid; grid-template-columns:15px 1fr auto; gap:9px; align-items:baseline;
+  padding:6px; border:0; background:transparent; text-align:left; width:100%;
+  font:inherit; color:var(--ink); cursor:pointer; border-radius:2px; opacity:.32}
+.act.live{opacity:1}
+.act:hover{background:var(--brass-wash)}
+.act:focus-visible{outline:2px solid var(--brass-bright); outline-offset:-2px}
+.act .sw{width:15px; height:3px; border-radius:2px; align-self:center}
+.act .nm{font-size:14.5px}
+.act .sub{display:block; font-family:"IBM Plex Mono",monospace; font-size:10px;
+  color:var(--ink-faint); margin-top:1px}
+.act .amt{font-family:"IBM Plex Mono",monospace; font-size:11px;
+  font-variant-numeric:tabular-nums; color:var(--ink-soft)}
+
+.gap{background:var(--brass-wash); border:1px solid var(--brass); border-radius:2px; padding:12px 14px}
+.gap h3{font-size:19px; margin-bottom:4px}
+.gap p{font-size:13.5px; color:var(--ink-soft); margin:6px 0 0}
+.gapitem{display:grid; grid-template-columns:15px 1fr auto; gap:9px; align-items:baseline;
+  padding:5px 6px; border:0; background:transparent; text-align:left; width:100%;
+  font:inherit; color:var(--ink); cursor:pointer; border-radius:2px}
+.gapitem:hover{background:var(--brass-wash)}
+.gapitem[aria-pressed="true"]{background:var(--ink); color:var(--paper)}
+.gapitem[aria-pressed="true"] .amt,.gapitem[aria-pressed="true"] .sub{color:var(--paper)}
+.gapitem:focus-visible{outline:2px solid var(--brass-bright); outline-offset:-2px}
+.gapitem .sw{width:15px; height:3px; border-radius:2px; align-self:center}
+.gapitem .nm{font-size:14px}
+.gapitem .sub{display:block; font-family:"IBM Plex Mono",monospace; font-size:9.5px;
+  color:var(--ink-faint); margin-top:1px}
+.gapitem .amt{font-family:"IBM Plex Mono",monospace; font-size:10.5px;
+  font-variant-numeric:tabular-nums; color:var(--ink-soft)}
+
+.meter{height:5px; background:var(--rule-soft); border-radius:3px; overflow:hidden; margin-top:8px}
+.meter i{display:block; height:100%; background:var(--brass); width:0;
+  transition:width .28s ease}
+
+/* The fade is a courtesy to the eye, not a claim about history: a survey still
+   arrives on its exact year and the counter still snaps. Scrubbing turns it off,
+   because a 550ms fade chasing a dragged slider reads as lag. */
+.fillgroup{transition:opacity .55s ease}
+.scrubbing .fillgroup{transition:none}
+@media (prefers-reduced-motion:reduce){
+  .meter i{transition:none}
+  .fillgroup{transition:none}
+}
+
 </style>
 </head>
 <body>
 <div class="wrap">
   <header class="top">
     <div>
-      <div class="eyebrow">San Francisco &middot; 1,954 km of centreline</div>
-      <h1>Seven Grids</h1>
-      <p class="sub">San Francisco is not one city laid out once. It is seven surveys that
-      met at awkward angles and never reconciled &mdash; plus a third of the street network
-      where the ground refused all of them. Every line here is a federal centreline,
-      coloured by which survey drew it.</p>
+      <div class="eyebrow">San Francisco &middot; what the survey record can date</div>
+      <h1>Twenty-One Years</h1>
+      <p class="sub">Three surveys, twenty-one years apart, laid out 55% of the streets
+      San Francisco has today. Run the slider and watch them arrive. It ends in 1868
+      because that is where the record ends &mdash; the other 45% of this city is on the
+      map with no date at all.</p>
     </div>
   </header>
+
+  <div class="timebar">
+    <div class="year mono" id="yr">1843</div>
+    <div class="yearmeta">
+      <span class="big" id="km">0 km</span>
+      <span class="sm" id="pc">0% of the modern city</span>
+      <div class="meter"><i id="bar"></i></div>
+    </div>
+    <div class="scrub">
+      <input type="range" id="slider" min="1843" max="1872" step="1" value="1843"
+             aria-label="Year" aria-describedby="yr">
+      <div class="ticks" id="ticks"></div>
+    </div>
+    <button class="play" id="play" aria-pressed="false">Play</button>
+  </div>
 
   <div class="stage">
     <div class="plate">
       <svg class="map" id="map" role="img"
-           aria-label="Map of every named street in San Francisco, each coloured by which of seven survey grids laid it out."></svg>
+           aria-label="Map of San Francisco filling in as each survey is laid out, from 1847 to 1868."></svg>
       <div class="readout mono" id="readout"></div>
       <div class="scalebar"><div class="bar" id="sbar"></div><span id="slab">1 km</span></div>
     </div>
 
     <div class="rail">
       <div class="card">
-        <div class="eyebrow">The instrument</div>
-        <h3>Bearing rose</h3>
-        <svg class="rose" id="rose" viewBox="0 0 260 260" role="img"
-             aria-label="Polar histogram of street bearings across San Francisco, showing seven distinct peaks."></svg>
-        <p class="note">Every metre of centreline, sorted by the direction it runs.
-        The peaks are the surveys. Hover a grid below to light its petal.</p>
+        <div class="eyebrow">On the timeline</div>
+        <h3>Three surveys</h3>
+        <div class="acts" id="actlist"></div>
+        <p class="note">Each arrives on its own date, not as a gradient &mdash; a survey is
+        an event. Click one to jump to it.</p>
+      </div>
+
+      <div class="gap">
+        <div class="eyebrow">Not on the timeline</div>
+        <h3 id="gaphead">&mdash;</h3>
+        <p style="margin-top:2px">Everything below is drawn on the map and has no date in
+        this corpus. It is shown as faint ground throughout. Click any of it to pick it out.</p>
+        <div class="acts" id="gaplist" style="margin-top:8px"></div>
+        <p><b>If you know when any of these were laid out, that is the correction this
+        map most needs.</b></p>
       </div>
 
       <div class="card">
-        <div class="eyebrow">Grids &middot; click to isolate</div>
-        <div class="keys" id="keys"></div>
-        <div class="tools" style="margin-top:9px">
-          <button id="btnAll" aria-pressed="true">All</button>
-          <button id="btnUn" aria-pressed="true">Ungridded</button>
+        <div class="eyebrow">Layers</div>
+        <div class="tools" style="margin-top:6px">
+          <button id="btnGhost" aria-pressed="true">Modern city</button>
           <button id="btnFit">Reset view</button>
         </div>
       </div>
@@ -196,80 +294,53 @@ footer.end .mono{font-size:11.5px}
   </div>
 
   <div class="prose">
-    <h2>What you are looking at</h2>
-    <p class="lede">Street bearings across San Francisco are not smoothly distributed. Folded
-    to a quarter-turn and weighted by length, they pile into seven sharp peaks. Each peak is a
-    separate act of surveying, and each one is geographically compact &mdash; they name
-    themselves once you plot them.</p>
-    <p>Three of the seven can be dated from this project's sources. The other four are
-    measured here and <em>not</em> dated, because I have no source for when they were laid out
-    and would rather show a gap than invent a year.</p>
-  </div>
+    <h2>What the slider is actually doing</h2>
+    <p class="lede">Every street on this map is a federal centreline, assigned to a survey
+    grid by the direction it runs. Three of those grids can be dated from the sources in
+    this project; the streets belonging to them appear on their survey year and not before.</p>
+    <p>The dates are events rather than processes, so the map jumps. O'Farrell's survey did
+    not fade in over a decade &mdash; it was drawn, and then it existed. Smoothing that into a
+    gradient would be a prettier animation and a false one.</p>
+    <p>What the map cannot show is <em>construction</em>. A survey is a plan on paper; the
+    streets it specifies were built over the decades that followed, and many of the lines
+    that appear in 1868 were sand until the 1900s. This is a timeline of when the city was
+    <em>laid out</em>, not when it was built.</p>
 
-  <div class="acts">
-    <div class="act"><div class="yr">1847</div><h4>O'Farrell's survey</h4>
-      <p>Market Street driven 120 feet wide on the diagonal, with 100-vara blocks south of it.
-      Measured elsewhere in this project at 274.93 ft per lot &mdash; 2.84 ft residual.</p></div>
-    <div class="act"><div class="yr">1855&ndash;56</div><h4>Van Ness Ordinance</h4>
-      <p>The ordinance and its 1856 map settle title and extend the grid west over the
-      Western Addition, at its own bearing.</p></div>
-    <div class="act"><div class="yr">18 May 1868</div><h4>Potter &amp; Humphrey</h4>
-      <p>The Outside Lands surveyed. Richmond and Sunset get their names and the largest,
-      most nearly cardinal grid in the city &mdash; a third of all its streets.</p></div>
-  </div>
+    <h2>Why it stops in 1868</h2>
+    <p>Not because the city stopped being surveyed &mdash; because this corpus stops being
+    able to date it. Four of the seven grids on this map have no survey date here, and a
+    third of the city's street length belongs to no grid at all: the hills, the parks, the
+    Presidio, the deliberately curving plats of Sea Cliff and St Francis Wood.</p>
+    <p>An earlier version of this page let the slider run to 2026 so you could feel the
+    silence. It turns out that a hundred and fifty-eight years of nothing happening is
+    just a hundred and fifty-eight years of nothing happening. The gap is better stated
+    than endured, so the timeline ends where its evidence does and the panel beside the
+    map carries the rest.</p>
+    <p>Together that is 45% of San Francisco, present on the map and absent from its
+    history. The honest way to draw a gap is at full size.</p>
 
-  <div class="prose">
-    <h2>The measurements</h2>
-  </div>
-  <div class="scroll">
-    <table class="data" id="tbl">
-      <thead><tr><th>Grid</th><th>Bearing</th><th class="num">Length</th>
-        <th class="num">Share</th><th>Survey</th><th>Named for</th></tr></thead>
-      <tbody></tbody>
-    </table>
-  </div>
-
-  <div class="hair">
-    <h3>Hair on it &mdash; what is unfinished</h3>
-    <p><b>The grids are classified, not measured.</b> I can colour a street by its survey.
-    I cannot yet tell you each survey's block module, the way O'Farrell's was measured to
-    2.84 ft. The naive method &mdash; cluster by bearing, project onto the perpendicular,
-    read the spacing between parallel streets &mdash; fails city-wide, because clustering by
-    <em>angle alone</em> merges parallel grids in different neighbourhoods into one comb.
-    Run against South of Market, whose module is independently known to be 358 &times; 908 ft,
-    it returns a broad multi-modal mess. Fixing it needs spatial clustering &mdash; connected
-    components over a bearing-coloured raster &mdash; not just an angle test.</p>
-    <p><b>The seven peaks are hand-chosen.</b> <code>3.5&deg; 9.5&deg; 45&deg; 54.5&deg;
-    18&deg; 86.5&deg; 59&deg;</code>, tolerance &plusmn;2.5&deg;, read off the histogram by eye.
-    A real treatment would fit them. Change the tolerance and the shares move.</p>
-    <p><b>Four grids are undated</b> and four of the seven names are mine, taken from the
-    streets inside them rather than from any source. Bayview, Portola, Lakeside and the
-    Excelsior are described here, not cited.</p>
-    <p><b>The unassigned third is a category, not an explanation.</b> It holds real
-    curvilinear planning (Sea Cliff, St Francis Wood), park roads, freeway ramps, and every
-    street that bent to a hill. Those are different things wearing one colour.</p>
-  </div>
-
-  <div class="prose">
-    <h2>Where the grid fails</h2>
-    <p>A third of San Francisco's street length fits none of the seven. Turn off
-    <em>Ungridded</em> and the holes appear: Twin Peaks, Mount Davidson, the Presidio,
-    Golden Gate Park's interior, Sea Cliff, Forest Hill. Those are the places where
-    topography beat the transit &mdash; or where, later, someone chose the curve on purpose.
-    The negative space is as much a map of the city as the lines are.</p>
+    <h2>This is patchwork, on purpose</h2>
+    <p>The provenance here will change as people who know more say so. Homestead
+    associations and subdivision tracts are the missing unit &mdash; the Eureka Homestead
+    Association of 1864, the Market Street Homestead Association of 1868, dozens more named
+    in the planning record &mdash; each one a dated, bounded plat that would fill the space
+    between the three city-scale surveys. They are not on this map yet because each date
+    has to be read out of a sentence and checked, not scraped.</p>
   </div>
 
   <footer class="end">
     <div>
       <div class="eyebrow">Sources &amp; method</div>
       <p style="margin:6px 0 0">Geometry: US Census Bureau TIGER/Line 2025, San Francisco
-      County (FIPS 06075) &mdash; public domain under 17 U.S.C. &sect;105. 3,677 named road
-      features, retrieved and checksummed 26 August 2026. Survey dates from the sources
-      registered in the corpus below; the four undated grids are measured, not cited.</p>
+      County (FIPS 06075) &mdash; public domain under 17 U.S.C. &sect;105, retrieved and
+      checksummed 26 August 2026. Survey dates from the sources registered in the corpus;
+      the four undated grids are measured, not cited. Companion to
+      <a href="https://www.dhk.io/work/seven-grids">Seven Grids</a>, which draws the same
+      seven surveys without the time axis.</p>
       <p style="margin:8px 0 0" class="mono">
         <a href="https://github.com/dhk/alexandria/tree/main/research/2026-08-21-sf-downtown-place-names" target="_blank" rel="noopener">dhk/alexandria &middot; the corpus</a><br>
-        <a href="https://github.com/dhk/alexandria/blob/main/research/2026-08-21-sf-downtown-place-names/05-analysis/survey-grid-measurement.md" target="_blank" rel="noopener">05-analysis/survey-grid-measurement.md</a><br>
-        <a href="https://github.com/dhk/alexandria/blob/main/research/2026-08-21-sf-downtown-place-names/04-normalized/geo/sources.json" target="_blank" rel="noopener">04-normalized/geo/sources.json &middot; provenance</a><br>
+        <a href="https://github.com/dhk/alexandria/blob/main/research/2026-08-21-sf-downtown-place-names/05-analysis/grid-classification.md" target="_blank" rel="noopener">05-analysis/grid-classification.md &middot; what this does not claim</a><br>
+        <a href="https://github.com/dhk/alexandria/issues" target="_blank" rel="noopener">tell me what I got wrong &middot; dhk/alexandria issues</a><br>
         <a href="https://dhk.io" target="_blank" rel="noopener">dhk.io</a>
       </p>
     </div>
@@ -282,200 +353,271 @@ footer.end .mono{font-size:11.5px}
 "use strict";
 var D = JSON.parse(document.getElementById("DATA").textContent);
 
-var META = [
-  {nm:"Richmond & Sunset", survey:"Potter & Humphrey, 18 May 1868", dated:true,
-   named:"19th Ave, Sunset Blvd, Lincoln Way"},
-  {nm:"Western Addition",  survey:"Van Ness Ordinance, 1855–56", dated:true,
-   named:"California, Van Ness, Divisadero"},
-  {nm:"South of Market",   survey:"O'Farrell, 1847", dated:true,
-   named:"Market, Mission, Howard, Folsom"},
-  {nm:"Bayview",           survey:"not established", dated:false,
-   named:"Evans, Palou, Quesada, Innes"},
-  {nm:"Portola",           survey:"not established", dated:false,
-   named:"Mansell, Goettingen"},
-  {nm:"Lakeside",          survey:"not established", dated:false,
-   named:"Junipero Serra, Lake Merced"},
-  {nm:"Excelsior",         survey:"not established", dated:false,
-   named:"Naples, Vienna, Madrid, Athens"}
-];
+var NAMES = {"richmond-sunset":"Richmond & Sunset","western-addition":"Western Addition",
+  "south-of-market":"South of Market","bayview":"Bayview","portola":"Portola",
+  "lakeside":"Lakeside","excelsior":"Excelsior"};
 var NG = D.grids.length;
 function col(k){ return "var(--g" + (k < 0 ? 7 : k) + ")"; }
 
+var TOTAL = D.grids.reduce(function(a,g){return a+g.metres;},0) + D.unassigned_m;
+var DATED = D.grids.map(function(g,k){return {k:k,g:g};}).filter(function(o){return o.g.year;})
+              .sort(function(a,b){return a.g.year-b.g.year;});
+var UNDATED = D.grids.map(function(g,k){return {k:k,g:g};}).filter(function(o){return !o.g.year;});
+var LAST = DATED[DATED.length-1].g.year;
+
 /* ---------- map ---------- */
 var VB = {x:-6700, y:-8250, w:14900, h:14200};
-var svg = document.getElementById("map"), readout = document.getElementById("readout");
 var NS = "http://www.w3.org/2000/svg";
+var svg = document.getElementById("map"), readout = document.getElementById("readout");
 function el(n,a){ var e=document.createElementNS(NS,n); for(var k in a) e.setAttribute(k,a[k]); return e; }
-function d(pts){
-  var s = "M" + pts[0] + " " + pts[1];
-  for (var i=2;i<pts.length;i+=2) s += "L" + pts[i] + " " + pts[i+1];
-  return s;
-}
-var gWater = el("g",{}), groups = [];
-svg.appendChild(gWater);
-D.water.forEach(function(w){
-  gWater.appendChild(el("path",{d:d(w)+"Z", fill:"var(--water)", stroke:"none"}));
-});
-for (var k=0;k<NG;k++){ var g=el("g",{}); groups.push(g); }
-var gUn = el("g",{});
-svg.appendChild(gUn);                      // ungridded sits under the surveys
-groups.forEach(function(g){ svg.appendChild(g); });
+function d(p){ var s="M"+p[0]+" "+p[1]; for(var i=2;i<p.length;i+=2) s+="L"+p[i]+" "+p[i+1]; return s; }
 
-D.roads.forEach(function(r, i){
-  var p = el("path", {"class":"road", d:d(r[2]), stroke:col(r[0]),
-                      "stroke-width": r[0] < 0 ? 0.7 : 0.95});
-  p.__i = i;
-  (r[0] < 0 ? gUn : groups[r[0]]).appendChild(p);
-});
+var gWater=el("g",{}), gGhost=el("g",{}), fills=[];
+svg.appendChild(gWater); svg.appendChild(gGhost);
+D.water.forEach(function(w){ gWater.appendChild(el("path",{d:d(w)+"Z",fill:"var(--water)",stroke:"none"})); });
+for (var k=0;k<NG;k++){ var g=el("g",{"class":"fillgroup"}); fills.push(g); svg.appendChild(g); }
 
+// Every street is drawn twice: once as faint ground that is always present, and
+// once in colour in its grid's own group, revealed on its survey year. The ghost
+// is what makes 1847 legible -- 5.8% of a city with no outline around it reads
+// as a mistake rather than as a beginning.
+D.roads.forEach(function(r,i){
+  var path = r[2], klass = r[0];
+  var ghost = el("path",{"class":"road", d:d(path), stroke:"var(--ink-faint)",
+                         "stroke-width":0.7, opacity:0.30});
+  ghost.__i = i; gGhost.appendChild(ghost);
+  if (klass >= 0 && D.grids[klass].year){
+    var lit = el("path",{"class":"road", d:d(path), stroke:col(klass), "stroke-width":1.0});
+    lit.__i = i; fills[klass].appendChild(lit);
+  }
+});
 svg.setAttribute("viewBox", VB.x+" "+VB.y+" "+VB.w+" "+VB.h);
 svg.setAttribute("preserveAspectRatio","xMidYMid meet");
 
 /* ---------- state ---------- */
-var iso = -1, showUn = true;
-function apply(){
-  for (var k=0;k<NG;k++){
-    var on = (iso < 0 || iso === k);
-    groups[k].setAttribute("opacity", on ? 1 : 0.07);
-  }
-  gUn.setAttribute("opacity", !showUn ? 0 : (iso < 0 ? 0.5 : 0.09));
-  Array.prototype.forEach.call(document.querySelectorAll(".key"), function(b,k){
-    b.setAttribute("aria-pressed", iso === k ? "true" : "false");
+// `pick` is null for "nothing picked" and a grid index otherwise, where -1 is a
+// real value meaning the ungridded third. Using -1 for both would make
+// deselecting the ungridded group redraw it.
+var Y0 = 1843, Y1 = 1872, SWEEP_MS = 11000;   // the record's own span, plus a little air
+var year = Y0, playing = false, ghostOn = true, pick = null, raf = null;
+
+function laidBy(y){
+  var m = 0;
+  D.grids.forEach(function(g){ if (g.year && g.year <= y) m += g.metres; });
+  return m;
+}
+function render(){
+  // `year` runs fractionally while playing so the sweep is smooth; everything
+  // shown or compared uses the whole year, so a survey still lands on its date.
+  var y = Math.floor(year);
+  document.getElementById("yr").textContent = y;
+  var m = laidBy(y), pc = m/TOTAL*100;
+  document.getElementById("km").textContent = (m/1000).toFixed(0) + " km laid out";
+  document.getElementById("pc").textContent = pc.toFixed(1) + "% of the modern city";
+  document.getElementById("bar").style.width = pc.toFixed(1) + "%";
+  document.getElementById("slider").value = y;
+
+  D.grids.forEach(function(g,k){
+    if (!fills[k]) return;
+    var on = g.year && g.year <= y;
+    var dim = pick !== null && pick !== k;
+    fills[k].setAttribute("opacity", on ? (dim ? 0.10 : 1) : 0);
   });
-  document.getElementById("btnAll").setAttribute("aria-pressed", iso < 0 ? "true":"false");
-  document.getElementById("btnUn").setAttribute("aria-pressed", showUn ? "true":"false");
-  drawRose();
+  gGhost.setAttribute("opacity", ghostOn ? 1 : 0);
+
+  Array.prototype.forEach.call(document.querySelectorAll("#actlist .act"), function(b,i){
+    b.classList.toggle("live", DATED[i].g.year <= y);
+  });
+  Array.prototype.forEach.call(document.querySelectorAll("#gaplist .gapitem"), function(b,i){
+    var key = i < UNDATED.length ? UNDATED[i].k : -1;   // last row is the ungridded third
+    b.setAttribute("aria-pressed", pick === key ? "true" : "false");
+  });
+  Array.prototype.forEach.call(document.querySelectorAll(".tick"), function(t){
+    t.classList.toggle("on", +t.dataset.y <= y);
+  });
+  document.getElementById("endnote").classList.toggle("on", y >= LAST);
+  document.getElementById("btnGhost").setAttribute("aria-pressed", ghostOn ? "true":"false");
 }
 
-/* ---------- legend ---------- */
-var keys = document.getElementById("keys");
-D.grids.forEach(function(g, k){
-  var m = META[k];
+/* ---------- ticks ---------- */
+var ticks = document.getElementById("ticks");
+
+// The record ends at the last survey it can date, not at the right-hand end of
+// the slider -- those last few years are only air, and labelling them "record
+// ends" put the wrong year on the claim. The note rides on 1868 itself.
+//
+// Rows alternate when two labels would overlap. Three ticks do not need that
+// today; a page whose premise is that people will send in more dates will.
+var MIN_GAP = 11;   // percent of the track, roughly one label's width
+var placed = [];
+DATED.forEach(function(o){
+  var pct = (o.g.year - Y0) / (Y1 - Y0) * 100;
+  var el = document.createElement("div");
+  el.className = "tick"; el.dataset.y = o.g.year;
+  el.style.left = pct + "%";
+  el.innerHTML = "<b></b>" + o.g.year;
+  if (placed.some(function(q){ return Math.abs(q - pct) < MIN_GAP; })) el.classList.add("row2");
+  placed.push(pct);
+  ticks.appendChild(el);
+});
+
+// The terminus is a note, not a tick: centred on 1868 it would run off the
+// right-hand end of a narrow track, and it belongs to the whole timeline rather
+// than to that one survey. Row two is free, so it sits there.
+var endNote = document.createElement("div");
+endNote.className = "endnote"; endNote.id = "endnote";
+endNote.textContent = "record ends " + LAST;
+ticks.appendChild(endNote);
+
+/* ---------- the three acts ---------- */
+var actlist = document.getElementById("actlist");
+DATED.forEach(function(o){
   var b = document.createElement("button");
-  b.className = "key"; b.type = "button"; b.setAttribute("aria-pressed","false");
-  b.innerHTML = '<span class="swatch" style="background:'+col(k)+'"></span>'
-    + '<span><span class="nm">'+m.nm+'</span>'
-    + '<span class="sub'+(m.dated?" dated":"")+'">'+g.bearing.toFixed(1)+'° · '
-    + (m.dated ? m.survey : "undated")+'</span></span>'
-    + '<span class="amt">'+(g.metres/1000).toFixed(0)+' km</span>';
-  b.addEventListener("click", function(){ iso = (iso === k ? -1 : k); apply(); });
-  b.addEventListener("mouseenter", function(){ hover = k; drawRose(); });
-  b.addEventListener("mouseleave", function(){ hover = -1; drawRose(); });
-  keys.appendChild(b);
+  b.className = "act"; b.type = "button";
+  b.innerHTML = '<span class="sw" style="background:'+col(o.k)+'"></span>'
+    + '<span><span class="nm">'+NAMES[o.g.id]+'</span>'
+    + '<span class="sub">'+o.g.survey+'</span></span>'
+    + '<span class="amt">'+(o.g.metres/1000).toFixed(0)+' km</span>';
+  b.addEventListener("click", function(){ stop(); year = o.g.year; render(); });
+  actlist.appendChild(b);
 });
-document.getElementById("btnAll").addEventListener("click", function(){ iso=-1; apply(); });
-document.getElementById("btnUn").addEventListener("click", function(){ showUn=!showUn; apply(); });
 
-/* ---------- table ---------- */
-var total = D.grids.reduce(function(a,g){return a+g.metres;},0) + D.unassigned_m;
-var tb = document.querySelector("#tbl tbody");
-D.grids.forEach(function(g,k){
-  var m = META[k], tr = document.createElement("tr");
-  tr.innerHTML = "<td>"+m.nm+"</td><td>"+g.bearing.toFixed(1)+"°</td>"
-    + '<td class="num">'+(g.metres/1000).toFixed(1)+" km</td>"
-    + '<td class="num">'+(g.metres/total*100).toFixed(1)+"%</td>"
-    + "<td>"+m.survey+"</td><td>"+m.named+"</td>";
-  tb.appendChild(tr);
+/* ---------- the gap ---------- */
+var undatedM = UNDATED.reduce(function(a,o){return a+o.g.metres;},0) + D.unassigned_m;
+document.getElementById("gaphead").textContent =
+  (undatedM/TOTAL*100).toFixed(0) + "% of the city";
+var gaplist = document.getElementById("gaplist");
+UNDATED.forEach(function(o){
+  var b = document.createElement("button");
+  b.className = "gapitem"; b.type = "button"; b.setAttribute("aria-pressed","false");
+  b.innerHTML = '<span class="sw" style="background:'+col(o.k)+'"></span>'
+    + '<span><span class="nm">'+NAMES[o.g.id]+'</span>'
+    + '<span class="sub">'+o.g.bearing.toFixed(1)+'° · no survey date</span></span>'
+    + '<span class="amt">'+(o.g.metres/1000).toFixed(0)+' km</span>';
+  b.addEventListener("click", function(){ pickGrid(o.k); });
+  gaplist.appendChild(b);
 });
-var tr = document.createElement("tr");
-tr.innerHTML = "<td>Ungridded</td><td>—</td>"
-  + '<td class="num">'+(D.unassigned_m/1000).toFixed(1)+" km</td>"
-  + '<td class="num">'+(D.unassigned_m/total*100).toFixed(1)+"%</td>"
-  + "<td>none — topography, parks, curvilinear plats</td><td>—</td>";
-tb.appendChild(tr);
+var nb = document.createElement("button");
+nb.className = "gapitem"; nb.type = "button"; nb.setAttribute("aria-pressed","false");
+nb.innerHTML = '<span class="sw" style="background:'+col(-1)+'"></span>'
+  + '<span><span class="nm">No grid at all</span>'
+  + '<span class="sub">hills, parks, the Presidio, curving plats</span></span>'
+  + '<span class="amt">'+(D.unassigned_m/1000).toFixed(0)+' km</span>';
+nb.addEventListener("click", function(){ pickGrid(-1); });
+gaplist.appendChild(nb);
 
-/* ---------- bearing rose ---------- */
-var hover = -1;
-var rose = document.getElementById("rose");
-function drawRose(){
-  while (rose.firstChild) rose.removeChild(rose.firstChild);
-  var cx=130, cy=130, r0=16, r1=112;
-  var max = Math.max.apply(null, D.rose);
-  [0.5,1].forEach(function(f){
-    rose.appendChild(el("circle",{"class":"ring",cx:cx,cy:cy,r:r0+(r1-r0)*f}));
-  });
-  var lit = hover >= 0 ? hover : iso;
-  for (var b=0;b<180;b++){
-    var len = r0 + (r1-r0) * Math.sqrt(D.rose[b]/max);
-    var k = -1;
-    for (var j=0;j<NG;j++){
-      // both orthogonal families of the grid, same test as build.py grid_of()
-      var th = D.grids[j].bearing;
-      var dd = Math.min(Math.abs(((b - th + 90) % 180) - 90),
-                        Math.abs(((b - th) % 180) - 90));
-      if (dd <= 2.5) { k = j; break; }
-    }
-    var a = b * Math.PI/180;
-    ["",""].forEach(function(_, mirror){
-      var s = mirror ? -1 : 1;
-      var sp = el("line",{ "class":"spoke" + (lit>=0 && k===lit ? " lit" : ""),
-        x1:cx + s*r0*Math.cos(a), y1:cy - s*r0*Math.sin(a),
-        x2:cx + s*len*Math.cos(a), y2:cy - s*len*Math.sin(a) });
-      if (k >= 0) sp.setAttribute("stroke", col(k));
-      if (lit >= 0 && k !== lit) sp.setAttribute("opacity", 0.2);
-      rose.appendChild(sp);
+// Picking an undated grid paints it over the ghost. It has no date, so it cannot
+// enter the timeline -- but it can still be pointed at, which is the whole
+// purpose of listing it.
+var gPick = el("g",{}); svg.appendChild(gPick);
+function pickGrid(k){
+  stop();
+  pick = (pick === k) ? null : k;
+  while (gPick.firstChild) gPick.removeChild(gPick.firstChild);
+  if (pick !== null){
+    D.roads.forEach(function(r){
+      if (r[0] === pick) gPick.appendChild(el("path",{"class":"road", d:d(r[2]),
+        stroke:col(pick), "stroke-width":1.1}));
     });
   }
-  [["N",cx,14],["E",250,cy+3],["S",cx,254],["W",10,cy+3]].forEach(function(t){
-    var x = el("text",{x:t[1], y:t[2], "text-anchor":"middle"}); x.textContent = t[0];
-    rose.appendChild(x);
-  });
+  render();
 }
 
-/* ---------- hover readout ---------- */
+/* ---------- transport ---------- */
+// Wall-clock rather than a fixed step per year: the sweep should take the same
+// eleven seconds however many years the record turns out to cover, so extending
+// it with new plats slows the playhead instead of lengthening the film.
+var last = 0;
+function frame(now){
+  if (!playing) return;
+  var dt = last ? now - last : 16;
+  last = now;
+  year += (Y1 - Y0) * (dt / SWEEP_MS);
+  if (year >= Y1){ year = Y1; render(); stop(); return; }
+  render();
+  raf = requestAnimationFrame(frame);
+}
+function play(){
+  if (playing) return;
+  document.body.classList.remove("scrubbing");
+  if (year >= Y1) year = Y0;
+  playing = true; last = 0;
+  document.getElementById("play").textContent = "Pause";
+  document.getElementById("play").setAttribute("aria-pressed","true");
+  raf = requestAnimationFrame(frame);
+}
+function stop(){
+  playing = false;
+  if (raf) cancelAnimationFrame(raf);
+  raf = null;
+  document.getElementById("play").textContent = "Play";
+  document.getElementById("play").setAttribute("aria-pressed","false");
+}
+document.getElementById("play").addEventListener("click", function(){ playing ? stop() : play(); });
+document.getElementById("slider").addEventListener("input", function(e){
+  stop();
+  document.body.classList.add("scrubbing");
+  year = +e.target.value;
+  render();
+});
+document.getElementById("slider").addEventListener("change", function(){
+  document.body.classList.remove("scrubbing");
+});
+document.getElementById("btnGhost").addEventListener("click", function(){
+  ghostOn = !ghostOn; render();
+});
+
+/* ---------- hover ---------- */
 svg.addEventListener("mouseover", function(e){
-  var t = e.target;
-  if (!t || t.__i === undefined) return;
-  var r = D.roads[t.__i], m = r[0] >= 0 ? META[r[0]] : null;
-  readout.innerHTML = "<b>" + r[1] + "</b><br>"
-    + (m ? m.nm + " · " + (m.dated ? m.survey : "undated") : "ungridded — fits no survey");
+  var t = e.target; if (!t || t.__i === undefined) return;
+  var r = D.roads[t.__i], k = r[0], g = k >= 0 ? D.grids[k] : null;
+  var line = !g ? "no grid — fits none of the seven surveys"
+    : g.year ? NAMES[g.id] + " · " + g.survey
+             : NAMES[g.id] + " · no survey date in this corpus";
+  readout.innerHTML = "<b>" + r[1] + "</b><br>" + line;
   readout.classList.add("on");
 });
 svg.addEventListener("mouseout", function(){ readout.classList.remove("on"); });
 
 /* ---------- pan & zoom ---------- */
-var vb = {x:VB.x, y:VB.y, w:VB.w, h:VB.h};
+var vb = {x:VB.x,y:VB.y,w:VB.w,h:VB.h};
 function push(){
   svg.setAttribute("viewBox", vb.x.toFixed(1)+" "+vb.y.toFixed(1)+" "+vb.w.toFixed(1)+" "+vb.h.toFixed(1));
-  var px = svg.clientWidth / vb.w;              // screen px per metre
-  var m = 1000, w = m * px;
-  while (w > 130) { m /= 2; w = m * px; }
-  while (w < 45)  { m *= 2; w = m * px; }
-  document.getElementById("sbar").style.width = w.toFixed(0) + "px";
+  var px = svg.clientWidth / vb.w, m = 1000, w = m*px;
+  while (w > 130){ m /= 2; w = m*px; }
+  while (w < 45){ m *= 2; w = m*px; }
+  document.getElementById("sbar").style.width = w.toFixed(0)+"px";
   document.getElementById("slab").textContent = m >= 1000 ? (m/1000)+" km" : m+" m";
 }
 svg.addEventListener("wheel", function(e){
   e.preventDefault();
   var r = svg.getBoundingClientRect();
-  var mx = vb.x + (e.clientX - r.left)/r.width * vb.w;
-  var my = vb.y + (e.clientY - r.top)/r.height * vb.h;
-  var f = Math.exp(e.deltaY * 0.0012);
-  var nw = Math.min(VB.w*1.4, Math.max(VB.w/60, vb.w*f));
-  f = nw / vb.w;
-  vb.x = mx - (mx - vb.x)*f; vb.y = my - (my - vb.y)*f;
-  vb.w = nw; vb.h *= f;
+  var mx = vb.x + (e.clientX-r.left)/r.width*vb.w, my = vb.y + (e.clientY-r.top)/r.height*vb.h;
+  var f = Math.exp(e.deltaY*0.0012);
+  var nw = Math.min(VB.w*1.4, Math.max(VB.w/60, vb.w*f)); f = nw/vb.w;
+  vb.x = mx-(mx-vb.x)*f; vb.y = my-(my-vb.y)*f; vb.w = nw; vb.h *= f;
   push();
 }, {passive:false});
 var drag = null;
 svg.addEventListener("pointerdown", function(e){
-  drag = {x:e.clientX, y:e.clientY, vx:vb.x, vy:vb.y};
+  drag = {x:e.clientX,y:e.clientY,vx:vb.x,vy:vb.y};
   svg.setPointerCapture(e.pointerId); svg.classList.add("drag");
 });
 svg.addEventListener("pointermove", function(e){
   if (!drag) return;
   var r = svg.getBoundingClientRect();
-  vb.x = drag.vx - (e.clientX - drag.x)/r.width * vb.w;
-  vb.y = drag.vy - (e.clientY - drag.y)/r.height * vb.h;
+  vb.x = drag.vx - (e.clientX-drag.x)/r.width*vb.w;
+  vb.y = drag.vy - (e.clientY-drag.y)/r.height*vb.h;
   push();
 });
 ["pointerup","pointercancel"].forEach(function(ev){
   svg.addEventListener(ev, function(){ drag=null; svg.classList.remove("drag"); });
 });
 document.getElementById("btnFit").addEventListener("click", function(){
-  vb = {x:VB.x, y:VB.y, w:VB.w, h:VB.h}; push();
+  vb = {x:VB.x,y:VB.y,w:VB.w,h:VB.h}; push();
 });
 
-apply(); push();
+render(); push();
 window.addEventListener("resize", push);
 })();
 </script>
