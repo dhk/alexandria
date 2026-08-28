@@ -74,7 +74,11 @@ the same place.
    against every model, with quotes.
 5. [`03-runs/r-2026-0814-01-ablation/`](03-runs/r-2026-0814-01-ablation/) — the
    control run in full: its own brief, analysis, claims and matrices.
-6. [`04-normalized/matrices.json`](04-normalized/matrices.json) — the votes
+6. [`05-analysis/instrument-ablation.md`](05-analysis/instrument-ablation.md)
+   — what a spec-conforming grader recovers from these same raw responses. The
+   published landscape below was produced by an apparatus that finds roughly a
+   quarter of the claims.
+7. [`04-normalized/matrices.json`](04-normalized/matrices.json) — the votes
    behind the ten contested cells, from which their published values are
    derived rather than asserted. Coverage is `contested-cells-only`: the
    remaining cells' votes were never published and stay in the raw responses on
