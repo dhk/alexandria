@@ -91,6 +91,11 @@ labels differ per stage and are supplied by the record — the UI never invents 
 lanes are the four brief fields from RFC-0005; the rest follow the same principle of naming what
 the reader would otherwise have to open the artifact to find out.
 
+Stage 01's four lanes — `origin`, `claim_under_test`, `why_now`, `scope` — are normative in
+[`schemas/topic.schema.json`](../../schemas/topic.schema.json), which also documents why they're
+optional on an informal single-source probe. This table is the design rationale for them, not
+their definition.
+
 | Stage | Four lanes | Level 2 reads |
 |---|---|---|
 | 01 Idea | Origin · Claim under test · Why now · Scope | `00-topic/` topic.yaml note |
