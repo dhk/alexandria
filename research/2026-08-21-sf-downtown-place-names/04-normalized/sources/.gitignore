@@ -1,0 +1,12 @@
+# Written by 02-run-plan/acquire-documents.py. Do not delete.
+#
+# The documents and their extracted text stay local: CONTRIBUTING.md forbids
+# committing copyrighted source corpora without permission, and these are
+# municipal planning documents whose terms have not been established. Only the
+# manifest -- provenance, not corpus -- is committed.
+#
+# This ignores everything in this directory except the manifest and itself, so
+# a stray `git add -A` cannot commit a corpus even once.
+*
+!.gitignore
+!manifest.json
