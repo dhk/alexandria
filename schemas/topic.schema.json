@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/dhk/alexandria/schemas/topic.schema.json",
+  "title": "Alexandria investigation topic",
+  "description": "research/<slug>/topic.yaml -- the metadata file for one investigation. This formalizes only the fields that are (a) read by src/alexandria/infrastructure/research_repo.py's lenient parser (that module now lives in dhk/minority-report, but reads this file from here), (b) consumed by a downstream tool -- DHK-website's publish skill reads `origin` and `claim_under_test` as excerpt source material, or (c) documented as normative by docs/ux/RFC-0007-idea-to-expression-flow.md §08, whose stage-01 lanes are exactly `origin`, `claim_under_test`, `why_now`, `scope`. Deliberately incomplete: existing investigations also carry topic_kind, decision, scope_limitation, subject_product, comparison_set, and at least four different names for 'which run this came from' (commission_run, commissioned_run, current_run, probe_run) -- none of that is formalized here because none of it has stabilized into one shape yet. Per-run metadata has its own, separate contract once a run reaches that convention: schemas/run-record.schema.json. additionalProperties is deliberately true: an investigation is not invalid for carrying fields beyond this schema.",
+  "type": "object",
+  "required": ["title", "status", "assurance_level", "slug", "opened"],
+  "additionalProperties": true,
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Human-readable investigation title."
+    },
+    "status": {
+      "type": "string",
+      "description": "Free-form lifecycle status, operator- or `publish`-assigned. Deliberately not an enum: observed values include 'single-source-draft', 'single-source-probe', 'brief-draft', 'bronze-complete-prior-art-gap', 'research-completed', and 'graded-multi-model', and new shapes of investigation are expected to introduce new values. research_repo.py reads this as an opaque string; nothing currently validates it against a fixed set."
+    },
+    "assurance_level": {
+      "type": "string",
+      "enum": ["bronze", "silver", "gold"],
+      "description": "One of Alexandria's three cumulative research assurance levels (README.md). The parser reads this case-insensitively and lowercases it; store it lowercase."
+    },
+    "slug": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}-[a-z0-9-]+$",
+      "description": "Matches the investigation's own directory name, research/<slug>/."
+    },
+    "opened": {
+      "type": "string",
+      "format": "date",
+      "description": "YYYY-MM-DD the investigation was opened."
+    },
+    "origin": {
+      "type": "string",
+      "description": "Editorial, human-written: why this question was asked. Never machine-generated -- a tool drafting the rest of this file from a completed run deliberately leaves this field to the operator, because a tool cannot know why a question was asked. Normative per RFC-0007 §08 (the flow view's stage-01 lanes) and read by DHK-website's publish skill as excerpt source material. Present on commissioned, graded investigations; its absence on an informal single-source probe is expected, not an error -- see e.g. research/2026-08-21-sf-downtown-place-names, which has `scope` but not this field."
+    },
+    "claim_under_test": {
+      "type": "string",
+      "description": "Editorial, human-written: the proposition the investigation actually tests, stated so it can be rejected rather than confirmed. Same provenance and optionality as `origin`."
+    },
+    "why_now": {
+      "type": "string",
+      "description": "Editorial, human-written: what decision or deadline makes this worth running now. Same provenance and optionality as `origin`."
+    },
+    "scope": {
+      "type": "string",
+      "description": "Editorial, human-written: what was deliberately excluded and why. Appears more broadly than `origin`/`claim_under_test`/`why_now` -- observed on single-source probes as well as commissioned, graded investigations."
+    }
+  }
+}
