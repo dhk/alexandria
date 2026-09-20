@@ -1,0 +1,29 @@
+# Run metadata — operator verification pass. No model generated any claim in
+# this run; every source was fetched, opened and transcribed directly.
+
+provider: "none — direct retrieval by the operator's session (Claude Code)"
+model: "n/a"
+run_kind: operator-verification
+brief_path: 01-brief/brief.md
+brief_revision: 1
+brief_sha256: f63265464d3f1567608ec87c9b9df5deae04d0a8d55fc581ad2e86ac50f00872
+execution_started: 2026-08-24T22:47:00Z
+execution_completed: 2026-08-24T23:05:00Z
+tool_access:
+  - HTTP retrieval (curl) of Internet Archive, wikipedia.org, latimes.com,
+    sfplanninggis.org, web.archive.org
+  - MediaWiki API (revision history)
+  - local PDF-to-image rendering, then visual reading of the rendered sheets
+sources_read:
+  - "SF Board of Supervisors, Journal of Proceedings, vol. 40 no. 1, 2 Jan 1945, p. 46 (IA journalofproceed40sanfrich)"
+  - "SF Assessor's block maps 3708, 3717, 3746, 3775"
+  - "Los Angeles Times, 6 Nov 1988"
+  - "Wikipedia, South of Market, San Francisco — current wikitext and revision 2647532 (5 Mar 2004)"
+caveats: >
+  This pass closed the gap the commissioned run could not: it read a map image
+  and a scanned municipal record, neither of which any dispatched model can do.
+  Its findings are first-hand and are the strongest evidence in this
+  investigation — but they are also unreviewed by any second reader, and the
+  block-book conclusion rests on a four-sheet sample rather than a walk of the
+  whole series. Rights: see evidence.md; copyrighted artifacts are recorded by
+  checksum and locator and are deliberately not committed.
