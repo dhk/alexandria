@@ -1,0 +1,61 @@
+# Doc Watson enrollment: this repository's documentation contract.
+# Schema: https://github.com/dhk/doc-watson/blob/main/schemas/enrollment.schema.json
+# Level, audience, trigger decisions and exemptions are owner-declared facts.
+# Tools may question them; only the owner changes them.
+# Declared by the owner 2026-09-28 from the baseline audit's drafts.
+
+schema: 1
+standard: 0.3.0 # standard version last audited against
+level: 1 # declared by the owner, 2026-09-28
+audience: The owner, reviewers of promoted research, and agents that commission or maintain the corpus.
+
+# One decision per trigger rule, each with its reason.
+triggers:
+  install-guide:
+    applies: false
+    reason: There is no product install; clone, uv sync and validate fit in README.md:38-51.
+  user-guides:
+    applies: false
+    reason: The README lifecycle and CONTRIBUTING workflow cover common tasks (README.md:53-71, CONTRIBUTING.md:16-28).
+  architecture:
+    applies: true
+    reason: The corpus/tooling split and promotion boundary span two repositories and are not visible from this one; docs/DESIGN.md and its diagram hold them.
+  adrs:
+    applies: true
+    reason: The repository split and derived-not-stored contracts had real alternatives and consequences (docs/DESIGN.md:19-29, docs/normalization.md, docs/instrument.md).
+  agent-memory:
+    applies: true
+    reason: Agents return across sessions; AGENTS.md and CLAUDE.md hold the rules, with a beads SessionStart hook (.claude/settings.json).
+  machine-contracts:
+    applies: true
+    reason: scripts/validate.py and Minority Report parse the artifacts against schemas/*.schema.json (docs/README.md:19-28).
+  codeowners:
+    applies: false
+    reason: One owner; both CODEOWNERS files list only @dhk and review routing is not shared.
+  contributing:
+    applies: false
+    reason: Outside contributions are not invited (owner, 2026-09-28).
+  governance:
+    applies: false
+    reason: One maintainer; corpus review governance is content policy, not maintainer authority (docs/DESIGN.md:64-70).
+  roadmap:
+    applies: false
+    reason: No evidence of a public audience asking for direction; docs/DESIGN.md:76-83 records the proposed V0.2 direction.
+  runbooks:
+    applies: false
+    reason: Nothing here runs or pages; host operations live in dhk/minority-report (docs/DESIGN.md:72-74).
+  handover:
+    applies: false
+    reason: No other party operates this repository.
+
+# Concerns deliberately not met. Truthfulness, hygiene and duplication, and
+# maintenance and verification cannot be exempted.
+exemptions: []
+
+last_audit:
+  revision: "f715358"
+  date: "2026-09-28"
+  record: https://github.com/dhk/doc-watson-audit/tree/main/audits/dhk/alexandria/2026-09-28
+
+# What a sweep may do on divergence: issue-and-draft-pr, issue, or report.
+on_drift: issue-and-draft-pr
