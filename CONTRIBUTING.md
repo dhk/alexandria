@@ -2,6 +2,14 @@
 
 Alexandria uses branches and pull requests for every substantive corpus change.
 
+## How contributions are accepted
+
+Contributions from anyone are welcome: issues, fixes, documentation and
+ideas. Every change is merged only after the maintainer, [@dhk](https://github.com/dhk),
+reviews and approves it. Opening a pull request is an offer, not a guarantee
+that it will be merged; a change may be declined or reshaped to fit the
+project's direction.
+
 ## Route changes by owner
 
 Make the change here when it concerns research artifacts, lifecycle, schemas,
