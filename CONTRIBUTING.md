@@ -33,7 +33,8 @@ writer change together; cross-link them and state the safe merge order.
 
 Use `agent/<description>` for repository changes, `research/<topic-or-stage>` for
 investigations, `fix/<description>` for corrections, and `docs/<description>` for
-documentation-only changes.
+documentation-only changes. Branch names carry no bead id, and PR bodies need
+no `bd:` trailer.
 
 ## Evidence, corrections, and public safety
 
