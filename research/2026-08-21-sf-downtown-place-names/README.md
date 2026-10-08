@@ -1,7 +1,45 @@
-# San Francisco downtown/SoMa historical place names
+# San Francisco, read from public data
 
-**State: two briefs, plus one single-source retrieval probe.** No
-commission has answered either brief. The probe under
+> **Picking this up in a new session?** Read
+> [`HANDOFF.md`](HANDOFF.md) first — state of play, what to build next, and the
+> things that will bite you.
+
+**Scope decision, 26 August 2026.** This investigation opened as a
+place-names atlas for downtown and SoMa. Its trunk is now the **survey
+record read from public-domain data**, with place names as one strand on
+it. `topic.yaml`'s `scope_decision` carries the reasoning; the short
+version is that the place-name half is blocked on a host that has never
+returned a commission, the geometry half is not, and the geometry
+produced the first claim in this investigation corroborated by
+independent physical measurement rather than by a second document.
+
+This is not a retreat from the original brief. San Francisco's place
+names are largely *survey* names — 100 Vara District, Western Addition,
+Horner's Addition, Richmond, Sunset — so the surveys are the substrate
+the names sit on. When the commissions eventually run, their names land
+on a frame that already exists.
+
+## What exists
+
+| | place names | survey geometry |
+|---|---|---|
+| coverage | ~20 names, SoMa only | 3,701 streets, whole city |
+| sources | one hand-run probe, ungraded | federal, public domain, checksummed |
+| corroborated | no — 3 conflicts unadjudicated | O'Farrell's module, to 2.84 ft |
+| published | — | [Seven Grids](https://www.dhk.io/work/seven-grids) |
+
+- `04-normalized/geo/` — TIGER/Line 2025 for San Francisco, with a
+  checksummed provenance sidecar.
+- `05-analysis/survey-grid-measurement.md` — O'Farrell's 1847 module
+  measured from federal centrelines, and the `frame` proposal for
+  recording what a measurement was made *with*.
+- `05-analysis/grid-classification.md` — the seven survey grids, what the
+  classification does not claim, and why the module measurement fails
+  city-wide.
+- `06-viewer/` — the generated page behind Seven Grids.
+
+**The place-name state is unchanged: two briefs, plus one single-source
+retrieval probe.** No commission has answered either brief. The probe under
 `03-runs/claude-probe-2026-08-25/` is one source, ungraded, and is not an
 answer to either brief — but it did obtain a substantive primary
 administrative source and open the conflict register, so it is evidence
