@@ -48,6 +48,8 @@ constraint to it, none contradict it:
   generically enough to cover a live-scrape implementation. It shouldn't
   be. See below.
 
+<a id="linkedin-data--legaltos-risk"></a>
+
 ## LinkedIn data — legal/ToS risk, and the resulting hard constraint
 
 LinkedIn's User Agreement (§8.2) bars scraping, crawling, or any
