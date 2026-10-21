@@ -1,0 +1,81 @@
+{
+  "artifact": "instrument-ablation",
+  "issue": "dhk/minority-report#7",
+  "run_id": "r-2026-0813-03",
+  "performed_on": "2026-08-19",
+  "question": "Does grader topology change the claim landscape, or is the divergence from docs/confidence-calibration.md a defect that costs nothing in practice? Both passes re-grade one preserved run from the SAME raw responses; no research call was dispatched.",
+  "source_evidence": {
+    "raw_responses": "<data_dir>/runs/r-2026-0813-03/raw/",
+    "published": false,
+    "verified": "All four files checked byte-for-byte and sha256-for-sha256 against raw_responses.files in 03-runs/r-2026-0813-03.json before either pass was run; no unlisted files present."
+  },
+  "grading_model": "anthropic/claude-sonnet-4.6",
+  "responding_models": [
+    "anthropic/claude-opus-4.7",
+    "openai/gpt-5.4",
+    "x-ai/grok-4.5"
+  ],
+  "passes": [
+    {
+      "pass_id": "A",
+      "description": "The current implementation, unmodified. Uses commission.py's own _grading_prompt imported from the installed package rather than a reconstruction of it.",
+      "instrument": {
+        "spec_version": "confidence-calibration/draft-v1",
+        "grader_topology": "single-call-all-models",
+        "score_derivation": "model-assigned",
+        "extraction_pass": "fused",
+        "note": "Diverges from the spec on all three axes, as every run in the corpus does."
+      },
+      "calls": 1,
+      "cost_usd": 0.185769,
+      "claim_count": 27,
+      "groups": {
+        "consensus": 25,
+        "novel": 2
+      }
+    },
+    {
+      "pass_id": "B",
+      "description": "What the spec requires. An extraction pass fixes claim identity across the union of outputs (§3.1), then one grading call per research model, each seeing only that model's output (§3.2), emitting (stance, strength) with the integer derived by the §4 lookup in local code.",
+      "instrument": {
+        "spec_version": "confidence-calibration/draft-v1",
+        "grader_topology": "per-model-blind",
+        "score_derivation": "derived-lookup",
+        "extraction_pass": "separate",
+        "note": "Conforming. The prompts are not production code: no implementation of §3.1/§3.2 exists yet, so they were written for this ablation from the spec text."
+      },
+      "calls": 4,
+      "cost_usd": 0.489435,
+      "claim_count": 100,
+      "groups": {
+        "consensus": 95,
+        "novel": 5
+      }
+    }
+  ],
+  "delta": {
+    "claim_count": 73,
+    "claim_count_ratio": 3.7,
+    "groups": {
+      "consensus": 70,
+      "novel": 3
+    }
+  },
+  "control": {
+    "published_run": {
+      "claim_count": 26,
+      "groups": {
+        "consensus": 25,
+        "novel": 1
+      }
+    },
+    "note": "Pass A reproduces the published landscape (27 vs 26 claims, 25 vs 25 consensus, 2 vs 1 novel), which is what licenses reading the delta as an effect of topology rather than of the harness."
+  },
+  "limits": [
+    "Pass B's prompts were written for this ablation from the spec, so the delta conflates a change of topology with a change of prompt wording. Pass A's prompt is production code, which is what makes the comparison worth anything.",
+    "Both extraction runs returned exactly 100 claims, with completion tokens of 5,660 and 5,669 against a 16,000-token cap and no truncation. That is a model stopping at a round number, not a limit being hit, so +73 is a lower bound on the delta.",
+    "One run, one grading model, one brief. Nothing here establishes that the ratio holds elsewhere in the corpus.",
+    "The 100 extracted claims were checked for the obvious confound — this run's outputs contain two 100-cell matrices — and are not cell enumerations: the strings 'matrix', 'cell' and '×' appear zero times across them."
+  ],
+  "total_cost_usd": 0.825612
+}
