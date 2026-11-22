@@ -1,0 +1,32 @@
+# Alexandria investigation metadata. Written by hand at deposit time.
+# Editorial fields that only the operator can write (origin, claim_under_test,
+# why_now, scope) are left out on purpose. See schemas/topic.schema.json.
+
+title: "The Lean proof of the Riemann hypothesis: statement, verification, perspectives, and learning with AI"
+status: "single-source-draft"
+assurance_level: "bronze"
+
+slug: 2026-11-21-riemann-lean-learning-with-ai
+opened: 2026-11-21
+requested_by: operator
+
+topic_kind: news-claim-provenance
+
+probe_run: claude-corpus-2026-11-21   # single model, not graded
+
+related_project: learning-with-ai-series   # four planned conversations; files 07-10
+
+notes: >
+  This is one single-model corpus about the claimed Lean-only proof of the
+  Riemann hypothesis. It is intended as source material for a
+  four-conversation series on learning with AI: assembling knowledge,
+  adjudicating claims, comparing these systems with past practice, and
+  learning in an age of AI. The model that assembled it (Claude) is the model
+  that produced the result, so the investigation carries a declared conflict
+  of interest. A second, non-Anthropic run against the same brief is the
+  obvious next step, and would also serve as material for conversation 2.
+
+limitations: >
+  The run used live web search and fetch, so it is not reproducible from its
+  inputs. No Lean was executed. The verification status it reports is a
+  snapshot that was already moving when it was written.
