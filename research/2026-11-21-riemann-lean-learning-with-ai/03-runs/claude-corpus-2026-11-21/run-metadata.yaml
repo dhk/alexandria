@@ -1,0 +1,71 @@
+# Run metadata (AGENTS.md rule 6: provider, model, prompt, brief revision,
+# execution time, tool access, checksums).
+
+provider: "Anthropic model, via a Perplexity Computer interactive session (not OpenRouter dispatch)"
+model: claude-opus-5.5
+run_kind: single-source-interactive
+run_role: corpus-assembly
+brief_paths:
+  - 01-brief/brief.md
+brief_revision: 1
+# The brief was written into this repository after the run, from the
+# operator's messages as sent. This checksum pins the committed brief, not a
+# file that existed at dispatch time.
+brief_sha256:
+  brief.md: 02738f1df09fe0291c60bbb76a060cd737399b464d589a4dc81a7e5c15c02cef
+execution_started: 2026-11-21
+execution_completed: 2026-11-22
+# Dates only. Exact times were not recorded in a form this record can verify.
+output_revisions:
+  - revision: 1
+    answers: [message 1, message 2]
+    files: 00-12
+  - revision: 2
+    answers: [message 3]
+    change: >
+      Added the section "If you have never seen Lean (a five-minute read)" to
+      the top of 02_how_the_lean_process_works.md, and updated 02's row in
+      00_README.md to match. Revision 1 was not preserved separately; the files
+      here are revision 2.
+tool_access:
+  - web search (live; returns result summaries, not full pages)
+  - URL fetch (live; some fetches used model-based extraction rather than the raw page text)
+  - no Lean toolchain; nothing was built or checked by a kernel in this run
+output_sha256:
+  00_README.md: 48a6b604fffef8ca40aad231ea7d711f5656f77b6f7d366908760b93a8e4386e
+  01_statement_check.md: e1f1b1983dcecf690fecc856880fcd8c80fce4e62f1b89c807407806ab91ccd5
+  02_how_the_lean_process_works.md: 6c54fbd699c75b956d21c19abc8247a750fb5400bf596fb8205043955eeb8bc2
+  03_timeline.md: 1b53a2b77bfbbb7e5d8d9f82852004f4516cbebec981c75e62a41258f3cc8fd9
+  04_perspectives.md: e6d0f92d8e0c41a3870744490d025721ec5889b38edabb2b9c3fda70b71a085f
+  05_competing_claim_masullo.md: e551d9b50146e17bb6caa90cced3bea488030586ba0d3dd85fa66203e8e43a35
+  06_precedents_and_context.md: 11e60ee7db43eb8224832692a17bb6af5d373cbf10535c7f1352b1c26b611cde
+  07_conversation1_assembling_knowledge.md: d0cad8b8cb9bf1ea5a1e52aa6d162cba812a29ac0abc0127130331051c878113
+  08_conversation2_adjudicating_claims.md: b19c8adf240407ce371b5f14c8ac0cbd32135ee82075084242ad4272063d434f
+  09_conversation3_systems_old_and_new.md: b7b94933cccc63641ffafadf135e645f847fc6db210e7b290d25ce6c3978cae8
+  10_conversation4_learning_in_an_age_of_ai.md: 6cd5c719aa4f50a8955e9b6ece80b599e3105affd8403cbd2bd5e7512813496d
+  11_claim_ledger.md: e52febb9708ff470996b7d58c1a48f2368f88d4656be441f51c48934bf96d61f
+  12_sources.md: 2c245920fe69fe750b34b0b5416f1ceb6d414e105ed7802f6ef5563abda733f0
+raw_working_files_not_committed:
+  # Page extractions and search results gathered during the run. They contain
+  # long excerpts of copyrighted and paywalled journalism, so per
+  # CONTRIBUTING.md they stay outside this public repository. The checksums
+  # identify them without disclosing their content.
+  raw_search1.md: d0e37f74e050dd29d26b4b15e3e2c3027b374fecb3d34be2afe66eafa8b2b49a
+  raw_fetch1.md: f001380d08c1cb9f166109808140bc7e3fa22751e2aadeff60ed9596c950ed81
+  raw_fetch2.md: 46734649439fb1aa323aeed7e3b1b50067193175d26fa426fc6873ede8b1d17b
+  raw_fetch3.md: d0fe2d1e82a1306cde8b346f00a311d396446b46b4e94ced54efc97853e26ea4
+prompt: >
+  The three operator messages in 01-brief/brief.md, verbatim.
+caveats: >
+  Single model, not graded, and not cross-checked against another model.
+  Conflict of interest: the corpus was assembled by Claude about a result
+  produced with Claude by an Anthropic employee, and some of the verification
+  it reports was itself run with Claude Code. The statement check rests on
+  reading Mathlib's source at tag v4.33.1 and on other people's reported
+  comparator and kernel runs. This run did not execute Lean. The verification
+  status is a snapshot. As of the MIT status page's 12:55 UTC update on
+  21 November, the default-kernel and paranoid-kernel replays of the 62 GB
+  export and the end-to-end lake comparator were still running. Quotes from
+  the Science article came from a corrupted text extraction and are flagged in
+  the files. Some historical details in 06 are marked "from memory; verify".
+  Those are recalled, not fetched.

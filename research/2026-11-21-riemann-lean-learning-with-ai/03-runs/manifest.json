@@ -1,0 +1,12 @@
+{
+  "models_dispatched": [
+    "claude-opus-5.5 (single-source interactive corpus assembly in a Perplexity Computer session, not OpenRouter dispatch)"
+  ],
+  "inputs": [
+    "01-brief/brief.md",
+    "00-topic/source-material.md"
+  ],
+  "failures": [],
+  "superseded_count": 0,
+  "manifest_excerpt": "One single-model interactive run, 21-22 November 2026, producing a 13-file corpus. It finds that the headline theorem proves Mathlib's standard RiemannHypothesis statement, which a comparator and two independent cross-checks support. The 'GRH' covers Dirichlet L-functions only. Kernel replays of the full export were still running at the last status check. The corpus also maps about 40 perspectives, documents the competing all-human Masullo claim, and logs claims C1-C15 with ten documented mutations across outlets.\n\nCaveat: single model, ungraded, with a conflict of interest, since Claude assembled a corpus about a Claude-produced result. No Lean was executed in this run."
+}
